@@ -1,0 +1,14 @@
+.clients-manager-col{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.clients-manager-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
