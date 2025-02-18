@@ -21,9 +21,6 @@ export const AppContextProvider = ({ children }: any) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // React.useEffect(() => {
-    //     console.log(width)
-    // },[width])
     const clientsHook = useClients()
 
     const contextValues = useMemo(() => ({
