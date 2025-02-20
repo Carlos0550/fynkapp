@@ -1,0 +1,46 @@
+.users-manager-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image:
+    linear-gradient(to right, #ccc 1px, transparent 2px 30px), 
+    linear-gradient(to bottom, rgba(0, 0, 255, 0.3) 1px, transparent 1px 30px);
+    background-size: 50px 50px;
+    background-position: center;
+    animation: move-grid 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.first-time-container {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+.fade-in {
+    animation: fade-in 2s ease-in-out;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.fade-out {
+    animation: fade-out 1s ease-in-out forwards;
+}
+
+@keyframes fade-out {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes move-grid{
+    from{
+        background-position: 50px 0;
+    }
+    to{
+        background-position: -50px 50px;
+    }
+}

@@ -8,7 +8,7 @@
 .layout-sidebar {
     width: 5%;
     height: 100vh;
-    background-color: #102341;
+    background-color: #ffffff;
     position: relative;
     transition: all 150ms ease-in-out;
 }
@@ -17,7 +17,8 @@
 .layout-content {
     flex: 1;
     height: 100vh;
-    background-color: #ffe1e2;
+    background-color: #292929;
+    overflow: hidden;
 }
 
 .layout-sidebar-icon {

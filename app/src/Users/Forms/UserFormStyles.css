@@ -1,0 +1,115 @@
+.login-user-container{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: 2rem;
+}
+
+.login-user-container form{
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.397);
+}
+
+.login-user-container form span{
+    color: red;
+}
+
+.login-user-container label{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.login-user-container input{
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    transition: all 150ms ease-in-out;
+}
+
+.login-user-container input:focus{
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.login-user-container button{
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #9e161c;
+    color: #fff;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+}
+
+.login-user-container button:nth-child(2){
+    background-color: #292929;
+}
+
+.login-user-container button:nth-child(2):hover{
+    background-color: #000000;
+}
+
+.login-user-container button:hover{
+    background-color: #48070a;
+}
+
+.login-form-buttons-box{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+}
+
+.register-labels-box{
+    display: flex;
+    justify-content: space-evenly;
+    gap: 10px;
+    width: 100%;
+}
+
+
+@media(max-width:764px){
+    .register-labels-box{
+        flex-direction: column;
+    }
+}
+
+@media(min-width:814px){
+    .login-user-container form h2{
+        font-size: 3rem;
+    }
+
+    .login-user-container form label{
+        font-size: 1.5rem;
+    }
+
+    .login-user-container form input{
+        font-size: 1.5rem;
+    }
+
+    .login-user-container form button{
+        font-size: 1.3rem;
+    }
+
+    .login-form-buttons-box{
+        max-width: 400px;
+    }
+}
