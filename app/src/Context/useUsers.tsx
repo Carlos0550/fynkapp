@@ -1,47 +1,95 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { logic_apis } from '../apis'
-import { notification } from 'antd'
+import { showNotification } from '@mantine/notifications'
+import { UserLoginFormValuesInterface } from './Typescript/UsersTypes'
 
 function useUsers() {
+  const [formSelection, setFormSelection] = useState(0)
   const registerUser = useCallback(async(formData: any) => {
     const newUrl = new URL(logic_apis.users + "/register-user")
     try {
       const response = await fetch(newUrl, {
         method: "POST",
-        body: formData
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
       })
 
       const responseData = await response.json()
       if(!response.ok){
-        
         throw new Error(responseData.msg || "Error desconocido")
       }
-
-      notification.success({
-        message: "Usuario creado con exito",
-        description: "Iniciarás sesión ahora con los datos que ingresaste",
-        duration: 3,
-        showProgress: true,
-        pauseOnHover: false
+      showNotification({
+        title: "Usuario Registrado exitosamente.",
+        message: "Iniciarás sesión con los datos que proporcionaste.",
+        color: "green",
+        autoClose: 3000,
+        position: "top-right"
       })
-
+      setFormSelection(0)
       return true
     } catch (error) {
       console.log(error)
-      notification.error({
-        message: "Error al crear el usuario",
-        description: error.message,
-        duration: 3,
-        pauseOnHover: false,
-        showProgress: true
+      showNotification({
+        title: "Error al registrar el usuario",
+        message: error.message,
+        color: "red",
+        autoClose: 3000,
+        position: "top-right"
+      })
+      return false
+    }
+  },[])
+
+  const loginUser = useCallback(async (formValues: UserLoginFormValuesInterface) => {
+    const newUrl = new URL(logic_apis.users + "/login-user")
+    try {
+      const response = await fetch(newUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formValues)
+      })
+      const responseData = await response.json()
+      if(!response.ok){
+        throw new Error(responseData.msg || "Error desconocido")
+      }
+
+      localStorage.setItem("token", responseData.token)
+      showNotification({
+          title: "Iniciando sesión",
+          message: "Serás redirigido en unos segundos...",
+          color: "green",
+          autoClose: 1800,
+          position: "top-right"
+      })
+      setTimeout(() => {
+        return window.location.reload()
+      }, 1900);
+    } catch (error) {
+      console.log(error)
+      showNotification({
+        title: "Error de autenticación",
+        message: error.message,
+        color: "red",
+        autoClose: 3000,
+        position: "top-right"
       })
       return false
     }
   },[])
   return useMemo(() => ({
-    registerUser
+    registerUser,
+    formSelection, 
+    setFormSelection,
+    loginUser
   }),[
-    registerUser
+    registerUser,
+    formSelection, 
+    setFormSelection,
+    loginUser
   ])
 }
 

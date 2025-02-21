@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from "react";
-import { useContext, createContext } from "react";
+import React, { useEffect, useMemo, useContext, createContext, useRef } from "react";
 import useClients from "./useClients";
 import useUsers from "./useUsers";
 import { useNavigate } from "react-router-dom";
+import useAuth from "./useAuth";
 
 const AppContext = createContext({});
 
@@ -25,22 +25,29 @@ export const AppContextProvider = ({ children }: any) => {
 
     const clientsHook = useClients()
     const usersHook = useUsers()
+    const authHook = useAuth()
+
+    const alreadyVerified = useRef(false)
+
+    useEffect(()=>{
+        if(alreadyVerified.current) return
+        alreadyVerified.current = true
+        authHook.verifyToken()
+    },[])
 
     const contextValues = useMemo(() => ({
         ...clientsHook,
         ...usersHook,
+        ...authHook,
         width
     }), [
         clientsHook,
         usersHook,
+        authHook,
         width
     ])
 
     const navigate = useNavigate()
-
-    useEffect(()=>{
-        navigate("/auth-user")
-    },[navigate])
     return (
         <AppContext.Provider value={
             contextValues

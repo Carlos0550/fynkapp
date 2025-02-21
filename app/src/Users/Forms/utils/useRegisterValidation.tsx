@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { UserRegisterFormValuesInterface } from "../../../Context/Typescript/UsersTypes"
-import { message } from "antd"
+import { useAppContext } from "../../../Context/AppContext"
+import { showNotification } from "@mantine/notifications"
 
 function useRegisterValidation() {
     const registerFormInputsRef = useRef<HTMLFormElement>(null)
@@ -11,6 +12,8 @@ function useRegisterValidation() {
         user_last_name: "",
         confirm_password: ""
     })
+
+    const { registerUser } = useAppContext()
 
     useEffect(() => {
         if (!registerFormInputsRef.current) return
@@ -66,6 +69,13 @@ function useRegisterValidation() {
         confirm_password: ""
     })
     const validateFields = () => {
+        setErrors({
+            user_email: "",
+            user_password: "",
+            user_name: "",
+            user_last_name: "",
+            confirm_password: ""
+        })
         let newErrors: Partial<UserRegisterFormValuesInterface> = {}
     
         for (const field in formValues) {
@@ -78,6 +88,21 @@ function useRegisterValidation() {
             setErrors(prevErrors => ({ ...prevErrors, ...newErrors }))
             return false
         }
+
+        if(formValues.confirm_password !== formValues.user_password){
+            showNotification({
+                title: "Las contrasenas no coinciden",
+                message: "",
+                color: "red",
+                autoClose: 2000,
+                position: "top-right",
+                style: {
+                    fontSize: "1.3rem"
+                }
+            })
+
+            return false
+        }
     
         return true
     }
@@ -86,8 +111,8 @@ function useRegisterValidation() {
     const onFinish = async(e: React.FormEvent) => {
         e.preventDefault()
         if (validateFields()) {
-            console.log("Formulario enviado:", formValues)
-            message.success("yes")
+            const result = await registerUser(formValues)
+            
         }
     }
 

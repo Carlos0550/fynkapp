@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+server/routes/Security/private-key.pem
+server/routes/Security/public-key.pem

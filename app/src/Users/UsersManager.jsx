@@ -3,9 +3,10 @@ import "./usersManager.css"
 
 import LoginUser from './Forms/LoginUser'
 import RegisterUser from "./Forms/RegisterUser"
+import { useAppContext } from '../Context/AppContext'
 
 function UsersManager() {
-    const [formSelection, setFormSelection] = useState(0)
+    const { formSelection } = useAppContext()
     const [isVisible, setIsVisible] = useState(true)
     const [fadeOut, setFadeOut] = useState(false)
     const [showForms, setShowForms] = useState(false) 
@@ -30,13 +31,15 @@ function UsersManager() {
         <div className='users-manager-container'>
             {isVisible && (
                 <div className={`first-time-container ${fadeOut ? "fade-out" : "fade-in"}`}>
-                    <h1>Bienvenido a Fynkapp</h1>
+                    <h1 style={{
+                        textAlign: "center"
+                    }}>Bienvenido a Fynkapp</h1>
                 </div>
             )}
             
             {showForms && (
                 <div className="form-container fade-in">
-                    {formSelection === 0 ? <LoginUser setFormSelection={setFormSelection}/> : <RegisterUser setFormSelection={setFormSelection}/>}
+                    {formSelection === 0 ? <LoginUser/> : <RegisterUser/>}
                 </div>
             )}
         </div>

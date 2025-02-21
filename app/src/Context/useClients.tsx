@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 import { Clients } from "./Typescript/ClientsTypes"
 import { logic_apis } from "../apis"
-import { message, notification } from "antd"
 function useClients() {
     const [clients, setClients] = useState<Clients[]>([])
 
@@ -22,18 +21,11 @@ function useClients() {
                 throw new Error(responseData.msg || "Error desconocido")
             }
             
-            message.success("Cliente creado con exito")
             setClients([...clients, ...responseData.clients])
             return true
         } catch (error) {
             console.log(error)
-            notification.error({
-                message: "Error al crear el cliente",
-                description: error.message,
-                duration: 3,
-                pauseOnHover: false,
-                showProgress: true
-            })
+            
             return false
         }
     }, [])

@@ -1,14 +1,15 @@
-import React from 'react'
 import "./App.css"
 import { Routes, Route } from 'react-router-dom'
-import ClientsManager from './Clients/ClientsManager'
 import Layout from './Layout/Layout'
 import UsersManager from './Users/UsersManager'
+import UserDashboard from "./UserDashboard/UserDashboard"
+
 function App() {
+
   return (
     <Routes>
-      <Route path='/' element={<Layout content={<ClientsManager />}/>} />
-      <Route path='/auth-user' element={<UsersManager/>}/>
+      <Route path='/' element={<Layout content={<UserDashboard />} />} />
+      <Route path='/auth-user' element={<UsersManager />} />
     </Routes>
   )
 }

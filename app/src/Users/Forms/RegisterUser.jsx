@@ -2,8 +2,8 @@ import React from 'react'
 import "./UserFormStyles.css"
 import { useAppContext } from '../../Context/AppContext'
 import useRegisterValidation from './utils/useRegisterValidation'
-function RegisterUser({ setFormSelection }) {
-  const { width } = useAppContext()
+function RegisterUser() {
+  const { width, setFormSelection } = useAppContext()
   const { registerFormInputsRef, onFinish, errors } = useRegisterValidation()
   return (
     <div className='login-user-container'>

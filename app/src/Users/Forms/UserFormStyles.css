@@ -80,33 +80,29 @@
 
 .register-labels-box{
     display: flex;
+    flex-direction: column;
     justify-content: space-evenly;
     gap: 10px;
     width: 100%;
 }
 
 
-@media(max-width:764px){
-    .register-labels-box{
-        flex-direction: column;
-    }
-}
 
 @media(min-width:814px){
     .login-user-container form h2{
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
 
     .login-user-container form label{
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
     .login-user-container form input{
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
     .login-user-container form button{
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
 
     .login-form-buttons-box{
