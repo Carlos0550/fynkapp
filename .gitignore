@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 server/routes/Security/private-key.pem
 server/routes/Security/public-key.pem
+.env
