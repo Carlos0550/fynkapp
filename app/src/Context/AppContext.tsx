@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useContext, createContext, useRef } from "react";
+import React, { useMemo, useContext, createContext, useRef } from "react";
 import useClients from "./useClients";
 import useUsers from "./useUsers";
 import { useNavigate } from "react-router-dom";
@@ -23,17 +23,9 @@ export const AppContextProvider = ({ children }: any) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const clientsHook = useClients()
-    const usersHook = useUsers()
     const authHook = useAuth()
-
-    const alreadyVerified = useRef(false)
-
-    useEffect(()=>{
-        if(alreadyVerified.current) return
-        alreadyVerified.current = true
-        authHook.verifyToken()
-    },[])
+    const clientsHook = useClients(authHook.verifyToken, authHook.loginData)
+    const usersHook = useUsers()
 
     const contextValues = useMemo(() => ({
         ...clientsHook,

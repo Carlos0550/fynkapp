@@ -20,6 +20,7 @@ verifyKeys()
 
 const generateToken = async(payload, expiresIn = "1h") => {
     try {
+        
         const privateKey = await fsPromises.readFile(privateKeyPath, "utf-8")
         return jwt.sign(payload, privateKey,{
             algorithm: "ES256",

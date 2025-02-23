@@ -5,11 +5,19 @@ import LoginUser from './Forms/LoginUser'
 import RegisterUser from "./Forms/RegisterUser"
 import { useAppContext } from '../Context/AppContext'
 
+import { useNavigate } from 'react-router-dom'
+
 function UsersManager() {
     const { formSelection } = useAppContext()
     const [isVisible, setIsVisible] = useState(true)
     const [fadeOut, setFadeOut] = useState(false)
     const [showForms, setShowForms] = useState(false) 
+    const [token] = useState(localStorage.getItem("token") || "")
+    const navigate = useNavigate()
+
+    useEffect(()=>{
+        if(token) navigate("/")
+    },[token, navigate])
 
     useEffect(() => {
         const fadeOutTimer = setTimeout(() => {
@@ -26,7 +34,6 @@ function UsersManager() {
             clearTimeout(removeTimer)
         }
     }, [])
-
     return (
         <div className='users-manager-container'>
             {isVisible && (

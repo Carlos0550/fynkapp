@@ -5,7 +5,9 @@ import { UserLoginFormValuesInterface } from './Typescript/UsersTypes'
 
 function useUsers() {
   const [formSelection, setFormSelection] = useState(0)
-  const registerUser = useCallback(async(formData: any) => {
+
+
+  const registerUser = useCallback(async (formData: any) => {
     const newUrl = new URL(logic_apis.users + "/register-user")
     try {
       const response = await fetch(newUrl, {
@@ -17,7 +19,7 @@ function useUsers() {
       })
 
       const responseData = await response.json()
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error(responseData.msg || "Error desconocido")
       }
       showNotification({
@@ -40,9 +42,10 @@ function useUsers() {
       })
       return false
     }
-  },[])
+  }, [])
 
   const loginUser = useCallback(async (formValues: UserLoginFormValuesInterface) => {
+    
     const newUrl = new URL(logic_apis.users + "/login-user")
     try {
       const response = await fetch(newUrl, {
@@ -53,17 +56,17 @@ function useUsers() {
         body: JSON.stringify(formValues)
       })
       const responseData = await response.json()
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error(responseData.msg || "Error desconocido")
       }
-
+      
       localStorage.setItem("token", responseData.token)
       showNotification({
-          title: "Iniciando sesión",
-          message: "Serás redirigido en unos segundos...",
-          color: "green",
-          autoClose: 1800,
-          position: "top-right"
+        title: "Iniciando sesión",
+        message: "Serás redirigido en unos segundos...",
+        color: "green",
+        autoClose: 1800,
+        position: "top-right"
       })
       setTimeout(() => {
         return window.location.reload()
@@ -79,15 +82,15 @@ function useUsers() {
       })
       return false
     }
-  },[])
+  }, [])
   return useMemo(() => ({
     registerUser,
-    formSelection, 
+    formSelection,
     setFormSelection,
     loginUser
-  }),[
+  }), [
     registerUser,
-    formSelection, 
+    formSelection,
     setFormSelection,
     loginUser
   ])

@@ -1,14 +1,189 @@
-.clients-manager-col{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
+.clients-manager {
+    flex: 1;
+    margin: auto;
+    font-family: Arial, sans-serif;
+    overflow-x: auto;
+    overflow-y: scroll;
+    max-height: 100vh;
 }
 
-.clients-manager-container{
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+.clients-table {
     width: 100%;
+
+    background: rgba(204, 204, 204, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(157, 157, 157, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    padding: 5px;
+    margin-bottom: 2rem;
+
+}
+
+.clients-table th,
+.clients-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 5px solid #000000;
+}
+
+.clients-table th:first-child,
+.clients-table td:first-child {
+    border-radius: 1rem 0 0 1rem;
+}
+
+.clients-table th:last-child,
+.clients-table td:last-child {
+    border-radius: 0 1rem 1rem 0;
+}
+
+.clients-table th {
+    background: #000000;
+    color: white;
+}
+
+.clients-table tr:hover {
+    background: #f3f3f3;
+}
+
+.clients-table td {
+    color: #333;
+}
+
+
+.table-actions {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+}
+
+.add-client-table {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.add-client-table:hover {
+    transform: translateY(-2px);
+    background-color: #333;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+}
+
+.search-client-table {
+    padding: 10px 30px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+.search-client-table:focus+.search-icon {
+    color: #000957;
+}
+
+.update-table-btn {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.update-table-btn:hover {
+    transform: translateY(-2px);
+    background-color: #000957;
+    color: #ffffff;
+}
+
+.client-cell-actions{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.edit-client-btn, .delete-client-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: all 0.3s ease;
+}
+
+.edit-client-btn{
+    background-color: #0003cc;
+    border: none;
+    border-radius: 5px;
+    padding: 3px;
+    color: white;
+}
+
+.delete-client-btn{
+    background-color: #cc0000;
+    border: none;
+    border-radius: 5px;
+    padding: 3px;
+    color: white;
+}
+
+.edit-client-btn:hover, .delete-client-btn:hover{
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+@media(max-width: 800px) {
+    .table-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

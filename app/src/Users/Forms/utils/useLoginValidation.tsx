@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { UserLoginFormValuesInterface } from "../../../Context/Typescript/UsersTypes";
 import { showNotification } from "@mantine/notifications";
 import { useAppContext } from "../../../Context/AppContext";
+import { useNavigate } from "react-router-dom";
 function useLoginValidation() {
     const [errors, setErrors] = useState<UserLoginFormValuesInterface>({
       user_email: "",
@@ -18,6 +19,7 @@ function useLoginValidation() {
     const {
       loginUser
     } = useAppContext()
+    const navigate = useNavigate()
 
     const validateFields = () => {
         setErrors({
@@ -43,7 +45,9 @@ function useLoginValidation() {
     const onFinish = async(e: React.FormEvent) => {
         e.preventDefault()
         if(validateFields()){
-          loginUser(formValues)
+          const result = await loginUser(formValues)
+          console.log(result)
+          if(result) navigate("/")
         }
     } 
 
