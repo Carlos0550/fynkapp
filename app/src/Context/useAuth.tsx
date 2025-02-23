@@ -125,9 +125,9 @@ function useAuth() {
 
             showWelcomeNotification(user.user_name);
 
-            if (pathname === "/auth-user") {
-                navigate("/");
-            }
+            // if (pathname === "/auth-user") {
+            //     navigate("/");
+            // }
         } catch (error) {
             if (pathname !== "/auth-user") {
                 showInvalidSessionNotification();
