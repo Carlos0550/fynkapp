@@ -8,9 +8,10 @@ import { MdSpaceDashboard, MdGroups2 } from "react-icons/md";
 import { FaEye, FaRegCreditCard } from "react-icons/fa";
 import { IoMdEye, IoMdEyeOff, IoMdPersonAdd } from "react-icons/io";
 import { useAppContext } from '../Context/AppContext';
+import { Button, Popover } from '@mantine/core';
 const Layout = ({ content }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const { width } = useAppContext()
+    const { width, loginData, handleLogout } = useAppContext()
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -65,10 +66,21 @@ const Layout = ({ content }) => {
 
                 <div className="sidebar-footer">
                     <div className="user-info">
-                        <p className="text">John Doe</p>
-                        <p className="email text">john@example.com</p>
+                        <p className="text">{loginData?.user_name}</p>
+                        <p className="email text">{loginData?.user_email.slice(0, 20) + "..."}</p>
                     </div>
-                    <span className="icon"><LuSettings size={24} /></span>
+                    <Popover>
+                        <Popover.Target>
+                            <span className="icon"><LuSettings size={24} /></span>
+                        </Popover.Target>
+                        <Popover.Dropdown style={{
+                            border: "1px solid #ccc",
+                            borderRadius: ".5rem",
+                            backgroundColor: "#e3e3e3",
+                        }}>
+                            <Button color='red' onClick={()=> handleLogout()}>Cerrar sesión</Button>
+                        </Popover.Dropdown>
+                    </Popover>
                 </div>
             </aside>
 
