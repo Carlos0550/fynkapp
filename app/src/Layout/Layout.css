@@ -84,6 +84,7 @@
 
 .sidebar-footer {
   padding: 1rem;
+  gap: 1rem;
   border-top: 1px solid #dee2e6;
   justify-content: space-between;
 }
