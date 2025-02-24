@@ -2,10 +2,23 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { logic_apis } from '../apis'
 import { showNotification } from '@mantine/notifications'
 import { UserLoginFormValuesInterface } from './Typescript/UsersTypes'
+import { useNavigate } from 'react-router-dom'
 
 function useUsers() {
   const [formSelection, setFormSelection] = useState(0)
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    showNotification({
+      title: "Sesión cerrada",
+      message: "",
+      color: "green",
+      autoClose: 2000,
+      position: "top-right"
+    })
 
+    return navigate("/auth-user")
+  }
 
   const registerUser = useCallback(async (formData: any) => {
     const newUrl = new URL(logic_apis.users + "/register-user")
@@ -87,12 +100,14 @@ function useUsers() {
     registerUser,
     formSelection,
     setFormSelection,
-    loginUser
+    loginUser,
+    handleLogout
   }), [
     registerUser,
     formSelection,
     setFormSelection,
-    loginUser
+    loginUser,
+    handleLogout
   ])
 }
 
