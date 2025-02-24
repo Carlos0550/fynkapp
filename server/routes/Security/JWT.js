@@ -44,6 +44,7 @@ const verifyToken = async (req, res, next) => {
 
         const decoded = jwt.verify(token, publicKey, { algorithms: ["ES256"] })
         req.user = decoded
+        req.user_id = decoded.user_id
         next() 
     } catch (error) {
         console.log("Error al verificar token:", error.message)

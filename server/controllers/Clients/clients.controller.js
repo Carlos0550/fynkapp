@@ -47,6 +47,7 @@ function decrypt(encryptedText) {
 
 async function createClient(req, res) {
     const { "createClient.sql": clientQueries } = queries;
+    const user_id = req.user_id
 
     if (!clientQueries) {
         console.error("❌ Archivo de consultas de 'createClient' no encontrado");
@@ -55,6 +56,7 @@ async function createClient(req, res) {
 
     let client;
     const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
+    
     try {
         client = await pool.connect();
         await client.query("BEGIN");
@@ -65,14 +67,14 @@ async function createClient(req, res) {
 
         const encryptedAddress = encrypt(client_address);
 
-        const result1 = await client.query(clientQueries[0], [encryptedDni]);
+        const result1 = await client.query(clientQueries[0], [encryptedDni, user_id]);
 
         if (result1.rows[0].count > 0) {
             throw new Error("Ya existe un cliente con ese DNI.");
         }
 
         const result = await client.query(clientQueries[1], [
-            client_fullname, client_email, encryptedPhone, encryptedDni, encryptedAddress, client_city
+            client_fullname, client_email, encryptedPhone, encryptedDni, encryptedAddress, client_city, user_id
         ]);
 
         if (result.rowCount === 0) {
@@ -99,6 +101,7 @@ const getClients = async (req,res) => {
         console.error("❌ Archivo de consultas de 'getClients' no encontrado");
         return res.status(500).json({ msg: "Error interno del servidor. Inténtalo más tarde." });
     }
+    const user_id = req.user_id
 
     let client;
     const { searchQuery } = req.query;
@@ -109,7 +112,7 @@ const getClients = async (req,res) => {
             if(dniRegex.test(searchQuery)){
                 const encryptDniForSearch = encrypt(searchQuery);
 
-                const result = await client.query(clientQueries[0], [encryptDniForSearch]);
+                const result = await client.query(clientQueries[0], [encryptDniForSearch, user_id]);
 
                 if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese DNI." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
@@ -129,7 +132,7 @@ const getClients = async (req,res) => {
                     clients: [clientData]
                 })
             }else{
-                const result = await client.query(clientQueries[1], [`%${searchQuery.toLowerCase()}%`]);
+                const result = await client.query(clientQueries[1], [`%${searchQuery.toLowerCase()}%`, user_id]);
                 if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese nombre." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
                 const decryptedPhone = decrypt(result.rows[0].client_phone);
@@ -149,7 +152,7 @@ const getClients = async (req,res) => {
                 })
             }
         }else{
-            const result = await client.query(clientQueries[2]);
+            const result = await client.query(clientQueries[2], [user_id]);
             if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
                 const decryptedPhone = decrypt(result.rows[0].client_phone);
@@ -182,7 +185,7 @@ async function editClient(req,res) {
     const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
     const { clientID } = req.query;
     let client;
-
+    const user_id = req.user_id
     const { "editClient.sql": clientQueries } = queries; 
 
     if (!clientQueries) {
@@ -197,7 +200,7 @@ async function editClient(req,res) {
         const encryptedPhone = encrypt(client_phone);
         const encryptedAddress = encrypt(client_address);
 
-        const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email, encryptedAddress, client_city, clientID]);
+        const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email, encryptedAddress, client_city, clientID, user_id]);
         if(result.rowCount === 0) return res.status(400).json({ msg: "No se pudo editar el cliente." })
         
         return res.status(200).json({ msg: "Cliente editado exitosamente." });
@@ -213,10 +216,11 @@ async function editClient(req,res) {
 
 async function deleteClient(req,res) {
     const { clientID } = req.query;
+    const user_id = req.user_id
     let client;
     try {
         client = await pool.connect();
-        const result = await client.query("DELETE FROM clients WHERE client_id = $1", [clientID]);
+        const result = await client.query("DELETE FROM clients WHERE client_id = $1 AND fk_user_id = $2", [clientID, user_id]);
         if(result.rowCount === 0) return res.status(400).json({ msg: "No se pudo eliminar el cliente." })
         return res.status(200).json({ msg: "Cliente eliminado exitosamente." });
     } catch (error) {

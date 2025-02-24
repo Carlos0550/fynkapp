@@ -6,4 +6,4 @@ SET
     client_email = $4,
     client_address = $5,
     client_city = $6
-WHERE client_id = $7;
+WHERE client_id = $7 AND fk_user_id = $8;
