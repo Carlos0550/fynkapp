@@ -18,19 +18,25 @@ function verifyKeys() {
 }
 verifyKeys()
 
-const generateToken = async(payload, expiresIn = "1h") => {
+const generateToken = async (payload) => {
     try {
-        
-        const privateKey = await fsPromises.readFile(privateKeyPath, "utf-8")
-        return jwt.sign(payload, privateKey,{
+        const now = new Date();
+        const expiresAt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+        const diffMs = expiresAt.getTime() - now.getTime();
+        const diffHours = Math.ceil(diffMs / (1000 * 60 * 60)); 
+
+        const privateKey = await fsPromises.readFile(privateKeyPath, "utf-8");
+
+        return jwt.sign(payload, privateKey, {
             algorithm: "ES256",
-            expiresIn
-        })
+            expiresIn: `${diffHours}h`,
+        });
     } catch (error) {
-        console.error("❌ ERROR al leer la clave privada para firmar el token:", error)
-        throw new Error("No se puede generar el token.")
+        console.error("❌ ERROR al leer la clave privada para firmar el token:", error);
+        throw new Error("No se puede generar el token.");
     }
-}
+};
 
 const verifyToken = async (req, res, next) => {
     const token = req.headers["authorization"]?.split(" ")[1]
