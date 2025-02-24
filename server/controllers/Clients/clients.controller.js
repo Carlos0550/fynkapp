@@ -151,9 +151,21 @@ const getClients = async (req,res) => {
         }else{
             const result = await client.query(clientQueries[2]);
             if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes." })
-
+                const decryptedDni = decrypt(result.rows[0].client_dni);
+                const decryptedPhone = decrypt(result.rows[0].client_phone);
+                const decryptedAddress = decrypt(result.rows[0].client_address);
+                
+                let clientsData = result.rows.map((client) => ({
+                    client_id: client.client_id,
+                    client_fullname: client.client_fullname,
+                    client_dni: decryptedDni,
+                    client_phone: decryptedPhone,
+                    client_address: decryptedAddress,
+                    client_email: client.client_email,
+                    client_city: client.client_city
+                }))
                 return res.status(200).json({
-                clients: result.rows,
+                clients: clientsData,
             })
         }
     } catch (error) {
@@ -168,7 +180,7 @@ const getClients = async (req,res) => {
 
 async function editClient(req,res) {
     const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
-    
+    const { clientID } = req.query;
     let client;
 
     const { "editClient.sql": clientQueries } = queries; 
@@ -185,7 +197,7 @@ async function editClient(req,res) {
         const encryptedPhone = encrypt(client_phone);
         const encryptedAddress = encrypt(client_address);
 
-        const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, encryptedAddress, client_email, client_city, req.params.id]);
+        const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email, encryptedAddress, client_city, clientID]);
         if(result.rowCount === 0) return res.status(400).json({ msg: "No se pudo editar el cliente." })
         
         return res.status(200).json({ msg: "Cliente editado exitosamente." });
@@ -194,9 +206,29 @@ async function editClient(req,res) {
         return res.status(500).json({
             msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
         })   
+    }finally{
+        if(client) client.release();
+    }
+}
+
+async function deleteClient(req,res) {
+    const { clientID } = req.query;
+    let client;
+    try {
+        client = await pool.connect();
+        const result = await client.query("DELETE FROM clients WHERE client_id = $1", [clientID]);
+        if(result.rowCount === 0) return res.status(400).json({ msg: "No se pudo eliminar el cliente." })
+        return res.status(200).json({ msg: "Cliente eliminado exitosamente." });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
+        })   
+    }finally{
+        if(client) client.release();
     }
 }
 
 module.exports = {
-    createClient, getClients, editClient
+    createClient, getClients, editClient, deleteClient
 };

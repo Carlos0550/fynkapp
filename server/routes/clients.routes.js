@@ -21,7 +21,7 @@ clientsRouter.post("/create-client",verifyToken, (req,res,next) => {
 
 clientsRouter.get("/get-clients",verifyToken, clientsController.getClients)
 
-clientsRouter.put("/edit-client/:id", (req,res,next) => {
+clientsRouter.put("/edit-client", (req,res,next) => {
     const { 
         client_fullname,
         client_dni,
@@ -31,11 +31,27 @@ clientsRouter.put("/edit-client/:id", (req,res,next) => {
         client_city
     } = req.body;
 
+    const { clientID } = req.query
+
+    if(!clientID){
+        return res.status(400).json({msg: "El ID del Cliente no fue proporcionado."})
+    }
+
     if(!client_fullname || !client_dni || !client_phone || !client_address || !client_email || !client_city){
         return res.status(400).json({msg: "Todos los campos son obligatorios"})
     }
     
     next()
 }, verifyToken, clientsController.editClient)
+
+clientsRouter.delete("/delete-client", verifyToken, (req,res,next) => {
+    const { clientID } = req.query
+
+    if(!clientID){
+        return res.status(400).json({msg: "El ID del Cliente no fue proporcionado."})
+    }
+    
+    next()
+}, clientsController.deleteClient)
 
 module.exports = clientsRouter

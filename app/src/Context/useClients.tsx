@@ -9,6 +9,15 @@ function useClients(verifyToken, loginData) {
     const [clients, setClients] = useState<ClientsInterface[]>([])
     const [token] = useState(localStorage.getItem("token") || "")
 
+    const [editingClient, setEditingClient] = useState<{
+        isEditing: boolean,
+        clientID: string
+    }>({
+        isEditing: false,
+        clientID: ""
+    })
+    
+
     const getClient = useCallback(async (searchQuery?: any) => {
         if(!token) return;
         await verifyToken()
@@ -114,6 +123,91 @@ function useClients(verifyToken, loginData) {
         }
     }, [getClient])
 
+    const editClient = useCallback(async (clientData: ClientsInterface)=>{
+        const url = new URL(logic_apis.clients + "/edit-client")
+        url.searchParams.append("clientID", clientData.client_id)
+
+        try {
+            const response = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(clientData)
+            })
+
+            const responseData = await response.json()
+            if (!response.ok) {
+                throw new Error(responseData.msg || "Error desconocido")
+            }
+
+            setClients(prevClient => 
+                prevClient.map(client => 
+                    client.client_id === editingClient.clientID ? clientData : client
+                )
+            )
+
+            showNotification({
+                title: `Datos de ${clientData.client_fullname} actualizados exitosamente`,
+                message: "",
+                color: "green",
+                autoClose: 2000,
+                position: "top-right"
+            });
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error al editar el cliente",
+                message: error.message,
+                color: "yellow",
+                autoClose: 4000,
+                position: "top-right"
+            })
+            return false
+        }
+    },[clients, editingClient])
+
+    const deleteClient = useCallback(async (clientID: string) => {
+        const url = new URL(logic_apis.clients + "/delete-client")
+        url.searchParams.append("clientID", clientID)
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+
+            const responseData = await response.json()
+            if (!response.ok) {
+                throw new Error(responseData.msg || "Error desconocido")
+            }
+            setClients(prevClient => prevClient.filter(client => client.client_id !== clientID))
+            showNotification({
+                title: "Cliente eliminado exitosamente",
+                message: "",
+                color: "green",
+                autoClose: 2000,
+                position: "top-right"
+            })
+            return true
+        }catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error al eliminar el cliente",
+                message: error.message,
+                color: "yellow",
+                autoClose: 4000,
+                position: "top-right"
+            })
+            return false
+        }
+    },[setClients])
+
 
     const hasFetched = useRef(false); 
     useEffect(() => {
@@ -121,7 +215,7 @@ function useClients(verifyToken, loginData) {
             const timer = setTimeout(() => {
                 getClient();
                 hasFetched.current = true; 
-            }, 2000); 
+            }, 1000); 
 
             return () => clearTimeout(timer);
         }
@@ -130,11 +224,19 @@ function useClients(verifyToken, loginData) {
     return useMemo(() => ({
         clients,
         createClient,
-        getClient
+        getClient,
+        editingClient, 
+        setEditingClient,
+        editClient,
+        deleteClient
     }), [
         clients,
         createClient,
-        getClient
+        getClient,
+        editingClient, 
+        setEditingClient,
+        editClient,
+        deleteClient
     ])
 }
 

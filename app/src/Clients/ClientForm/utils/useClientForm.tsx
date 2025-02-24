@@ -2,12 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { ClientInterfaceErrors, ClientsInterface } from "../../../Context/Typescript/ClientsTypes";
 import { useAppContext } from "../../../Context/AppContext"
 import { hideNotification, showNotification } from "@mantine/notifications";
-function useClientForm(closeModal) {
+function useClientForm(closeModal, clientData) {
     const clientFormRef = useRef<HTMLFormElement | null>(null);
-    
+
     const { 
-        createClient
+        createClient, editClient
     } = useAppContext()
+
+    useEffect(() => {
+        if(clientData && Object.keys(clientData).length > 0){
+            setFormValues(clientData)
+            const fields = Array.from(clientFormRef.current?.querySelectorAll<HTMLInputElement>("input") || [])
+            fields[0].focus()
+            fields.forEach((field) => {
+                
+                if(field.id === "client_phone") field.value = clientData["client_phone"].toString()
+                field.value = clientData[field.id as keyof ClientsInterface]
+            })
+        }
+    },[clientData])
 
     const [formValues, setFormValues] = useState<ClientsInterface>({
         client_id: "",
@@ -84,7 +97,9 @@ function useClientForm(closeModal) {
                 autoClose: false,
                 position: "top-right",
             })
-            const result = await createClient(formValues)
+            const result = clientData 
+            ? await editClient(formValues)
+            : await createClient(formValues)
             hideNotification(notificationID)
             if(result){
                 setFormValues({
