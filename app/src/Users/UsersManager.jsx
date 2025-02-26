@@ -8,7 +8,10 @@ import { useAppContext } from '../Context/AppContext'
 import { useNavigate } from 'react-router-dom'
 
 function UsersManager() {
-    const { formSelection } = useAppContext()
+    const { usersHook } = useAppContext()
+
+    const {formSelection} = usersHook
+
     const [isVisible, setIsVisible] = useState(true)
     const [fadeOut, setFadeOut] = useState(false)
     const [showForms, setShowForms] = useState(false) 

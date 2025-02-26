@@ -1,0 +1,38 @@
+.client-data-container{
+    width: 100%;
+    height: auto;
+}
+
+.client-data-container h2{
+    text-align: left;
+}
+
+.client-data-box{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: .5rem;
+}
+
+
+
+@media(max-width:768px){
+    .client-data-actions{
+        flex-direction: column;
+        justify-content: center;
+    }
+    .client-data-box{
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .client-data-box p{
+        text-wrap: wrap;
+        word-break: break-all;
+
+    }
+}
+
+

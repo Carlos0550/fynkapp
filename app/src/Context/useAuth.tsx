@@ -160,6 +160,8 @@ function useAuth() {
         () => ({
             loginData,
             verifyToken,
+            showSessionExpiredNotification,
+            setCuentaRegresivaIniciada
         }),
         [loginData, verifyToken]
     );

@@ -3,7 +3,8 @@ import "./UserFormStyles.css"
 import { useAppContext } from '../../Context/AppContext'
 import useLoginValidation from "./utils/useLoginValidation.tsx"
 function LoginUser() {
-  const { setFormSelection } = useAppContext()
+  const { usersHook } = useAppContext()
+  const { setFormSelection } = usersHook
   const { onFinish,
     errors,
     userLoginFormRef

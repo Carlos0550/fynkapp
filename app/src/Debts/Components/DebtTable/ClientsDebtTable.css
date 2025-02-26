@@ -1,0 +1,53 @@
+.client-financial-data{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    margin-top: 1rem;
+    border-radius: 5px;
+    padding: .5rem;
+    width: 100%;
+    min-height: 50vh;
+}
+
+.client-debt-tables{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    border-radius: 5px;
+    padding: .5rem;
+}
+
+.client-debt-tables table{
+    width: 100%;
+    background-color: #ccc;
+    border-collapse: collapse;
+}
+
+.client-debt-tables table th, .client-debt-tables table td{
+    padding: .5rem;
+    background-color: rgb(24, 24, 24);
+    color: white;
+    border: 1px solid white;
+}
+
+.client-debt-tables table th:first-child{
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.client-debt-tables table th:last-child{
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+
+@media(max-width: 950px){
+    .client-financial-data{
+        min-width: 100%;
+        overflow-x: scroll;
+    }
+
+    .client-debt-tables{
+        min-width: 950px;
+    }
+}

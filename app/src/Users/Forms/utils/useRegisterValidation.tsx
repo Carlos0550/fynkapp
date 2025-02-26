@@ -13,7 +13,9 @@ function useRegisterValidation() {
         confirm_password: ""
     })
 
-    const { registerUser } = useAppContext()
+    const { usersHook } = useAppContext()
+
+    const { registerUser } = usersHook
 
     useEffect(() => {
         if (!registerFormInputsRef.current) return

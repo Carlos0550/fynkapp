@@ -3,7 +3,7 @@ const path = require("path");
 const fsP = require("fs").promises;
 require("dotenv").config();
 const crypto = require("crypto");
-
+const dayjs = require("dayjs")
 let queries = {};
 
 (async () => {
@@ -28,7 +28,7 @@ let queries = {};
 })();
 
 const algorithm = "aes-256-cbc";
-const key = Buffer.from(process.env.ENCRYPTION_KEY, "hex"); 
+const key = Buffer.from(process.env.ENCRYPTION_KEY, "hex");
 const iv = Buffer.from(process.env.ENCRYPTION_IV, "hex");
 
 function encrypt(text) {
@@ -56,7 +56,7 @@ async function createClient(req, res) {
 
     let client;
     const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
-    
+
     try {
         client = await pool.connect();
         await client.query("BEGIN");
@@ -94,7 +94,7 @@ async function createClient(req, res) {
     }
 }
 
-const getClients = async (req,res) => {
+const getClients = async (req, res) => {
     const { "getClients.sql": clientQueries } = queries;
 
     if (!clientQueries) {
@@ -107,19 +107,20 @@ const getClients = async (req,res) => {
     const { searchQuery } = req.query;
     try {
         client = await pool.connect();
-        if(searchQuery !== ""){
+        if (searchQuery !== "") {
             const dniRegex = /^\d{8,9}$/;
-            if(dniRegex.test(searchQuery)){
+            if (dniRegex.test(searchQuery)) {
                 const encryptDniForSearch = encrypt(searchQuery);
 
                 const result = await client.query(clientQueries[0], [encryptDniForSearch, user_id]);
 
-                if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese DNI." })
+                if (result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese DNI." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
                 const decryptedPhone = decrypt(result.rows[0].client_phone);
                 const decryptedAddress = decrypt(result.rows[0].client_address);
 
                 const clientData = {
+                    client_id: result.rows[0].client_id,
                     client_fullname: result.rows[0].client_fullname,
                     client_dni: decryptedDni,
                     client_phone: decryptedPhone,
@@ -131,14 +132,15 @@ const getClients = async (req,res) => {
                 return res.status(200).json({
                     clients: [clientData]
                 })
-            }else{
+            } else {
                 const result = await client.query(clientQueries[1], [`%${searchQuery.toLowerCase()}%`, user_id]);
-                if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese nombre." })
+                if (result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese nombre." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
                 const decryptedPhone = decrypt(result.rows[0].client_phone);
                 const decryptedAddress = decrypt(result.rows[0].client_address);
 
                 const clientData = {
+                    client_id: result.rows[0].client_id,
                     client_fullname: result.rows[0].client_fullname,
                     client_dni: decryptedDni,
                     client_phone: decryptedPhone,
@@ -151,23 +153,23 @@ const getClients = async (req,res) => {
                     clients: [clientData]
                 })
             }
-        }else{
+        } else {
             const result = await client.query(clientQueries[2], [user_id]);
-            if(result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes." })
-                const decryptedDni = decrypt(result.rows[0].client_dni);
-                const decryptedPhone = decrypt(result.rows[0].client_phone);
-                const decryptedAddress = decrypt(result.rows[0].client_address);
-                
-                let clientsData = result.rows.map((client) => ({
-                    client_id: client.client_id,
-                    client_fullname: client.client_fullname,
-                    client_dni: decryptedDni,
-                    client_phone: decryptedPhone,
-                    client_address: decryptedAddress,
-                    client_email: client.client_email,
-                    client_city: client.client_city
-                }))
-                return res.status(200).json({
+            if (result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes." })
+            const decryptedDni = decrypt(result.rows[0].client_dni);
+            const decryptedPhone = decrypt(result.rows[0].client_phone);
+            const decryptedAddress = decrypt(result.rows[0].client_address);
+
+            let clientsData = result.rows.map((client) => ({
+                client_id: client.client_id,
+                client_fullname: client.client_fullname,
+                client_dni: decryptedDni,
+                client_phone: decryptedPhone,
+                client_address: decryptedAddress,
+                client_email: client.client_email,
+                client_city: client.client_city
+            }))
+            return res.status(200).json({
                 clients: clientsData,
             })
         }
@@ -176,17 +178,17 @@ const getClients = async (req,res) => {
         return res.status(500).json({
             msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
         })
-    }finally{
-        if(client) client.release();
+    } finally {
+        if (client) client.release();
     }
 }
 
-async function editClient(req,res) {
+async function editClient(req, res) {
     const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
     const { clientID } = req.query;
     let client;
     const user_id = req.user_id
-    const { "editClient.sql": clientQueries } = queries; 
+    const { "editClient.sql": clientQueries } = queries;
 
     if (!clientQueries) {
         console.error("❌ Archivo de consultas de 'editClient' no encontrado");
@@ -201,38 +203,139 @@ async function editClient(req,res) {
         const encryptedAddress = encrypt(client_address);
 
         const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email, encryptedAddress, client_city, clientID, user_id]);
-        if(result.rowCount === 0) return res.status(400).json({ msg: "No se pudo editar el cliente." })
-        
+        if (result.rowCount === 0) return res.status(400).json({ msg: "No se pudo editar el cliente." })
+
         return res.status(200).json({ msg: "Cliente editado exitosamente." });
     } catch (error) {
         console.log(error)
         return res.status(500).json({
             msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
-        })   
-    }finally{
-        if(client) client.release();
+        })
+    } finally {
+        if (client) client.release();
     }
 }
 
-async function deleteClient(req,res) {
+async function deleteClient(req, res) {
     const { clientID } = req.query;
     const user_id = req.user_id
     let client;
     try {
         client = await pool.connect();
         const result = await client.query("DELETE FROM clients WHERE client_id = $1 AND fk_user_id = $2", [clientID, user_id]);
-        if(result.rowCount === 0) return res.status(400).json({ msg: "No se pudo eliminar el cliente." })
+        if (result.rowCount === 0) return res.status(400).json({ msg: "No se pudo eliminar el cliente." })
         return res.status(200).json({ msg: "Cliente eliminado exitosamente." });
     } catch (error) {
         console.log(error)
         return res.status(500).json({
             msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
-        })   
-    }finally{
-        if(client) client.release();
+        })
+    } finally {
+        if (client) client.release();
+    }
+}
+
+async function getClientData(req, res) {
+    let client
+    const { "getClients.sql": clientQueries } = queries;
+
+    if (!clientQueries) {
+        console.error("❌ Archivo de consultas de 'getClientData' no encontrado");
+        return res.status(500).json({ msg: "Error interno del servidor. Inténtalo más tarde." });
+    }
+
+    try {
+        client = await pool.connect();
+        const { clientID } = req.query
+        const user_id = req.user_id
+        const result = await client.query(clientQueries[3], [user_id, clientID]);
+        if (result.rowCount === 0) return res.status(400).json({ msg: "No se pudo obtener los datos del cliente." })
+        const decryptedDni = decrypt(result.rows[0].client_dni);
+        const decryptedPhone = decrypt(result.rows[0].client_phone);
+        const decryptedAddress = decrypt(result.rows[0].client_address);
+        const clientData = {
+            client_id: result.rows[0].client_id,
+            client_fullname: result.rows[0].client_fullname,
+            client_dni: decryptedDni,
+            client_phone: decryptedPhone,
+            client_address: decryptedAddress,
+            client_email: result.rows[0].client_email,
+            client_city: result.rows[0].client_city
+        }
+        return res.status(200).json({
+            client: clientData
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
+        })
+    } finally {
+        if (client) {
+            client.release();
+        }
+    }
+};
+
+const calculateDebtAmount = (debt) => {
+    let total = 0;
+    for (let i = 0; i < debt.length; i++) {
+        const product = debt[i]
+
+        total += parseFloat(product.product_price) * parseInt(product.product_quantity);
+    }
+    console.log(total)
+    return total;
+}
+
+async function getClientFinancialData(req, res) {
+    const { "getClientFinancialData.sql": clientQueries } = queries;
+
+    if (!clientQueries) {
+        console.error("❌ Archivo de consultas de 'getClientFinancialData' no encontrado");
+        return res.status(500).json({ msg: "Error interno del servidor. Inténtalo más tarde." });
+    }
+
+    const user_id = req.user_id
+    const { client_id } = req.query
+
+    let client;
+
+    try {
+        client = await pool.connect()
+        const result = await client.query(clientQueries[0], [client_id, user_id]);
+        if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" })
+        const clientDebts = result.rows[0].clientdebts.map((debt) => {
+            const debt_exp = dayjs(debt.debt_date).add(1, "month")
+            return {
+                debt_id: debt.debt_id,
+                debt_amount: debt.debt_amount,
+                debt_date: debt.debt_date,
+                debt_products: debt.debt_products,
+                debt_total: calculateDebtAmount(debt.debt_products),
+                debt_exp,
+                debt_status: dayjs().isAfter(debt_exp) ? "Vencido" : "Al dia"
+            }
+        })
+
+        const totalDebtAmount = clientDebts.reduce((acc, debt) => {
+            return acc + debt.debt_total;
+        }, 0);
+
+        return res.status(200).json({
+            clientDebts,
+            totalDebtAmount
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
+        })
+    } finally {
+        if (client) client.release();
     }
 }
 
 module.exports = {
-    createClient, getClients, editClient, deleteClient
+    createClient, getClients, editClient, deleteClient, getClientData, getClientFinancialData
 };

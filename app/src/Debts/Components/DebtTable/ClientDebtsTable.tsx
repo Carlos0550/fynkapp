@@ -1,0 +1,60 @@
+import React, { useEffect } from 'react'
+import "./ClientsDebtTable.css"
+import { ClientsInterface } from '../../../Context/Typescript/ClientsTypes';
+import { useAppContext } from '../../../Context/AppContext';
+import dayjs from "dayjs"
+interface ClientInfoProps {
+    clientData: ClientsInterface;
+}
+function ClientDebtsTable({ clientData }: ClientInfoProps) {
+    const { debtsHook } = useAppContext();
+    const { financialClientData } = debtsHook
+    console.log(financialClientData)
+    return (
+        <div className="client-financial-data">
+            <h3>Información financiera</h3>
+            <p>
+              <strong>Saldo total:</strong>
+              {financialClientData?.totalDebtAmount
+                ? financialClientData.totalDebtAmount.toLocaleString('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS'
+                  })
+                : "0.00"}
+            </p>
+            <div className="client-debt-tables">
+                <h4>Deudas</h4>
+                <table>
+                    <thead>
+                        <th>Creado el</th>
+                        <th>Fecha de compra</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                        <th>Productos</th>
+                        <th>Monto total</th>
+                        
+                    </thead>
+                    <tbody>
+                        {financialClientData.clientDebts.map((debt, index) => (
+                            <tr key={index}>
+                                <td>{dayjs(debt.created_at).format("YYYY-MM-DD")}</td>
+                                <td>{dayjs(debt.debt_date).format("YYYY-MM-DD")}</td>
+                                <td>{dayjs(debt.debt_exp).format("YYYY-MM-DD")}</td>
+                                <td>{debt.debt_status}</td>
+                                <td>{debt.debt_products.map((product, idx) => (
+                                    <ul key={idx} style={{ listStyle: "none" }}>
+                                        <li>{product.product_quantity} {product.product_name} {parseFloat(product.product_price).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</li>
+                                    </ul>
+                                ))}</td>
+                                <td>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="client-money-delivers-table"></div>
+        </div>
+    )
+}
+
+export default ClientDebtsTable

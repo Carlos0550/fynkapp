@@ -3,8 +3,11 @@ import useClients from "./useClients";
 import useUsers from "./useUsers";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
+import useDebts from "./useDebts";
 
-const AppContext = createContext({});
+import {AppContextValueInterface} from "./Typescript/ContextTypes"
+
+const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
 export const useAppContext = () => {
     const context = useContext(AppContext);
@@ -23,19 +26,29 @@ export const AppContextProvider = ({ children }: any) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    function isValidUUID(uuid:string) {
+        const regex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        return regex.test(uuid);
+      }
+
     const authHook = useAuth()
-    const clientsHook = useClients(authHook.verifyToken, authHook.loginData)
+    const { verifyToken, loginData, showSessionExpiredNotification, setCuentaRegresivaIniciada } = authHook
+    const clientsHook = useClients(verifyToken, loginData)
     const usersHook = useUsers()
+    const debtsHook = useDebts(setCuentaRegresivaIniciada, showSessionExpiredNotification)
 
     const contextValues = useMemo(() => ({
-        ...clientsHook,
-        ...usersHook,
-        ...authHook,
-        width
+        clientsHook,
+        usersHook,
+        authHook,
+        debtsHook,
+        width,
+        isValidUUID
     }), [
         clientsHook,
         usersHook,
         authHook,
+        debtsHook,
         width
     ])
 

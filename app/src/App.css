@@ -12,6 +12,10 @@ h1,h2,h3{
   font-family: 'Poppins', sans-serif;
 }
 
+body{
+  overflow-x: hidden;
+}
+
 .icons-icon-picture{
   display: flex;
   align-items: center;

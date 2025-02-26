@@ -3,7 +3,10 @@ import "./UserFormStyles.css"
 import { useAppContext } from '../../Context/AppContext'
 import useRegisterValidation from './utils/useRegisterValidation'
 function RegisterUser() {
-  const { width, setFormSelection } = useAppContext()
+  const { width, usersHook } = useAppContext()
+
+  const { setFormSelection } = usersHook
+
   const { registerFormInputsRef, onFinish, errors } = useRegisterValidation()
   return (
     <div className='login-user-container'>

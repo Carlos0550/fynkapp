@@ -70,7 +70,7 @@ function useClients(verifyToken, loginData) {
 
     }, [])
 
-    const createClient = useCallback(async (clientData) => {
+    const createClient = useCallback(async (clientData:ClientsInterface) => {
         const url = new URL(logic_apis.clients + "/create-client")
 
         try {
@@ -221,6 +221,30 @@ function useClients(verifyToken, loginData) {
         }
     }, [loginData, getClient]);
 
+    const getClientData = useCallback(async (clientID: string) => {
+        const url = new URL(logic_apis.clients + "/get-client-data")
+        url.searchParams.append("clientID", clientID)
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+
+            const responseData = await response.json()
+            if (!response.ok) {
+                throw new Error(responseData.msg || "Error desconocido")
+            }
+            return responseData
+        }catch (error) {
+            console.log(error)
+            return false
+        }
+    },[])
+
     return useMemo(() => ({
         clients,
         createClient,
@@ -228,7 +252,8 @@ function useClients(verifyToken, loginData) {
         editingClient, 
         setEditingClient,
         editClient,
-        deleteClient
+        deleteClient,
+        getClientData
     }), [
         clients,
         createClient,
@@ -236,7 +261,8 @@ function useClients(verifyToken, loginData) {
         editingClient, 
         setEditingClient,
         editClient,
-        deleteClient
+        deleteClient,
+        getClientData
     ])
 }
 

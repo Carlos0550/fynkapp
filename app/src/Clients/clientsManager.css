@@ -181,6 +181,24 @@ h2 {
     cursor: pointer;
 }
 
+.review-client-btn{
+    background-color: #000957;
+    border: none;
+    border-radius: 5px;
+    padding: 3px;
+    color: white;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.review-client-btn:hover{
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
 @media(max-width: 800px) {
     .table-actions {
         flex-direction: column;

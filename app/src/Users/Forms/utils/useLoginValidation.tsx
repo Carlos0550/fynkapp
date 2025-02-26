@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { UserLoginFormValuesInterface } from "../../../Context/Typescript/UsersTypes";
-import { showNotification } from "@mantine/notifications";
+
 import { useAppContext } from "../../../Context/AppContext";
 import { useNavigate } from "react-router-dom";
 function useLoginValidation() {
@@ -17,8 +17,10 @@ function useLoginValidation() {
     const userLoginFormRef = useRef<HTMLFormElement>(null)
 
     const {
-      loginUser
+      usersHook
     } = useAppContext()
+  const { loginUser } = usersHook
+
     const navigate = useNavigate()
 
     const validateFields = () => {
