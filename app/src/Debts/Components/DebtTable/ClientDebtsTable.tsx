@@ -3,6 +3,10 @@ import "./ClientsDebtTable.css"
 import { ClientsInterface } from '../../../Context/Typescript/ClientsTypes';
 import { useAppContext } from '../../../Context/AppContext';
 import dayjs from "dayjs"
+import { Button } from '@mantine/core';
+
+import { FaEdit, FaTrash } from "react-icons/fa";
+
 interface ClientInfoProps {
     clientData: ClientsInterface;
 }
@@ -47,6 +51,10 @@ function ClientDebtsTable({ clientData }: ClientInfoProps) {
                                     </ul>
                                 ))}</td>
                                 <td>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                <td className='client-debt-table-actions'>
+                                    <Button color='blue' ><FaEdit /> Editar</Button>
+                                    <Button color='red'><FaTrash/> Eliminar</Button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
