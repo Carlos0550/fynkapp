@@ -305,7 +305,13 @@ async function getClientFinancialData(req, res) {
         client = await pool.connect()
         const result = await client.query(clientQueries[0], [client_id, user_id]);
         if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" })
-        const clientDebts = result.rows[0].clientdebts.map((debt) => {
+            let clientDebts = result.rows[0].clientdebts
+
+            if(!clientDebts) return res.status(404).json({
+                msg: "No se encontraron deudas para este cliente"
+            })
+
+            clientDebts = result.rows[0].clientdebts.map((debt) => {
             const debt_exp = dayjs(debt.debt_date).add(1, "month")
             return {
                 debt_id: debt.debt_id,
