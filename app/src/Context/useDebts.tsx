@@ -14,41 +14,51 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         clientDelivers: []
     })
 
-    const getFinancialClientData = useCallback(async()=> {
-        const url = new URL(logic_apis.clients + "/get-client-financial-data")
-        url.searchParams.append("client_id", clientID || "")
-
-        try {
-            const response = await fetch(url,{
-                headers: {
-                    "Authorization": `Bearer ${token}`
+    const getFinancialClientData = useCallback(async () => {
+        const attemptFetch = async (retries = 2) => {
+            const url = new URL(logic_apis.clients + "/get-client-financial-data");
+            url.searchParams.append("client_id", clientID || "");
+    
+            if (!clientID && retries > 0) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return attemptFetch(retries - 1);
+            }
+    
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+    
+                if (response.status === 401) {
+                    setCuentaRegresivaIniciada(true);
+                    showSessionExpiredNotification();
+                    return;
                 }
-            })
-
-            if(response.status === 401){
-                setCuentaRegresivaIniciada(true)
-                showSessionExpiredNotification()
-                return;
+    
+                const responseData = await response.json();
+                if (!response.ok) {
+                    throw new Error(responseData.msg || "Error desconocido");
+                }
+                setFinancialClientData(responseData);
+                return true;
+            } catch (error) {
+                console.log(error);
+                showNotification({
+                    title: "Error al obtener los datos financieros",
+                    message: error.message,
+                    color: "red",
+                    autoClose: 5000,
+                    position: "top-right"
+                });
+                return false;
             }
-
-            const responseData = await response.json()
-            if (!response.ok) {
-                throw new Error(responseData.msg || "Error desconocido")
-            }
-            setFinancialClientData(responseData)
-            return true
-        } catch (error) {
-            console.log(error)
-            showNotification({
-                title: "Error al obtener los datos financieros",
-                message: error.message,
-                color: "red",
-                autoClose: 5000,
-                position: "top-right"
-            })
-            return false
-        }
-    },[])
+        };
+    
+        return await attemptFetch();
+    }, [clientID, token]);
+    
 
     const createDebt = useCallback(async (formValues: any, clientName: string):Promise<boolean>=>{
         const newUrl = new URL(logic_apis.clients + "/debts/create-debt")
