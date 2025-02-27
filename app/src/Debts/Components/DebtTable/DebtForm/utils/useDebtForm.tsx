@@ -3,21 +3,26 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../../../../Context/AppContext.tsx"
 import { ClientsInterface } from "../../../../../Context/Typescript/ClientsTypes.ts";
+import { DebtProduct } from "../../../../../Context/Typescript/FinancialClientData.ts";
 interface ProductsInterface {
   product_name: string;
   product_price: number;
   product_quantity: number;
 }
 
-function useDebtForm(clientData: ClientsInterface, closeModal: () => void) {
+function useDebtForm(clientData: ClientsInterface, closeModal: () => void, isEditing?: boolean) {
   const [formValues, setFormValues] = useState({
     debt_products: "",
     debt_date: new Date(),
     client_id: clientData.client_id
   });
 
-  const { debtsHook } = useAppContext()
-  const { createDebt } = debtsHook
+  const { debtsHook, } = useAppContext()
+  const { 
+    createDebt, 
+    editDebtHook:{debtData},
+    editDebts
+   } = debtsHook
 
   const [validationsErrors, setValidationsErrors] = useState<string[]>([]);
   const [products, setProducts] = useState<ProductsInterface[]>([]);
@@ -146,10 +151,12 @@ function useDebtForm(clientData: ClientsInterface, closeModal: () => void) {
 
     formData.append("debt_products", JSON.stringify(products))
     formData.append("debt_date", dayjs(formValues.debt_date).format("YYYY-MM-DD"))
-    formData.append("client_id", formValues.client_id.toString())
+    !isEditing && formData.append("client_id", formValues.client_id.toString())
 
 
-    const result = await createDebt(formData, clientData.client_fullname)
+    const result = isEditing
+    ? await editDebts(formData)
+    : await createDebt(formData, clientData.client_fullname)
 
     if(result){
       closeModal()
@@ -162,6 +169,25 @@ function useDebtForm(clientData: ClientsInterface, closeModal: () => void) {
       setTotal(total);
     }
   },[products])
+
+  const parseProducts = (debtProducts: DebtProduct) => {
+    if(Array.isArray(debtProducts) && debtProducts.length > 0){
+      return debtProducts.map((product) => `${product.product_quantity} ${product.product_name} ${product.product_price}`).join("\n")
+    }
+  } 
+
+  useEffect(()=>{
+    if(isEditing && debtData && Object.keys(debtData).length > 0){
+      console.log(debtData.debt_date)
+      setFormValues({
+        debt_id: debtData.debt_id,
+        debt_products: parseProducts(debtData.debt_products),
+        debt_date: dayjs(debtData.debt_date).toDate()
+      })
+      setProducts(debtData.debt_products)
+
+    }
+  },[isEditing, debtData])
 
   return {
     formValues,

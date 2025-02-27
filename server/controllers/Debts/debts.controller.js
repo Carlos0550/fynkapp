@@ -56,6 +56,40 @@ async function createDebt(req,res) {
     }
 }
 
+async function editDebt(req, res) {
+  const { "editDebt.sql": etqueries } = queries;
+
+  if (!etqueries) {
+    console.log("Archivo SQL editDebt NO ENCONTRADO");
+    return res.status(500).json({
+      msg: "Error interno en el servidor, espere unos segundos e intente nuevamente",
+    });
+  }
+
+  const { debt_date, debt_products } = req.body;
+  const { debtID } = req.query;
+  let client;
+  try {
+    client = await pool.connect();
+    const response = await client.query(etqueries[0], [
+      debt_products,
+      debt_date,
+      debtID,
+    ]);
+    console.log(response)
+    if (response.rowCount === 0) {
+      return res.status(400).json({ msg: "No se pudo editar la deuda" });
+    }
+    return res.status(200).json({ msg: "Deuda editada exitosamente" });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      msg: "Error interno en el servidor, espere unos segundos e intente nuevamente",
+    });
+  }finally{
+    if(client) await client.release()
+  }
+}
 module.exports = {
-    createDebt
+    createDebt, editDebt
 }

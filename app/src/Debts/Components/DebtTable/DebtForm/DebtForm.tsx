@@ -9,10 +9,11 @@ import dayjs from "dayjs";
 
 interface FormProps {
   clientData: ClientsInterface,
-  closeModal: () => void
+  closeModal: () => void,
+  isEditing?: boolean
 }
 
-function DebtForm({ clientData, closeModal }: FormProps) {
+function DebtForm({ clientData, closeModal, isEditing }: FormProps) {
   const {
     formValues,
     handleTextChange,
@@ -22,7 +23,7 @@ function DebtForm({ clientData, closeModal }: FormProps) {
     dateError,
     total,
     onFinish
-  } = useDebtForm(clientData, closeModal);
+  } = useDebtForm(clientData, closeModal, isEditing);
 
   return (
     <form onSubmit={onFinish}>
@@ -62,7 +63,7 @@ function DebtForm({ clientData, closeModal }: FormProps) {
         <p>Total: {parseFloat(total).toLocaleString("es-AR",{style: "currency", currency: "ARS"})}</p>
       </div>
 
-      <Button type="submit" color="black">Guardar</Button>
+      <Button type="submit" color="black">{isEditing ? "Actualizar" : "Guardar"}</Button>
     </form>
   );
 }

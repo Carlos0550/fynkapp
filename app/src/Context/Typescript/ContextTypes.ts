@@ -1,12 +1,15 @@
 import { ClientsInterface } from "./ClientsTypes"
-import { FinancialClientData } from "./FinancialClientData"
+import { EditDebtHookInterface, FinancialClientData } from "./FinancialClientData"
 import { LoginDataInterface, UserLoginFormValuesInterface, UserRegisterFormValuesInterface } from "./UsersTypes"
 
 export interface DebtsHookInterface {
     financialClientData: FinancialClientData
     fetchDebts: () => Promise<boolean>
     getFinancialClientData: () => Promise<boolean>
-    createDebt: (formValues: any, clientName: string) => Promise<boolean>
+    createDebt: (formValues: any, clientName: string) => Promise<boolean>,
+    editDebtHook: EditDebtHookInterface
+    setEditDebtHook: React.Dispatch<React.SetStateAction<EditDebtHookInterface>>,
+    editDebts: (formValues: any) => Promise<boolean>,
 }
 
 export interface ClientsHookInterface {

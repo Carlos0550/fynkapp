@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { logic_apis } from "../apis.js"
 import { showNotification } from '@mantine/notifications'
-import { FinancialClientData } from './Typescript/FinancialClientData.js'
+import { EditDebtHookInterface, FinancialClientData } from './Typescript/FinancialClientData.js'
 import { useLocation } from 'react-router-dom'
+import { get } from 'http'
 function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification:any) {
     const [token] = useState(localStorage.getItem("token") || "")
     const location = useLocation()
@@ -11,7 +12,18 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
 
     const [financialClientData, setFinancialClientData] = useState<FinancialClientData>({
         clientDebts: [],
-        clientDelivers: []
+        clientDelivers: [],
+        totalDebtAmount: 0
+    }) 
+    
+    const [editDebtHook, setEditDebtHook] = useState<EditDebtHookInterface>({
+        editingDebt: false,
+        debtID: "",
+        debtData: {
+            debt_id: "",
+            debt_products: [],
+            debt_date: ""
+        }
     })
 
     const getFinancialClientData = useCallback(async () => {
@@ -105,14 +117,70 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         }
     },[getFinancialClientData])
 
+    const editDebts = useCallback(async(formValues: any) => {
+        const url = new URL(logic_apis.clients + "/debts/edit-debt")
+        console.log(editDebtHook)
+        url.searchParams.append("debtID", editDebtHook.debtID || "")
+        try {
+            const response = await fetch(url,{
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formValues
+            })
+
+            if(response.status === 401){
+                setCuentaRegresivaIniciada(true)
+                showSessionExpiredNotification()
+            }
+
+            const responseData = await response.json()
+            if (!response.ok) {
+                throw new Error(responseData.msg || "Error desconocido")
+            }
+
+            showNotification({
+                title: "Deuda editada",
+                message: "",
+                color: "green",
+                autoClose: 2000,
+                position: "top-right"
+            })
+
+            getFinancialClientData()
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error al editar la deuda",
+                message: error.message,
+                color: "red",
+                autoClose: 5000,
+                position: "top-right",
+                
+            })
+
+            return false
+        }
+    },[getFinancialClientData, editDebtHook])
+
+    useEffect(()=>{
+        console.log(editDebtHook)
+    },[editDebtHook])
+
   return useMemo(() => ({
     createDebt,
     getFinancialClientData,
-    financialClientData
+    financialClientData,
+    editDebtHook, setEditDebtHook,
+    editDebts
   }),[
     createDebt,
     getFinancialClientData,
-    financialClientData
+    financialClientData,
+    editDebtHook, setEditDebtHook,
+    editDebts
   ])
 }
 

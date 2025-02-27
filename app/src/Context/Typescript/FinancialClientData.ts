@@ -6,8 +6,8 @@ export interface DebtProduct {
 
 export interface ClientDebt {
     debt_id: string;
-    client_debt_id: string;
-    fk_user_id: string;
+    client_debt_id: string; //id del cliente
+    fk_user_id: string; // id del usuario administrador
     debt_products: DebtProduct[]; 
     debt_date: Date;
     created_at: Date;
@@ -27,7 +27,19 @@ export interface ClientDeliver {
 
 export interface FinancialClientData {
     clientDebts: ClientDebt[];
-    clientDelivers?: ClientDeliver[]; 
     totalDebtAmount: number;
+    clientDelivers?: ClientDeliver[]; 
     totalDeliverAmount?: number;
+}
+
+type debtDataTypes = {
+    debt_id: string,
+    debt_products: DebtProduct[],
+    debt_date: Date | "",
+}
+
+export interface EditDebtHookInterface{
+    editingDebt: boolean,
+    debtID: string
+    debtData: debtDataTypes
 }

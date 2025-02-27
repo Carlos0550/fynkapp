@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./ClientsDebtTable.css"
 import { ClientsInterface } from '../../../Context/Typescript/ClientsTypes';
 import { useAppContext } from '../../../Context/AppContext';
@@ -6,14 +6,40 @@ import dayjs from "dayjs"
 import { Button } from '@mantine/core';
 
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { ClientDebt } from '../../../Context/Typescript/FinancialClientData';
+import ClientDebtsFormModal from '../ClientDebtsFormModal';
 
 interface ClientInfoProps {
     clientData: ClientsInterface;
 }
 function ClientDebtsTable({ clientData }: ClientInfoProps) {
     const { debtsHook } = useAppContext();
-    const { financialClientData } = debtsHook
-    console.log(financialClientData)
+    const { financialClientData, setEditDebtHook, editDebtHook } = debtsHook
+
+    const handleEditDebt = (debt: ClientDebt) => {
+        console.log(debt)
+        setEditDebtHook({
+            editingDebt: true,
+            debtID: debt.debt_id,
+            debtData: {
+                debt_id: debt.debt_id,
+                debt_products: debt.debt_products,
+                debt_date: debt.debt_date,
+            }
+        })
+    }
+
+    const handleCloseModal = () => {
+        setEditDebtHook({
+            editingDebt: false,
+            debtID: "",
+            debtData: {
+                debt_id: "",
+                debt_products: [],
+                debt_date: "",
+            }
+        })
+    }
     return (
         <div className="client-financial-data">
             <h3>Información financiera</h3>
@@ -52,7 +78,7 @@ function ClientDebtsTable({ clientData }: ClientInfoProps) {
                                 ))}</td>
                                 <td>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 <td className='client-debt-table-actions'>
-                                    <Button color='blue' ><FaEdit /> Editar</Button>
+                                    <Button color='blue' onClick={()=> handleEditDebt(debt)}><FaEdit /> Editar</Button>
                                     <Button color='red'><FaTrash/> Eliminar</Button>
                                 </td>
                             </tr>
@@ -61,6 +87,7 @@ function ClientDebtsTable({ clientData }: ClientInfoProps) {
                 </table>
             </div>
             <div className="client-money-delivers-table"></div>
+            {editDebtHook.editingDebt && <ClientDebtsFormModal clientData={clientData} closeModal={handleCloseModal} isEditing={true}/>}
         </div>
     )
 }
