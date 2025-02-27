@@ -42,7 +42,22 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
                         "Authorization": `Bearer ${token}`
                     }
                 });
-    
+                
+                if(response.status === 404){
+                    showNotification({
+                        title: "El cliente no tiene deudas.",
+                        message: "No se encontraron deudas relacionadas a este cliente.",
+                        color: "yellow",
+                        autoClose: 3000,
+                        position: "top-right"
+                    })
+                    return setFinancialClientData({
+                        clientDebts: [],
+                        clientDelivers: [],
+                        totalDebtAmount: 0,
+                        totalDeliverAmount: 0
+                    })
+                }
                 if (response.status === 401) {
                     setCuentaRegresivaIniciada(true);
                     showSessionExpiredNotification();
@@ -165,22 +180,62 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         }
     },[getFinancialClientData, editDebtHook])
 
-    useEffect(()=>{
-        console.log(editDebtHook)
-    },[editDebtHook])
+    const deleteDebt = useCallback(async(debtID: string) => {
+        const url = new URL(logic_apis.clients + "/debts/delete-debt")
+        url.searchParams.append("debtID", debtID || "")
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+
+            if(response.status === 401){
+                setCuentaRegresivaIniciada(true)
+                showSessionExpiredNotification()
+            }
+
+            const responseData = await response.json()
+            if (!response.ok) {
+                throw new Error(responseData.msg || "Error desconocido")
+            }
+
+            showNotification({
+                title: "Deuda eliminada",
+                message: "",
+                color: "green",
+                autoClose: 2000,
+                position: "top-right"
+            })
+
+            getFinancialClientData()
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error al eliminar la deuda",
+                message: error.message,
+                color: "red",
+                autoClose: 5000,
+                position: "top-right"
+            })
+            return false
+        }
+    },[getFinancialClientData])
 
   return useMemo(() => ({
     createDebt,
     getFinancialClientData,
     financialClientData,
     editDebtHook, setEditDebtHook,
-    editDebts
+    editDebts, deleteDebt
   }),[
     createDebt,
     getFinancialClientData,
     financialClientData,
     editDebtHook, setEditDebtHook,
-    editDebts
+    editDebts, deleteDebt
   ])
 }
 

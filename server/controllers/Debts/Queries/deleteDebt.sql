@@ -1,0 +1,1 @@
+DELETE FROM debts WHERE debt_id = $1;

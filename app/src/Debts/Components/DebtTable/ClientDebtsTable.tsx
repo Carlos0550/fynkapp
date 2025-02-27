@@ -3,7 +3,7 @@ import "./ClientsDebtTable.css"
 import { ClientsInterface } from '../../../Context/Typescript/ClientsTypes';
 import { useAppContext } from '../../../Context/AppContext';
 import dayjs from "dayjs"
-import { Button } from '@mantine/core';
+import { Button, Divider, Popover, Space } from '@mantine/core';
 
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { ClientDebt } from '../../../Context/Typescript/FinancialClientData';
@@ -14,7 +14,7 @@ interface ClientInfoProps {
 }
 function ClientDebtsTable({ clientData }: ClientInfoProps) {
     const { debtsHook } = useAppContext();
-    const { financialClientData, setEditDebtHook, editDebtHook } = debtsHook
+    const { financialClientData, setEditDebtHook, editDebtHook, deleteDebt } = debtsHook
 
     const handleEditDebt = (debt: ClientDebt) => {
         console.log(debt)
@@ -79,7 +79,19 @@ function ClientDebtsTable({ clientData }: ClientInfoProps) {
                                 <td>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 <td className='client-debt-table-actions'>
                                     <Button color='blue' onClick={()=> handleEditDebt(debt)}><FaEdit /> Editar</Button>
-                                    <Button color='red'><FaTrash/> Eliminar</Button>
+                                    <Popover shadow='md'>
+                                        <Popover.Target>
+                                            <Button color='red'><FaTrash/> Eliminar</Button>
+                                        </Popover.Target>
+                                        <Popover.Dropdown>
+                                            <p><strong>Está seguro de querer eliminar esta deuda?</strong></p>
+                                            
+                                            <p>Esta acción no se puede deshacer</p>
+                                            <Button color='red' 
+                                                onClick={() => deleteDebt(debt.debt_id)}
+                                            ><FaTrash/> Eliminar</Button>
+                                        </Popover.Dropdown>
+                                    </Popover>
                                 </td>
                             </tr>
                         ))}

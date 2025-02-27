@@ -158,5 +158,17 @@ clientsRouter.put("/debts/edit-debt", verifyToken, upload.none(), (req, res, nex
     next();
 }, debtsController.editDebt)
 
+clientsRouter.delete("/debts/delete-debt", verifyToken, (req, res, next) => {
+    const { debtID } = req.query
+    const user_id = req.user_id
+    if (!user_id) {
+        return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
+    }
+    if (!debtID) {
+        return res.status(400).json({ msg: "El ID de la deuda no fue proporcionado." })
+    }
+    next()
+}, debtsController.deleteDebt)
+
 
 module.exports = clientsRouter

@@ -10,6 +10,7 @@ export interface DebtsHookInterface {
     editDebtHook: EditDebtHookInterface
     setEditDebtHook: React.Dispatch<React.SetStateAction<EditDebtHookInterface>>,
     editDebts: (formValues: any) => Promise<boolean>,
+    deleteDebt: (debtID: string) => Promise<boolean>
 }
 
 export interface ClientsHookInterface {

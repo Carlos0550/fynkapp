@@ -90,6 +90,34 @@ async function editDebt(req, res) {
     if(client) await client.release()
   }
 }
+
+async function deleteDebt(req,res) {
+    const { debtID } = req.query
+    const { "deleteDebt.sql": dtqueries } = queries
+
+    if(!dtqueries){
+        console.log("Arhciov SQL deleteDebt NO ENCONTRADO")
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        })
+    }
+
+    let client;
+
+    try {
+        client = await pool.connect()
+        const response = await client.query(dtqueries[0],[debtID])
+        if(response.rowCount === 0) return res.status(400).json({ msg: "No se pudo eliminar la deuda" })
+        return res.status(200).json({ msg: "Deuda eliminada exitosamente" })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        })
+    }finally{
+        if(client) await client.release()
+    }
+}
 module.exports = {
-    createDebt, editDebt
+    createDebt, editDebt, deleteDebt
 }
