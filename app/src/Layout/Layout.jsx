@@ -11,7 +11,10 @@ import { useAppContext } from '../Context/AppContext';
 import { Button, Popover } from '@mantine/core';
 const Layout = ({ content }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const { width, loginData, handleLogout } = useAppContext()
+    const { width, authHook } = useAppContext()
+
+    const { loginData, handleLogout } = authHook
+
     const navigate = useNavigate()
 
     useEffect(() => {
