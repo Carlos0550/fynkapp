@@ -25,7 +25,7 @@ const ClientsManager = () => {
 
         const delayDebounce = setTimeout(() => {
             getClient(searchQuery);
-        }, 1000);
+        }, 500);
 
         return () => clearTimeout(delayDebounce);
     }, [searchQuery, getClient]);
