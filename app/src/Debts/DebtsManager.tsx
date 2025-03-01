@@ -5,10 +5,11 @@ import { useAppContext } from '../Context/AppContext';
 import { ClientsInterface } from '../Context/Typescript/ClientsTypes';
 import { showNotification } from '@mantine/notifications';
 import ClientInfo from './Components/ClientInfo/ClientInfo';
-import ClientDebtsTable from './Components/DebtTable/ClientDebtsTable';
+
 import { MdOutlineAccountBalanceWallet, MdPayments } from 'react-icons/md';
 import { FaTrash } from 'react-icons/fa';
 import ClientDebtsFormModal from './Components/ClientDebtsFormModal';
+import FinancialDataTableManager from './Components/FinancialDataTableManager/FinancialDataTableManager';
 
 function DebtsManager() {
   const { clientID } = useParams();
@@ -24,9 +25,9 @@ function DebtsManager() {
   const { isValidUUID, clientsHook, debtsHook } = useAppContext()
   const { getClientData } = clientsHook
   const { getFinancialClientData } = debtsHook
-  const [switchMode, setSwitchMode] = useState(false)
+
+  const [switchMode, setSwitchMode] = useState<"debts" | "payments">("debts")
   
-  const switchRef = useRef<HTMLInputElement>(null)
 
   const [showFormModal, setShowFormModal] = useState(false)
 
@@ -46,24 +47,6 @@ function DebtsManager() {
   }, [clientID])
 
 
-  useEffect(() => {
-    if (switchRef.current) {
-      document.addEventListener("change", () => {
-        if (switchRef.current) {
-          setSwitchMode(switchRef.current.checked)
-        }
-      })
-
-      return () => {
-        document.removeEventListener("change", () => {
-          if (switchRef.current) {
-            setSwitchMode(switchRef.current.checked)
-          }
-        })
-      }
-    }
-  }, [switchRef])
-
   return (
     <div className='debts-manager-container'>
       <ClientInfo clientData={clientData} />
@@ -77,16 +60,15 @@ function DebtsManager() {
       <div className="switch-container">
         <label className="switch-label">Ver:</label>
         <label className="switch">
-          <input type="checkbox" id="switchMode" ref={switchRef} />
+          <input type="checkbox" id="switchMode" 
+            onChange={(e) => setSwitchMode(e.target.checked ? "payments" : "debts")}
+          />
           <span className="slider"></span>
         </label>
         <label className="switch-label" id="switchLabel">{switchMode ? "Pagos" : "Deudas"}</label>
       </div>
 
-      {switchMode
-        ? (<p>Tabla aún en desarrollo</p>)
-        : <ClientDebtsTable clientData={clientData} />
-      }
+      <FinancialDataTableManager clientData={clientData} tableType={switchMode}/>
 
       {showFormModal && <ClientDebtsFormModal clientData={clientData} closeModal={() => setShowFormModal(false)}/>}
     </div>
