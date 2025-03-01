@@ -33,13 +33,26 @@ function useClients(verifyToken, loginData) {
             const responseData = await response.json()
 
             if (response.status === 401) {
-                return showNotification({
+                showNotification({
                     title: "Sesión no válida",
                     message: "Tu sesión acaba de expirar. Por favor, inicia sesión nuevamente.",
                     color: "red",
                     autoClose: 4000,
                     position: "top-right"
                 })
+                return false
+            }
+
+            if(response.status === 404){
+                setClients([])
+                 showNotification({
+                    title: "No se encontraron clientes.",
+                    message: "",
+                    color: "yellow",
+                    autoClose: 3000,
+                    position: "top-right"
+                })
+                return false
             }
 
             if (!response.ok) {
