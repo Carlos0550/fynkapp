@@ -139,18 +139,18 @@ const getClients = async (req, res) => {
                 const decryptedPhone = decrypt(result.rows[0].client_phone);
                 const decryptedAddress = decrypt(result.rows[0].client_address);
 
-                const clientData = {
-                    client_id: result.rows[0].client_id,
-                    client_fullname: result.rows[0].client_fullname,
+                const clientData = result.rows.map((client) => ({
+                    client_id: client.client_id,
+                    client_fullname: client.client_fullname,
                     client_dni: decryptedDni,
                     client_phone: decryptedPhone,
                     client_address: decryptedAddress,
-                    client_email: result.rows[0].client_email,
-                    client_city: result.rows[0].client_city
-                }
+                    client_email: client.client_email,
+                    client_city: client.client_city
+                }))
 
                 return res.status(200).json({
-                    clients: [clientData]
+                    clients: clientData
                 })
             }
         } else {
