@@ -4,13 +4,14 @@ import { ClientsInterface } from '../../Context/Typescript/ClientsTypes.ts'
 import { useAppContext } from "../../Context/AppContext.tsx"
 
 import { RxCross1 } from "react-icons/rx";
-import DebtForm from './DebtTable/DebtForm/DebtForm.tsx';
+import DebtForm from "./FinancialDataTableManager/DebtForm/DebtForm.tsx"
 
 interface ModalProps {
     clientData: ClientsInterface
     closeModal: () => void
     isEditing?: boolean
 }
+
 function ClientDebtsFormModal({ clientData, closeModal, isEditing }: ModalProps) {
     const { width } = useAppContext()
     const [isMobile] = useState(width < 768)
