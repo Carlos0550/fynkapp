@@ -284,7 +284,6 @@ const calculateDebtAmount = (debt) => {
 
         total += parseFloat(product.product_price) * parseInt(product.product_quantity);
     }
-    console.log(total)
     return total;
 }
 
@@ -306,21 +305,28 @@ async function getClientFinancialData(req, res) {
         const result = await client.query(clientQueries[0], [client_id, user_id]);
         if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" })
             let clientDebts = result.rows[0].clientdebts
+            let clientDelivers = result.rows[0].clientdelivers
 
             if(!clientDebts) return res.status(404).json({
                 msg: "No se encontraron deudas para este cliente"
             })
+            
+            let totalDelivers = 0
+            if(clientDelivers && clientDelivers.length > 0){
+                totalDelivers = clientDelivers.reduce((acc, deliver) => {
+                    return acc + parseFloat(deliver.deliver_amount);
+                },0)
+            }
 
             clientDebts = result.rows[0].clientdebts.map((debt) => {
-            const debt_exp = dayjs(debt.debt_date).add(1, "month")
             return {
                 debt_id: debt.debt_id,
                 debt_amount: debt.debt_amount,
                 debt_date: debt.debt_date,
                 debt_products: debt.debt_products,
-                debt_total: calculateDebtAmount(debt.debt_products),
-                debt_exp,
-                debt_status: dayjs().isAfter(debt_exp) ? "Vencido" : "Al dia"
+                debt_total: calculateDebtAmount(debt.debt_products) - totalDelivers,
+                debt_exp: debt.exp_date,
+                debt_status: debt.debt_status === "active" ? "Al día" : "Vencido"
             }
         })
 
@@ -330,7 +336,8 @@ async function getClientFinancialData(req, res) {
 
         return res.status(200).json({
             clientDebts,
-            totalDebtAmount
+            totalDebtAmount,
+            clientDelivers
         })
     } catch (error) {
         console.log(error)
