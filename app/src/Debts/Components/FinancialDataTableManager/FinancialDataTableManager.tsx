@@ -18,10 +18,18 @@ import "./FinancialDataTableManager.css"
 
 function FinancialDataTableManager({ tableType, clientData }: FinancialDataTableManagerProps) {
     const { debtsHook } = useAppContext();
-    const { financialClientData, setEditDebtHook, editDebtHook, deleteDebt } = debtsHook
+    const { 
+        financialClientData:{
+            clientDebts,
+            clientDelivers,
+            totalDebtAmount
+        }, 
+        setEditDebtHook, 
+        editDebtHook, 
+        deleteDebt
+     } = debtsHook
 
     const handleEditDebt = (debt: ClientDebt) => {
-        console.log(debt)
         setEditDebtHook({
             editingDebt: true,
             debtID: debt.debt_id,
@@ -50,8 +58,8 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                 <h3>Información financiera</h3>
                 <p>
                     <strong>Saldo total:</strong>
-                    {financialClientData?.totalDebtAmount
-                        ? financialClientData.totalDebtAmount.toLocaleString('es-AR', {
+                    {totalDebtAmount
+                        ? totalDebtAmount.toLocaleString('es-AR', {
                             style: 'currency',
                             currency: 'ARS'
                         })
@@ -84,9 +92,8 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
 
                         </thead>
                         <tbody>
-                            {tableType === "debts" && financialClientData.clientDebts.map((debt, index) => (
+                            {tableType === "debts" && clientDebts.map((debt, index) => (
                                 <tr key={index}>
-                                    <td>{dayjs(debt.created_at).format("YYYY-MM-DD")}</td>
                                     <td>{dayjs(debt.debt_date).format("YYYY-MM-DD")}</td>
                                     <td>{dayjs(debt.debt_exp).format("YYYY-MM-DD")}</td>
                                     <td>{debt.debt_status}</td>
@@ -112,6 +119,12 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                                             </Popover.Dropdown>
                                         </Popover>
                                     </td>
+                                </tr>
+                            ))}
+                            {tableType === "payments" && clientDelivers && clientDelivers.length > 0 && clientDelivers.map((payment, index) => (
+                                <tr key={index}>
+                                    <td>{dayjs(payment.deliver_date).format("YYYY-MM-DD")}</td>
+                                    <td>{payment.deliver_amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 </tr>
                             ))}
                         </tbody>

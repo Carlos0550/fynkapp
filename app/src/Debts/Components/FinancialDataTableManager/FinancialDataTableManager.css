@@ -7,6 +7,8 @@
     padding: .5rem;
     width: 100%;
     height: auto;
+    min-height: 50vh;
+
 }
 
 .client-debt-tables{
