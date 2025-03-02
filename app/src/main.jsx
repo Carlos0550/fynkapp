@@ -8,14 +8,20 @@ import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css';
 import { Notifications } from '@mantine/notifications'
 import '@mantine/notifications/styles.css';
+import "@mantine/dates/styles.css";
+import { DatesProvider } from '@mantine/dates'
+
+import "dayjs/locale/es"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AppContextProvider>
-        <MantineProvider>
+        <MantineProvider >
           <Notifications/>
-            <App />
+            <DatesProvider settings={{locale: 'es'}}>
+              <App />
+            </DatesProvider>
         </MantineProvider>
       </AppContextProvider>
     </BrowserRouter>
