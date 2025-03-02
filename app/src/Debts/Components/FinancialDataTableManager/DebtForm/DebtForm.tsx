@@ -4,8 +4,6 @@ import useDebtForm from "./utils/useDebtForm";
 import { ClientsInterface } from "../../../../Context/Typescript/ClientsTypes";
 import { Button, Textarea } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import "@mantine/dates/styles.css";
-import dayjs from "dayjs";
 
 interface FormProps {
   clientData: ClientsInterface,
@@ -56,6 +54,7 @@ function DebtForm({ clientData, closeModal, isEditing }: FormProps) {
         withAsterisk
         valueFormat="DD/MM/YYYY"
         error={!!dateError} 
+        locale="es"
       />
       {dateError && <div className="error-message">{dateError}</div>}
       
