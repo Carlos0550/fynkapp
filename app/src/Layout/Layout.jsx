@@ -13,7 +13,7 @@ const Layout = ({ content }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const { width, authHook } = useAppContext()
 
-    const { loginData, handleLogout } = authHook
+    const { loginData, handleCloseSession } = authHook
 
     const navigate = useNavigate()
 
@@ -81,7 +81,7 @@ const Layout = ({ content }) => {
                             borderRadius: ".5rem",
                             backgroundColor: "#e3e3e3",
                         }}>
-                            <Button color='red' onClick={()=> handleLogout()}>Cerrar sesión</Button>
+                            <Button color='red' onClick={()=> handleCloseSession()}>Cerrar sesión</Button>
                         </Popover.Dropdown>
                     </Popover>
                 </div>
