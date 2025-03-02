@@ -20,6 +20,7 @@ function useAuth() {
         notificationId.current = null;
         setCuentaRegresivaIniciada(false);
         navigate("/auth-user");
+        setLoginData(null);
     }, [navigate, notificationId]);
 
     const alreadyShownWelcomeNotif = useRef(false);
@@ -161,7 +162,8 @@ function useAuth() {
             loginData,
             verifyToken,
             showSessionExpiredNotification,
-            setCuentaRegresivaIniciada
+            setCuentaRegresivaIniciada,
+            handleCloseSession
         }),
         [loginData, verifyToken]
     );
