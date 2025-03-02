@@ -10,6 +10,7 @@ import { MdOutlineAccountBalanceWallet, MdPayments } from 'react-icons/md';
 import { FaTrash } from 'react-icons/fa';
 import ClientDebtsFormModal from './Components/ClientDebtsFormModal';
 import FinancialDataTableManager from './Components/FinancialDataTableManager/FinancialDataTableManager';
+import ClientDeliversFormModal from './Components/ClientDeliversFormModal';
 
 function DebtsManager() {
   const { clientID } = useParams();
@@ -30,6 +31,7 @@ function DebtsManager() {
   
 
   const [showFormModal, setShowFormModal] = useState(false)
+  const [showDeliversFormModal, setShowDeliversFormModal] = useState(false)
 
   const handleGetClientData = async () => {
     if (!isValidUUID(clientID)) return showNotification({ title: "Error", message: "El ID del cliente no es válido", color: "red", position: "top-right", autoClose: false })
@@ -53,7 +55,7 @@ function DebtsManager() {
 
       <div className="client-data-actions">
         <button onClick={() => setShowFormModal(true)}><MdOutlineAccountBalanceWallet /> Agregar deuda</button>
-        <button><MdPayments /> Registrar pago</button>
+        <button onClick={() => setShowDeliversFormModal(true)}><MdPayments /> Registrar pago</button>
         <button><FaTrash /> Vaciar cuenta</button>
       </div>
 
@@ -71,6 +73,7 @@ function DebtsManager() {
       <FinancialDataTableManager clientData={clientData} tableType={switchMode}/>
 
       {showFormModal && <ClientDebtsFormModal clientData={clientData} closeModal={() => setShowFormModal(false)}/>}
+      {showDeliversFormModal && <ClientDeliversFormModal clientData={clientData} closeModal={() => setShowDeliversFormModal(false)}/>}
     </div>
   )
 }
