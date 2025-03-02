@@ -1,4 +1,5 @@
 import { ClientsInterface } from "./ClientsTypes"
+import { DeliverDataInterface } from "./DeliversTypes"
 import { EditDebtHookInterface, FinancialClientData } from "./FinancialClientData"
 import { LoginDataInterface, UserLoginFormValuesInterface, UserRegisterFormValuesInterface } from "./UsersTypes"
 
@@ -43,13 +44,19 @@ export interface AuthHookInterface{
     verifyToken: () => Promise<void>,
     showSessionExpiredNotification: () => void,
     setCuentaRegresivaIniciada: React.Dispatch<React.SetStateAction<boolean>>
+    handleCloseSession: () => void
+}
+
+export interface DeliversHookInterface {
+    createDeliver: (deliverData: DeliverDataInterface) => Promise<boolean>
 }
 
 export interface AppContextValueInterface {
-    width: number;
-    isValidUUID: (uuid: string) => boolean;
-    authHook: AuthHookInterface;
-    clientsHook: ClientsHookInterface;
-    usersHook: UsersHookInterface;
-    debtsHook: DebtsHookInterface;
+    width: number
+    isValidUUID: (uuid: string) => boolean
+    authHook: AuthHookInterface
+    clientsHook: ClientsHookInterface
+    usersHook: UsersHookInterface
+    debtsHook: DebtsHookInterface
+    deliversHook: DeliversHookInterface
 }
