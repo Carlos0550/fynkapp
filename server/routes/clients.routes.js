@@ -214,4 +214,48 @@ clientsRouter.post("/delivers/create-deliver",verifyToken, (req, res, next) => {
     next()
 }, deliversController.createDeliver)
 
+clientsRouter.put("/delivers/edit-deliver",verifyToken, (req, res, next) => {
+    const { 
+        deliver_date, 
+        deliver_amount, 
+        deliver_id,
+    } = req.body
+
+    const user_id = req.user_id
+
+    if(!user_id){
+        return res.status(401).json({msg: "No autorizado, espere unos segundos y vuelva a intentarlo"})
+    }
+
+    if(!deliver_id){
+        return res.status(400).json({msg: "El servidor no recibio el ID de la entrega. Recargue la sección e intente nuevamente"})
+    }
+
+    if(!deliver_date || !deliver_amount){
+        return res.status(400).json({msg: "Todos los campos son obligatorios"})
+    }
+
+    if(!dayjs(deliver_date).isValid()){
+        return res.status(400).json({msg: "La fecha no tiene un formato valido"})
+    }
+
+    if(isNaN(parseFloat(deliver_amount)) || parseFloat(deliver_amount) <= 0){
+        return res.status(400).json({msg: "El monto de entrega debe ser un numero valido"})
+    }
+
+    next()
+}, deliversController.editDeliver)
+
+clientsRouter.delete("/delivers/delete-deliver",verifyToken, (req, res, next) => {
+    const { deliver_id } = req.query
+    const user_id = req.user_id
+    if (!user_id) {
+        return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
+    }
+    if (!deliver_id) {
+        return res.status(400).json({ msg: "El ID de la entrega no fue proporcionado." })
+    }
+    next()
+}, deliversController.deleteDeliver)
+
 module.exports = clientsRouter

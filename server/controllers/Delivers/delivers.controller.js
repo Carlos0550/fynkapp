@@ -66,6 +66,58 @@ async function createDeliver(req,res) {
     }
 }
 
+async function editDeliver(req,res) {
+    const { "editDeliver.sql": dsqueries } = queries
+
+    if(!dsqueries){
+        console.log("Arhciov SQL editDeliver NO ENCONTRADO")
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        })
+    }
+
+    let client;
+    const { deliver_amount, deliver_date, deliver_id } = req.body
+    try {
+        client = await pool.connect()
+        const response = await client.query(dsqueries[0],[
+            Number(deliver_amount),
+            dayjs(deliver_date).format("YYYY-MM-DD"),
+            deliver_id
+        ])
+        if(response.rowCount === 0) return res.status(400).json({ msg: "No se pudo editar la entrega" })
+        return res.status(200).json({ msg: "Entrega editada exitosamente" })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        })
+    }finally{
+        if(client) await client.release()
+    }
+}
+
+async function deleteDeliver(req,res) {
+    const { deliver_id } = req.query
+    let client;
+    try {
+        client = await pool.connect()
+        const response = await client.query(
+            "DELETE FROM delivers WHERE deliver_id = $1",
+            [deliver_id]
+        )
+        if(response.rowCount === 0) return res.status(400).json({ msg: "No se pudo eliminar la entrega" })
+        return res.status(200).json({ msg: "Entrega eliminada exitosamente" })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        })
+    }finally{
+        if(client) await client.release()
+    }
+}
+
 module.exports = {
-    createDeliver
+    createDeliver, editDeliver, deleteDeliver
 }

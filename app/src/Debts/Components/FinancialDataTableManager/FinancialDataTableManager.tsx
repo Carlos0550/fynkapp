@@ -15,9 +15,10 @@ import { ClientDebt } from '../../../Context/Typescript/FinancialClientData';
 import ClientDebtsFormModal from '../ClientDebtsFormModal';
 
 import "./FinancialDataTableManager.css"
+import ClientDeliversFormModal from '../ClientDeliversFormModal';
 
 function FinancialDataTableManager({ tableType, clientData }: FinancialDataTableManagerProps) {
-    const { debtsHook } = useAppContext();
+    const { debtsHook, deliversHook } = useAppContext();
     const { 
         financialClientData:{
             clientDebts,
@@ -26,8 +27,14 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
         }, 
         setEditDebtHook, 
         editDebtHook, 
-        deleteDebt
+        deleteDebt,
      } = debtsHook
+
+    const {
+        setEditDeliverHook,
+        editDeliverHook,
+        deleteDeliver
+    } = deliversHook
 
     const handleEditDebt = (debt: ClientDebt) => {
         setEditDebtHook({
@@ -52,6 +59,20 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
             }
         })
     }
+
+    const handleCloseDeliverModal = () =>{
+        setEditDeliverHook({
+            isEditing: false,
+            deliverID: "",
+            deliverData: {
+                deliver_id: "",
+                deliver_date: new Date(),
+                deliver_amount: "",
+                deliver_client_id: ""
+            }
+        })
+    }
+
     return (
         <React.Fragment>
             <div className="client-financial-data">
@@ -125,12 +146,39 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                                 <tr key={index}>
                                     <td>{dayjs(payment.deliver_date).format("YYYY-MM-DD")}</td>
                                     <td>{payment.deliver_amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                    <td className='client-debt-table-actions'>
+                                        <Button 
+                                            onClick={() => 
+                                                setEditDeliverHook({
+                                                    isEditing: true,
+                                                    deliverID: payment.deliver_id || "",
+                                                    deliverData: payment
+                                                })
+                                            }
+                                        ><FaEdit /> Editar</Button>
+                                        <Popover>
+                                            <Popover.Target>
+                                                <Button color='red'><FaTrash /> Eliminar</Button>
+                                            </Popover.Target>
+                                            <Popover.Dropdown>
+                                                <p><strong>Está seguro de querer eliminar este pago?</strong></p>
+
+                                                <p>Estaacción no se puede deshacer</p>
+                                                <Button color='red'
+                                                    onClick={() => {
+                                                        deleteDeliver(payment.deliver_id || "")
+                                                    }}
+                                                ><FaTrash /> Eliminar</Button>
+                                            </Popover.Dropdown>
+                                        </Popover>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
                 {editDebtHook.editingDebt && <ClientDebtsFormModal clientData={clientData} closeModal={handleCloseModal} isEditing={true} />}
+                {editDeliverHook.isEditing && <ClientDeliversFormModal clientData={clientData} closeModal={handleCloseDeliverModal} isEditing={true} />}
             </div>
         </React.Fragment>
     )

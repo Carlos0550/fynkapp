@@ -3,7 +3,6 @@ import { ClientsInterface } from '../../Context/Typescript/ClientsTypes'
 import { Modal } from '@mantine/core'
 import { RxCross1 } from 'react-icons/rx'
 import DeliversForm from './FinancialDataTableManager/DeliversForm/DeliversForm'
-import { useAppContext } from '../../Context/AppContext'
 
 interface ModalProps {
     clientData: ClientsInterface
@@ -12,9 +11,7 @@ interface ModalProps {
 }
 
 function ClientDeliversFormModal({clientData, closeModal, isEditing}: ModalProps) {
-  const {
-    
-  } = useAppContext()
+  
   return (
     <Modal
         opened={true}

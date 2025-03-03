@@ -6,22 +6,29 @@ import { useAppContext } from "../../../../../Context/AppContext";
 import { ClientsInterface } from "../../../../../Context/Typescript/ClientsTypes";
 
 function useDeliversForm(
-    closeModal: () => void, 
-    isEditing: boolean, 
+    closeModal: () => void,
+    isEditing: boolean,
     clientData: ClientsInterface
 ) {
     const {
-        deliversHook:{
+        deliversHook: {
             createDeliver
         },
-        debtsHook:{
-            financialClientData:{
+        debtsHook: {
+            financialClientData: {
                 totalDebtAmount
             },
             getFinancialClientData,
+        },
+        deliversHook: {
+            editDeliver,
+            editDeliverHook: {
+                deliverData,
+                deliverID
+            }
         }
     } = useAppContext()
-    
+
     const [formValues, setFormValues] = useState<DeliverDataInterface>({
         deliver_id: "",
         deliver_client_id: clientData && clientData.client_id || "",
@@ -52,7 +59,7 @@ function useDeliversForm(
     const handleDateChange = (date: Date | null) => {
         const newDate = date || formValues.deliver_date;
         const error = validateDate(newDate);
-        if(error) return showNotification({
+        if (error) return showNotification({
             title: "Hay errores en el formulario",
             message: error,
             color: "red",
@@ -90,7 +97,7 @@ function useDeliversForm(
             return false
         }
 
-        if(totalDebtAmount && totalDebtAmount < parseFloat(formValues.deliver_amount)) {
+        if (totalDebtAmount && totalDebtAmount < parseFloat(formValues.deliver_amount)) {
             showNotification({
                 title: "Hay errores en el formulario",
                 message: "El monto de la entrega no puede ser mayor al total de la deuda.",
@@ -100,7 +107,7 @@ function useDeliversForm(
             })
             return false
         }
-        
+
         if (dateError) {
             showNotification({
                 title: "Hay errores en el formulario",
@@ -120,7 +127,9 @@ function useDeliversForm(
         e.preventDefault()
         if (validateForm()) {
             setSaving(true)
-            const result = await createDeliver(formValues)
+            const result = isEditing
+            ? await editDeliver(formValues)
+            : await createDeliver(formValues)
             setSaving(false)
             if (result) {
                 getFinancialClientData()
@@ -132,10 +141,20 @@ function useDeliversForm(
                 })
                 closeModal()
             }
-            
+
         }
     }
 
+    useEffect(()=>{
+        if (isEditing) {
+            setFormValues({
+                deliver_id: deliverID,
+                deliver_client_id: clientData.client_id,
+                deliver_amount: deliverData.deliver_amount,
+                deliver_date: dayjs(deliverData.deliver_date).toDate()
+            })
+        }
+    },[isEditing])
 
     return {
         formValues,

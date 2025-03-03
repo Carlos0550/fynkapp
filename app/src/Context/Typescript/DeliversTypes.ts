@@ -5,3 +5,9 @@ export interface DeliverDataInterface{
     deliver_amount: string,
     deliver_date: Date
 }
+
+export interface EditDeliverHookInterface{
+    deliverID: string,
+    isEditing: boolean
+    deliverData: DeliverDataInterface
+}

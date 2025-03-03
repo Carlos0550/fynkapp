@@ -13,17 +13,17 @@ interface FormProps {
 }
 
 function DeliversForm({ clientData, closeModal, isEditing }: FormProps) {
+
     const { formValues, handleInputChange, handleDateChange, onFinish } = useDeliversForm(
         closeModal, isEditing, clientData
     );
 
-
     const {
         debtsHook: {
             financialClientData: {
-                totalDebtAmount
-            }
-        }
+                totalDebtAmount,
+            },
+        },
     } = useAppContext()
 
 

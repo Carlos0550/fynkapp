@@ -1,5 +1,5 @@
 import { ClientsInterface } from "./ClientsTypes"
-import { DeliverDataInterface } from "./DeliversTypes"
+import { DeliverDataInterface, EditDeliverHookInterface } from "./DeliversTypes"
 import { EditDebtHookInterface, FinancialClientData } from "./FinancialClientData"
 import { LoginDataInterface, UserLoginFormValuesInterface, UserRegisterFormValuesInterface } from "./UsersTypes"
 
@@ -49,6 +49,10 @@ export interface AuthHookInterface{
 
 export interface DeliversHookInterface {
     createDeliver: (deliverData: DeliverDataInterface) => Promise<boolean>
+    editDeliver: (deliverData: DeliverDataInterface) => Promise<boolean>
+    deleteDeliver: (deliverID: string) => Promise<boolean>
+    editDeliverHook: EditDeliverHookInterface
+    setEditDeliverHook: React.Dispatch<React.SetStateAction<EditDeliverHookInterface>>
 }
 
 export interface AppContextValueInterface {

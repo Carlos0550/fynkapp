@@ -33,11 +33,18 @@ export const AppContextProvider = ({ children }: any) => {
       }
 
     const authHook = useAuth()
+
     const { verifyToken, loginData, showSessionExpiredNotification, setCuentaRegresivaIniciada } = authHook
+    
     const clientsHook = useClients(verifyToken, loginData)
+    
     const usersHook = useUsers()
+    
     const debtsHook = useDebts(setCuentaRegresivaIniciada, showSessionExpiredNotification)
-    const deliversHook = useDelivers(setCuentaRegresivaIniciada, showSessionExpiredNotification)
+
+    const { getFinancialClientData } = debtsHook
+    
+    const deliversHook = useDelivers(setCuentaRegresivaIniciada, showSessionExpiredNotification, getFinancialClientData)
 
     const contextValues = useMemo(() => ({
         clientsHook,
