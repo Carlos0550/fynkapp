@@ -3,7 +3,7 @@ const path = require("path");
 const fsP = require("fs").promises;
 require("dotenv").config();
 const crypto = require("crypto");
-const dayjs = require("dayjs")
+
 let queries = {};
 
 (async () => {

@@ -6,7 +6,9 @@ function useClientForm(closeModal, clientData) {
     const clientFormRef = useRef<HTMLFormElement | null>(null);
 
     const { 
-        createClient, editClient
+        clientsHook:{
+            createClient, editClient
+        }
     } = useAppContext()
 
     useEffect(() => {

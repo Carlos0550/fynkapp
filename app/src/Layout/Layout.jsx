@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Layout.css';
 import { Icons } from '../Context/IconsManager';
 import { LuCalendarX2, LuClockAlert, LuSettings } from "react-icons/lu";
 import { GrMoney } from "react-icons/gr";
 import { MdSpaceDashboard, MdGroups2 } from "react-icons/md";
-import { FaEye, FaRegCreditCard } from "react-icons/fa";
+import { FaRegCreditCard } from "react-icons/fa";
 import { IoMdEye, IoMdEyeOff, IoMdPersonAdd } from "react-icons/io";
 import { useAppContext } from '../Context/AppContext';
 import { Button, Popover } from '@mantine/core';
+import FastAddClientModal from '../FastActions/AddClient/FastAddClientModal';
+
+import FastRegisterPaymentModal from '../FastActions/RegisterPayment/FastRegisterPaymentModal';
 const Layout = ({ content }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const { width, authHook } = useAppContext()
+    const [openClientFormModal, setOpenClientFormModal] = useState(false)
+    const [openFastRegisterPaymentModal, setOpenFastRegisterPaymentModal] = useState(false)
 
     const { loginData, handleCloseSession } = authHook
 
@@ -30,13 +35,17 @@ const Layout = ({ content }) => {
 
                 <nav className="sidebar-nav">
                     <h2 className="text">Acciones Rápidas</h2>
-                    <button>
+                    <button
+                        onClick={() => setOpenFastRegisterPaymentModal(true)}
+                    >
                         <span className="icon"><FaRegCreditCard /></span>
                         <span className="text">Registrar pago</span>
                     </button>
-                    <button>
+                    <button
+                        onClick={() => setOpenClientFormModal(true)}
+                    >
                         <span className="icon"><IoMdPersonAdd /></span>
-                        <span className="text" onClick={() => navigate("/clients/new")}>Nuevo cliente</span>
+                        <span className="text">Nuevo cliente</span>
                     </button>
 
                     <hr />
@@ -94,6 +103,8 @@ const Layout = ({ content }) => {
                     </button>
                 )}
                 {content}
+                {openClientFormModal && <FastAddClientModal closeModal={() => setOpenClientFormModal(false)}/>}
+                {openFastRegisterPaymentModal && <FastRegisterPaymentModal closeModal={() => setOpenFastRegisterPaymentModal(false)}/>}
             </main>
         </div>
     );
