@@ -63,7 +63,7 @@ export const AppContextProvider = ({ children }: any) => {
         width
     ])
 
-    const navigate = useNavigate()
+
     return (
         <AppContext.Provider value={
             contextValues
