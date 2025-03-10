@@ -1,5 +1,5 @@
 export const base_api={
-    url: "http://localhost:5000",
+    url: "https://fynkapp-server.vercel.app",
 }
 
 
