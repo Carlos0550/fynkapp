@@ -72,7 +72,7 @@ function useUsers() {
       if (!response.ok) {
         throw new Error(responseData.msg || "Error desconocido")
       }
-      
+      console.log(responseData.token)
       localStorage.setItem("token", responseData.token)
       showNotification({
         title: "Iniciando sesión",

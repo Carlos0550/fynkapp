@@ -44,10 +44,13 @@ function useLoginValidation() {
         return true
     }
 
+    const [loggingIn, setLoggingIn] = useState(false)
     const onFinish = async(e: React.FormEvent) => {
         e.preventDefault()
         if(validateFields()){
+          setLoggingIn(true)
           const result = await loginUser(formValues)
+          setLoggingIn(false)
           console.log(result)
           if(result) navigate("/")
         }
@@ -85,7 +88,8 @@ function useLoginValidation() {
   return {
     onFinish,
     errors,
-    userLoginFormRef
+    userLoginFormRef,
+    loggingIn
   }
 }
 

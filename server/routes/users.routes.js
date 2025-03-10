@@ -4,7 +4,6 @@ const { verifyToken } = require("./Security/JWT.js")
 
 usersRouter.post("/register-user", (req,res,next) => {
     const { user_name, user_last_name, user_email, user_password } = req.body
-    console.log(user_name, user_last_name, user_email, user_password )
     if(!user_name || !user_last_name || !user_email || !user_password){
         return res.status(400).json({msg: "Todos los campos son obligatorios"})
     }

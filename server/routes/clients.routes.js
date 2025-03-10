@@ -39,7 +39,6 @@ clientsRouter.post("/create-client", verifyToken, (req, res, next) => {
 
 clientsRouter.get("/get-clients", verifyToken, (req, res, next) => {
     const user_id = req.user_id
-    console.log(user_id)
     if (!user_id) {
         return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
     }

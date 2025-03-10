@@ -2,12 +2,14 @@ import React from 'react'
 import "./UserFormStyles.css"
 import { useAppContext } from '../../Context/AppContext'
 import useLoginValidation from "./utils/useLoginValidation.tsx"
+import { Loader } from '@mantine/core'
 function LoginUser() {
   const { usersHook } = useAppContext()
   const { setFormSelection } = usersHook
   const { onFinish,
     errors,
-    userLoginFormRef
+    userLoginFormRef,
+    loggingIn
   } = useLoginValidation()
   return (
     <div className='login-user-container'>
@@ -22,8 +24,8 @@ function LoginUser() {
           {errors.user_password && <span>{errors.user_password}</span>}
         </label>
         <div className="login-form-buttons-box">
-          <button type="submit">Iniciar sesión</button>
-          <button type='button' onClick={() => setFormSelection(1)}>Crear cuenta</button>
+          <button type="submit"disabled={loggingIn}>{loggingIn && <Loader size={"xs"} color='white'/>} Iniciar sesión</button>
+          <button type='button' onClick={() => setFormSelection(1)} disabled={loggingIn}>Crear cuenta</button>
         </div>
       </form>
     </div>

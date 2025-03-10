@@ -1,13 +1,17 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
+// const pool = new Pool({
+//     user: "postgres",
+//     host: "localhost",
+//     database: "fynkapp",
+//     password: "35218889",
+//     port: 5432,
+// });
+
 const pool = new Pool({
-    user: "postgres",
-    host: "localhost",
-    database: "fynkapp",
-    password: "35218889",
-    port: 5432,
-});
+    connectionString: process.env.CONNECTION_STRING
+})
 
 async function verifyDbConnection() {
     try {

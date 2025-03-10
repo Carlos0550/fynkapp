@@ -109,12 +109,13 @@ function useRegisterValidation() {
         return true
     }
     
-
+    const [registerInProgress, setRegisterInProgress] = useState(false)
     const onFinish = async(e: React.FormEvent) => {
         e.preventDefault()
         if (validateFields()) {
-            const result = await registerUser(formValues)
-            
+            setRegisterInProgress(true)
+            await registerUser(formValues)
+            setRegisterInProgress(false)
         }
     }
 
@@ -122,7 +123,8 @@ function useRegisterValidation() {
         registerFormInputsRef,
         formValues,
         onFinish,
-        errors
+        errors,
+        registerInProgress
     }
 }
 

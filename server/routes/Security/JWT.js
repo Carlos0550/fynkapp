@@ -1,64 +1,87 @@
-const jwt = require("jsonwebtoken")
-const path = require("path")
-const fsPromises = require("fs").promises
-const fs = require("fs")
+const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs");
+require("dotenv").config();
 
-const privateKeyPath = path.join(__dirname, "private-key.pem")
-const publicKeyPath = path.join(__dirname, "public-key.pem")
+const privateKeyPath = path.join(__dirname, "private-key.pem");
+const publicKeyPath = path.join(__dirname, "public-key.pem");
 
-function verifyKeys() {
-    if (!fs.existsSync(privateKeyPath) || !fs.existsSync(publicKeyPath)) {
-        console.error("❌ ERROR: No se encontraron las claves privadas y públicas.");
-        console.error("🔑 Debes generarlas manualmente antes de iniciar el servidor.");
-        console.log("\n📌 Usa los siguientes comandos para generarlas:");
-        console.log(`openssl ecparam -genkey -name prime256v1 -noout -out "${privateKeyPath}"`);
-        console.log(`openssl ec -in "${privateKeyPath}" -pubout -out "${publicKeyPath}"\n`);
-        process.exit(1); 
+async function getPrivateKey() {
+    try {
+        if (fs.existsSync(privateKeyPath)) {
+            return await fs.promises.readFile(privateKeyPath, "utf-8");
+        } else if (process.env.PRIVATE_KEY) {
+            return process.env.PRIVATE_KEY.replace(/\\n/g, "\n"); // Corrige los saltos de línea
+        } else {
+            throw new Error("No se encontró una clave privada válida.");
+        }
+    } catch (error) {
+        console.error("❌ Error al obtener la clave privada:", error);
+        throw error;
     }
 }
-verifyKeys()
+
+async function getPublicKey() {
+    try {
+        if (fs.existsSync(publicKeyPath)) {
+            return await fs.promises.readFile(publicKeyPath, "utf-8");
+        } else if (process.env.PUBLIC_KEY) {
+            return process.env.PUBLIC_KEY.replace(/\\n/g, "\n"); // Corrige los saltos de línea
+        } else {
+            throw new Error("No se encontró una clave pública válida.");
+        }
+    } catch (error) {
+        console.error("❌ Error al obtener la clave pública:", error);
+        throw error;
+    }
+}
 
 const generateToken = async (payload) => {
     try {
         const now = new Date();
         const expiresAt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-
         const diffMs = expiresAt.getTime() - now.getTime();
-        const diffHours = Math.ceil(diffMs / (1000 * 60 * 60)); 
+        const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
 
-        const privateKey = await fsPromises.readFile(privateKeyPath, "utf-8");
+        const privateKey = await getPrivateKey();
 
-        return jwt.sign(payload, privateKey, {
+        const { user_password, ...user } = payload;
+
+        return jwt.sign(user, privateKey, {
             algorithm: "ES256",
-            expiresIn: `${diffHours}h`,
+            expiresIn: `${diffHours}h`
         });
     } catch (error) {
-        console.error("❌ ERROR al leer la clave privada para firmar el token:", error);
-        throw new Error("No se puede generar el token.");
+        console.error("❌ Error al generar el token:", error);
+        throw new Error("No fue posible generar el token");
     }
 };
 
 const verifyToken = async (req, res, next) => {
-    const token = req.headers["authorization"]?.split(" ")[1]
+    if (!req.headers.authorization) {
+        return res.status(401).json({ msg: "No se detectó el token de usuario, reintente cerrando e iniciando sesión nuevamente." });
+    }
+
+    const token = req.headers.authorization.split(" ")[1];
 
     if (!token) {
-        return res.status(401).json({ msg: "Sesión expirada o no válida." })
+        return res.status(401).json({ msg: "Sesión expirada o no válida." });
     }
 
     try {
-        const publicKey = await fsPromises.readFile(publicKeyPath, "utf-8")
+        const publicKey = await getPublicKey();
+        const decoded = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
 
-        const decoded = jwt.verify(token, publicKey, { algorithms: ["ES256"] })
-        req.user = decoded
-        req.user_id = decoded.user_id
-        next() 
+        req.user = decoded;
+        req.user_id = decoded.user_id;
+        next();
     } catch (error) {
-        console.log("Error al verificar token:", error.message)
-        return res.status(401).json({ msg: "Sesión expirada o no válida." })
+        console.error("❌ Error al verificar token:", error.message);
+        return res.status(401).json({ msg: "Sesión expirada o no válida." });
     }
-}
-
+};
 
 module.exports = {
-    verifyToken, generateToken
-}
+    generateToken,
+    verifyToken,
+};
