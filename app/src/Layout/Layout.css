@@ -5,13 +5,15 @@
 
 .sidebar {
   width: 60px;
+  height: 100%;
   background-color: #f8f9fa;
   border-right: 1px solid #dee2e6;
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: width 0.3s ease;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
   position: relative;
 }
 
