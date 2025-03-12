@@ -7,7 +7,11 @@ import ClientForm from '../ClientForm/ClientForm.jsx'
 import {ClientsInterface} from "../../Context/Typescript/ClientsTypes.ts"
 
 function EditClientModal() {
-    const { width, setEditingClient, clients, editingClient } = useAppContext()
+    const { width, 
+        clientsHook:{
+            setEditingClient, clients, editingClient
+        }
+     } = useAppContext()
     const [fullScreeen] = useState(width < 768)
 
     
@@ -35,9 +39,9 @@ function EditClientModal() {
     }
 
     useEffect(()=>{
-        if(editingClient.isEditing){
+        if(editingClient && editingClient.isEditing){
             const client = clients.find((client) => client.client_id === editingClient.clientID)
-            setClientData(client)
+            setClientData(client || clientData)
         }
     },[clients, editingClient])
   return (
@@ -47,7 +51,6 @@ function EditClientModal() {
         title=<p>Editando datos de <strong>{clientData.client_fullname}</strong></p>
         size="xl"
         centered
-        fullScreen={fullScreeen}
         padding="sm"
         overlayProps={{
             backgroundOpacity: 0.6,

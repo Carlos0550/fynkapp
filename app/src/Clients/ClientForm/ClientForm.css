@@ -9,7 +9,12 @@
     gap: 5px;
     justify-content: space-evenly;
     flex: 1;
+}
 
+@media(max-width:768px){
+    .client-form-labels-group{
+        flex-direction: column;
+    }
 }
 
 .client-form-labels-group label{

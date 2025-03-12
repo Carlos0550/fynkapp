@@ -12,6 +12,7 @@
   align-items: center;
   transition: width 0.3s ease;
   overflow: hidden;
+  position: relative;
 }
 
 .sidebar.open {
@@ -102,7 +103,8 @@
 .main-content {
   flex: 1;
   padding: 1rem;
-  overflow: hidden;
+  
+  overflow-x: hidden;
 }
 
 hr {
@@ -128,4 +130,5 @@ hr {
     border-radius: 1rem;
     border: 1px solid #ccc;
     padding: .2rem;
+    
 }

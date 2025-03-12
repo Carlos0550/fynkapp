@@ -23,6 +23,12 @@ function useAuth() {
         setLoginData(null);
     }, [navigate, notificationId]);
 
+    const closeSessionInstantly = () => {
+        localStorage.removeItem("token");
+        navigate("/auth-user");
+        setLoginData(null);
+    }
+
     const alreadyShownWelcomeNotif = useRef(false);
 
     const showWelcomeNotification = useCallback((userName: string) => {
@@ -102,6 +108,7 @@ function useAuth() {
     const verifyToken = useCallback(async () => {
         const token = localStorage.getItem("token");
         if(!token && pathname === "/auth-user") return;
+        if(!token && pathname !== "/auth-user") return closeSessionInstantly();
         try {
             const newUrl = new URL(`${logic_apis.users}/verify-token`);
             const response = await fetch(newUrl, {
@@ -112,9 +119,13 @@ function useAuth() {
             const data = await response.json();
 
             if (response.status === 401) {
-                showSessionExpiredNotification();
-                setCuentaRegresivaIniciada(true);
-                return;
+                if(loginData && Object.keys(loginData).length > 0){
+                    showSessionExpiredNotification();
+                    setCuentaRegresivaIniciada(true);
+                    return;
+                }else{
+                    return closeSessionInstantly();
+                }
             }
 
             if (!response.ok) {

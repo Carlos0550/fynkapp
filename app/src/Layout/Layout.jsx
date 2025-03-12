@@ -8,7 +8,7 @@ import { MdSpaceDashboard, MdGroups2 } from "react-icons/md";
 import { FaRegCreditCard } from "react-icons/fa";
 import { IoMdEye, IoMdEyeOff, IoMdPersonAdd } from "react-icons/io";
 import { useAppContext } from '../Context/AppContext';
-import { Button, Popover } from '@mantine/core';
+import { Button, Divider, Popover } from '@mantine/core';
 import FastAddClientModal from '../FastActions/AddClient/FastAddClientModal';
 
 import FastRegisterPaymentModal from '../FastActions/RegisterPayment/FastRegisterPaymentModal';
@@ -34,7 +34,23 @@ const Layout = ({ content }) => {
                 </div>
 
                 <nav className="sidebar-nav">
-                    <h2 className="text">Acciones Rápidas</h2>
+                    {sidebarOpen && (
+                        <Divider 
+                            color="gray"
+                            size="sm"
+                            my="md"
+                            mx="xs"
+                            label="Acciones Rápidas"
+                            labelPosition="center"
+                            styles={{
+                                label: {
+                                    color: "#000000",
+                                    fontSize: "18px",
+                                    fontWeight: "600"
+                                }
+                            }}
+                        />
+                    )}
                     <button
                         onClick={() => setOpenFastRegisterPaymentModal(true)}
                     >
@@ -48,7 +64,23 @@ const Layout = ({ content }) => {
                         <span className="text">Nuevo cliente</span>
                     </button>
 
-                    <hr />
+                    {width > 768 && (
+                        <Divider 
+                            color="gray"
+                            size="sm"
+                            my="md"
+                            mx="xs"
+                            label="General"
+                            labelPosition="center"
+                            styles={{
+                                label: {
+                                    color: "#000000",
+                                    fontSize: "18px",
+                                    fontWeight: "600"
+                                }
+                            }}
+                        />
+                    )}
 
                     <Link to="/">
                         <span className="icon"><MdSpaceDashboard /></span>
@@ -56,16 +88,27 @@ const Layout = ({ content }) => {
                     </Link>
                     <Link to="/clients">
                         <span className="icon"><MdGroups2 /></span>
-                        <span className="text" onClick={() => navigate("/clients/new")}>Clientes</span>
-                    </Link>
-                    <Link to="">
-                        <span className="icon"><GrMoney /></span>
-                        <span className="text">Deudas</span>
+                        <span className="text" onClick={() => navigate("/clients/new")}>Clientes/Deudas</span>
                     </Link>
 
-                    <hr />
+                    {width > 768 && (
+                        <Divider 
+                            color="gray"
+                            size="sm"
+                            my="md"
+                            mx="xs"
+                            label="Vencimientos"
+                            labelPosition="center"
+                            styles={{
+                                label: {
+                                    color: "#000000",
+                                    fontSize: "18px",
+                                    fontWeight: "600"
+                                }
+                            }}
+                        />
+                    )}
 
-                    <h2 className="text">Vencimientos</h2>
                     <button className="yellow">
                         <span className="icon"><LuClockAlert /></span>
                         <span className="text">Por vencer este mes</span>
@@ -96,13 +139,22 @@ const Layout = ({ content }) => {
                 </div>
             </aside>
 
-            <main className="main-content">
+            <main className="main-content"
+                
+            >
                 {width < 768 && (
                     <button onClick={() => setSidebarOpen(!sidebarOpen)} className='sidebar-toggle-btn'>
                         {sidebarOpen ? <IoMdEye size={26} /> : <IoMdEyeOff size={26} />}
                     </button>
                 )}
-                {content}
+                <div
+                    style={{
+                        filter: sidebarOpen && width > 768 ? "none" : width < 768 && !sidebarOpen ? "none" : "blur(7px)",
+                        transition: "all 0.1s ease"
+                    }}
+                >
+                    {content}
+                </div>
                 {openClientFormModal && <FastAddClientModal closeModal={() => setOpenClientFormModal(false)}/>}
                 {openFastRegisterPaymentModal && <FastRegisterPaymentModal closeModal={() => setOpenFastRegisterPaymentModal(false)}/>}
             </main>

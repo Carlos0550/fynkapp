@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './clientsManager.css';
 import { useAppContext } from '../Context/AppContext';
-import { FaCity, FaSearch, FaTimes } from 'react-icons/fa';
-import { MdDelete, MdEdit, MdEmail, MdMap, MdPhone } from 'react-icons/md';
-import { HiBanknotes } from 'react-icons/hi2';
+import { FaCity, FaSearch, FaTimes, FaUser } from 'react-icons/fa';
 import { PiIdentificationCardFill } from 'react-icons/pi';
+import { MdDelete, MdEdit, MdEmail, MdMap, MdPhone } from 'react-icons/md';
 import { useDisclosure } from '@mantine/hooks';
 import ClientForm from './ClientForm/ClientFormModal';
 import EditClientModal from './EditClient/EditClientModal';
@@ -15,10 +14,10 @@ import DebtsManager from '../Debts/DebtsManager.tsx';
 const ClientsManager = () => {
     const [searchFocus, setSearchFocus] = useState(true);
     const [opened, { open, close }] = useDisclosure(false);
-    const { clientsHook} = useAppContext();
+    const { clientsHook, width } = useAppContext();
     const { getClient, clients, editingClient, setEditingClient, deleteClient } = clientsHook
     const [searchQuery, setSearchQuery] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     useEffect(() => {
         if (searchQuery.trim() === '') return;
@@ -65,30 +64,42 @@ const ClientsManager = () => {
                                     )}
                                 </div>
                             </div>
+                            <div className="clients-table-container">
                             <table className="clients-table">
                                 <thead>
                                     <tr>
                                         <th>Cliente</th>
-                                        <th>Datos del cliente</th>
+                                        {width > 768 && <th>Contacto</th>}
+                                        {width > 768 && <th>Dirección</th>}
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {clients && clients.length > 0 && clients.map((client) => (
                                         <tr key={client.client_id}>
-                                            <td>{client.client_fullname}</td>
                                             <td>
-                                                <p><MdEmail /> {client.client_email}</p>
-                                                <p><MdPhone /> {client.client_phone}</p>
-                                                {client.client_address && <p><MdMap /> {client.client_address}</p>}
-                                                {client.client_city && <p><FaCity /> {client.client_city}</p>}
+                                                <p><FaUser/> {client.client_fullname}</p>
                                                 {client.client_dni && <p><PiIdentificationCardFill /> {client.client_dni}</p>}
                                             </td>
+                                            {width > 768 && (
+                                                <td>
+                                                    <p><MdEmail /> {client.client_email}</p>
+                                                    <p><MdPhone /> {client.client_phone}</p>
+
+                                                </td>
+                                            )}
+                                            {width > 768 && (
+                                                <td>
+                                                    {client.client_address && <p><MdMap /> {client.client_address}</p>}
+                                                    {client.client_city && <p><FaCity /> {client.client_city}</p>}
+
+                                                </td>
+                                            )}
                                             <td>
                                                 <div className="client-cell-actions">
-                                                    <button className='review-client-btn'
+                                                    {/* <button className='review-client-btn'
                                                         onClick={() => navigate(`customer-credit/${client.client_id}`)}
-                                                    >Revisar cuenta <HiBanknotes /></button>
+                                                    >Revisar cuenta <HiBanknotes /></button> */}
                                                     <button className='edit-client-btn'
                                                         onClick={() => setEditingClient({ isEditing: true, clientID: client.client_id })}
                                                     ><MdEdit size={18} /> Editar</button>
@@ -111,9 +122,10 @@ const ClientsManager = () => {
                                     ))}
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                         {opened && <ClientForm closeModal={close} />}
-                        {editingClient.isEditing && <EditClientModal />}
+                        {editingClient && editingClient.isEditing && <EditClientModal />}
                     </React.Fragment>
                 } />
                 <Route path='customer-credit/:clientID' element={<DebtsManager />} />
