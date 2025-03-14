@@ -1,21 +1,23 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
+const production_environment = {
+    user: "postgres",
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,    
+    password: process.env.DB_PASSWORD,
+    port: 5432,
+}
 
-console.log({
+const development_environment = {
     user: "postgres",
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
+    host: "localhost",
+    database: "fynkapp",
+    password: "35218889",
     port: 5432,
-})
-const pool = new Pool({
-    user: "postgres",
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: 5432,
-});
+}
+    
+const pool = new Pool(production_environment);
 
 // const pool = new Pool({
 //     connectionString: process.env.CONNECTION_STRING,

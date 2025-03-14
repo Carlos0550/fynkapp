@@ -1,4 +1,5 @@
 import { ClientsInterface } from "./ClientsTypes"
+import { ClientsForDebtsInterface } from "./DebtsTypes"
 import { DeliverDataInterface, EditDeliverHookInterface } from "./DeliversTypes"
 import { EditDebtHookInterface, FinancialClientData } from "./FinancialClientData"
 import { LoginDataInterface, UserLoginFormValuesInterface, UserRegisterFormValuesInterface } from "./UsersTypes"
@@ -11,7 +12,10 @@ export interface DebtsHookInterface {
     editDebtHook: EditDebtHookInterface
     setEditDebtHook: React.Dispatch<React.SetStateAction<EditDebtHookInterface>>,
     editDebts: (formValues: any) => Promise<boolean>,
-    deleteDebt: (debtID: string) => Promise<boolean>
+    deleteDebt: (debtID: string) => Promise<boolean>,
+    clientsForDebts: ClientsForDebtsInterface[],
+    setClientsForDebts: React.Dispatch<React.SetStateAction<ClientsForDebtsInterface[]>>,
+    findClientsForDebts: (searchValue: string) => Promise<boolean>
 }
 
 export interface ClientsHookInterface {
@@ -54,6 +58,7 @@ export interface DeliversHookInterface {
     editDeliverHook: EditDeliverHookInterface
     setEditDeliverHook: React.Dispatch<React.SetStateAction<EditDeliverHookInterface>>
 }
+
 
 export interface AppContextValueInterface {
     width: number

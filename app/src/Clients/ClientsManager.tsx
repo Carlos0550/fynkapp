@@ -8,8 +8,6 @@ import { useDisclosure } from '@mantine/hooks';
 import ClientForm from './ClientForm/ClientFormModal';
 import EditClientModal from './EditClient/EditClientModal';
 import { Popover } from '@mantine/core';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import DebtsManager from '../Debts/DebtsManager.tsx';
 
 const ClientsManager = () => {
     const [searchFocus, setSearchFocus] = useState(true);
@@ -36,101 +34,95 @@ const ClientsManager = () => {
     };
 
     return (
-        <>
-            <Routes>
-                <Route path='/' element={
-                    <React.Fragment>
-                        <div className="clients-manager">
-                            <h2>Administración de clientes</h2>
-                            <div className="table-actions">
-                                <button className='add-client-table' onClick={open}>
-                                    Agregar cliente
-                                </button>
-                                <button className='update-table-btn' onClick={() => getClient()}>Actualizar tabla</button>
-                                <div className='search-container'>
-                                    <input
-                                        className='search-client-table'
-                                        id='search_client_table'
-                                        placeholder='Buscar'
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        onFocus={() => setSearchFocus(true)}
-                                        onBlur={() => setSearchFocus(false)}
-                                    />
-                                    {searchFocus ? (
-                                        <FaTimes className='search-icon' onClick={handleClearSearch} />
-                                    ) : (
-                                        <FaSearch className='search-icon' onClick={() => getClient(searchQuery)} />
+        <React.Fragment>
+            <div className="clients-manager">
+                <h2>Administración de clientes</h2>
+                <div className="table-actions">
+                    <button className='add-client-table' onClick={open}>
+                        Agregar cliente
+                    </button>
+                    <button className='update-table-btn' onClick={() => getClient()}>Actualizar tabla</button>
+                    <div className='search-container'>
+                        <input
+                            className='search-client-table'
+                            id='search_client_table'
+                            placeholder='Buscar'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => setSearchFocus(true)}
+                            onBlur={() => setSearchFocus(false)}
+                        />
+                        {searchFocus ? (
+                            <FaTimes className='search-icon' onClick={handleClearSearch} />
+                        ) : (
+                            <FaSearch className='search-icon' onClick={() => getClient(searchQuery)} />
+                        )}
+                    </div>
+                </div>
+                <div className="clients-table-container">
+                    <table className="clients-table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                {width > 768 && <th>Contacto</th>}
+                                {width > 768 && <th>Dirección</th>}
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            {clients && clients.length > 0 && clients.map((client) => (
+                                <tr key={client.client_id}>
+                                    <td>
+                                        <p><FaUser /> {client.client_fullname}</p>
+                                        {client.client_dni && <p><PiIdentificationCardFill /> {client.client_dni}</p>}
+                                    </td>
+                                    {width > 768 && (
+                                        <td>
+                                            <p><MdEmail /> {client.client_email}</p>
+                                            <p><MdPhone /> {client.client_phone}</p>
+
+                                        </td>
                                     )}
-                                </div>
-                            </div>
-                            <div className="clients-table-container">
-                            <table className="clients-table">
-                                <thead>
-                                    <tr>
-                                        <th>Cliente</th>
-                                        {width > 768 && <th>Contacto</th>}
-                                        {width > 768 && <th>Dirección</th>}
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {clients && clients.length > 0 && clients.map((client) => (
-                                        <tr key={client.client_id}>
-                                            <td>
-                                                <p><FaUser/> {client.client_fullname}</p>
-                                                {client.client_dni && <p><PiIdentificationCardFill /> {client.client_dni}</p>}
-                                            </td>
-                                            {width > 768 && (
-                                                <td>
-                                                    <p><MdEmail /> {client.client_email}</p>
-                                                    <p><MdPhone /> {client.client_phone}</p>
+                                    {width > 768 && (
+                                        <td>
+                                            {client.client_address && <p><MdMap /> {client.client_address}</p>}
+                                            {client.client_city && <p><FaCity /> {client.client_city}</p>}
 
-                                                </td>
-                                            )}
-                                            {width > 768 && (
-                                                <td>
-                                                    {client.client_address && <p><MdMap /> {client.client_address}</p>}
-                                                    {client.client_city && <p><FaCity /> {client.client_city}</p>}
-
-                                                </td>
-                                            )}
-                                            <td>
-                                                <div className="client-cell-actions">
-                                                    {/* <button className='review-client-btn'
+                                        </td>
+                                    )}
+                                    <td>
+                                        <div className="client-cell-actions">
+                                            {/* <button className='review-client-btn'
                                                         onClick={() => navigate(`customer-credit/${client.client_id}`)}
                                                     >Revisar cuenta <HiBanknotes /></button> */}
-                                                    <button className='edit-client-btn'
-                                                        onClick={() => setEditingClient({ isEditing: true, clientID: client.client_id })}
-                                                    ><MdEdit size={18} /> Editar</button>
-                                                    <Popover>
-                                                        <Popover.Target>
-                                                            <button className='delete-client-btn'>
-                                                                <MdDelete size={18} /> Eliminar
-                                                            </button>
-                                                        </Popover.Target>
-                                                        <Popover.Dropdown>
-                                                            <p>¿Desea eliminar el cliente {client.client_fullname}?</p>
-                                                            <button className='delete-client-btn'
-                                                                onClick={() => deleteClient(client.client_id)}
-                                                            ><MdDelete size={18} /> Si, eliminar</button>
-                                                        </Popover.Dropdown>
-                                                    </Popover>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            </div>
-                        </div>
-                        {opened && <ClientForm closeModal={close} />}
-                        {editingClient && editingClient.isEditing && <EditClientModal />}
-                    </React.Fragment>
-                } />
-                <Route path='customer-credit/:clientID' element={<DebtsManager />} />
-            </Routes>
-        </>
+                                            <button className='edit-client-btn'
+                                                onClick={() => setEditingClient({ isEditing: true, clientID: client.client_id })}
+                                            ><MdEdit size={18} /> Editar</button>
+                                            <Popover>
+                                                <Popover.Target>
+                                                    <button className='delete-client-btn'>
+                                                        <MdDelete size={18} /> Eliminar
+                                                    </button>
+                                                </Popover.Target>
+                                                <Popover.Dropdown>
+                                                    <p>¿Desea eliminar el cliente {client.client_fullname}?</p>
+                                                    <button className='delete-client-btn'
+                                                        onClick={() => deleteClient(client.client_id)}
+                                                    ><MdDelete size={18} /> Si, eliminar</button>
+                                                </Popover.Dropdown>
+                                            </Popover>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {opened && <ClientForm closeModal={close} />}
+            {editingClient && editingClient.isEditing && <EditClientModal />}
+        </React.Fragment>
+
     );
 };
 

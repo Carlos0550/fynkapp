@@ -1,0 +1,143 @@
+.client-finder-table-container {
+    border: 1px solid #f1f1f1;
+    flex: 1;
+    border-radius: 5px;
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+
+
+.client-finder-table {
+    width: 100%;
+    height: auto;
+
+}
+
+
+
+.client-finder-table th,
+.client-finder-table td {
+    background-color: #f1f1f1;
+    border: 1px solid white;
+
+}
+
+.client-finder-table th {
+    color: #595959;
+    background-color: #f1f1f1;
+    border: 1px solid white;
+    padding: .5rem;
+    text-align: center;
+}
+
+.client-finder-table th:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+}
+
+.client-finder-table th:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.client-finder-table tbody tr:hover {
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.active-client {
+    background-color: #e6f7e6;
+    color: #2e7d32;
+}
+
+.debtor-client {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+
+.status-text {
+    font-weight: bold;
+}
+
+.amount-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.client-debt-status-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.client-debt-status {
+    display: inline-block;
+    border-radius: 5px;
+    padding: .5rem;
+
+    color: #007706;
+}
+
+.client-debt-status.active-client {
+    background-color: #88f18e;
+}
+
+.client-debt-status.no-debt {
+    background-color: #dff188;
+    color: #020202;
+}
+
+.client-debt-status.debtor-client {
+    background-color: #f18888;
+    color: #020202;
+}
+
+
+.client-debt-amount {
+    display: inline-block;
+    border-radius: 5px;
+    padding: .5rem;
+
+    color: #007706;
+}
+
+.client-debt-amount.active-client {
+    background-color: #88f18e;
+}
+
+.client-debt-amount.no-debt {
+    background-color: #dff188;
+    color: #020202;
+}
+
+.client-debt-amount.debtor-client {
+    background-color: #f18888;
+    color: #020202;
+}
+
+.client-finder-table-actions button {
+    align-self: center;
+
+}
+
+.client-finder-table td:first-child,
+.client-finder-table th:first-child {
+    padding-left: 1rem;
+}
+
+.client-finder-table td:last-child,
+.client-finder-table th:last-child {
+    text-align: center;
+    vertical-align: middle;
+}

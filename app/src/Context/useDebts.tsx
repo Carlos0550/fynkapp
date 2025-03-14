@@ -2,13 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { logic_apis } from "../apis.js"
 import { showNotification } from '@mantine/notifications'
 import { EditDebtHookInterface, FinancialClientData } from './Typescript/FinancialClientData.js'
-import { useLocation } from 'react-router-dom'
-import { get } from 'http'
+import { ClientsForDebtsInterface } from './Typescript/DebtsTypes.js'
+import { useSearchParams } from 'react-router-dom'
 function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification:any) {
     const [token] = useState(localStorage.getItem("token") || "")
-    const location = useLocation()
-    const pathSegments = location.pathname.split("/")
-    const clientID = pathSegments[pathSegments.length - 1]
+    const [searchParams] = useSearchParams()
+    const clientID = searchParams.get("clientID")
 
     const [financialClientData, setFinancialClientData] = useState<FinancialClientData>({
         clientDebts: [],
@@ -30,7 +29,6 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         const attemptFetch = async (retries = 2) => {
             const url = new URL(logic_apis.clients + "/get-client-financial-data");
             url.searchParams.append("client_id", clientID || "");
-    
             if (!clientID && retries > 0) {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 return attemptFetch(retries - 1);
@@ -42,7 +40,6 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
                         "Authorization": `Bearer ${token}`
                     }
                 });
-                
                 if(response.status === 404){
                     showNotification({
                         title: "El cliente no tiene deudas.",
@@ -84,7 +81,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         };
     
         return await attemptFetch();
-    }, [clientID, token]);
+    }, [clientID]);
     
 
     const createDebt = useCallback(async (formValues: any, clientName: string):Promise<boolean>=>{
@@ -224,18 +221,51 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         }
     },[getFinancialClientData])
 
+    const [clientsForDebts, setClientsForDebts] = useState<ClientsForDebtsInterface []>([])
+    const findClientsForDebts = useCallback(async (searchValue: string) => {
+        const url = new URL(logic_apis.clients + "/find-client-for-debts")
+        url.searchParams.append("search", searchValue || "")
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          });
+          const responseData = await response.json()
+          if(response.status === 404){
+            setClientsForDebts([])
+          }
+          if(!response.ok) throw new Error(responseData.msg || "Error desconocido")
+        
+          setClientsForDebts(responseData.client_result)
+        } catch (error) {
+          console.log(error)
+          showNotification({
+            title: "Error al buscar clientes",
+            message: error.message,
+            color: "red",
+            autoClose: 3000,
+            position: "top-right"
+          })
+        }
+      }, [token])
+
   return useMemo(() => ({
     createDebt,
     getFinancialClientData,
     financialClientData,
     editDebtHook, setEditDebtHook,
-    editDebts, deleteDebt
+    editDebts, deleteDebt,
+    clientsForDebts, findClientsForDebts
   }),[
     createDebt,
     getFinancialClientData,
     financialClientData,
     editDebtHook, setEditDebtHook,
-    editDebts, deleteDebt
+    editDebts, deleteDebt,
+    clientsForDebts, findClientsForDebts
   ])
 }
 

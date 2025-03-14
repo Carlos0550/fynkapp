@@ -91,7 +91,7 @@ const Layout = ({ content }) => {
                         <span className="text" onClick={() => navigate("/clients/new")}>Clientes/Deudas</span>
                     </Link>
 
-                    <Link to="/deudas">
+                    <Link to="/debts">
                         <span className="icon"><GrMoney /></span>
                         <span className="text">Deudas</span>
                     </Link>

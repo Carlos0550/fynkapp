@@ -179,6 +179,14 @@ clientsRouter.delete("/debts/delete-debt", verifyToken, (req, res, next) => {
     next()
 }, debtsController.deleteDebt)
 
+clientsRouter.get("/find-client-for-debts", verifyToken, async(req,res, next) => {
+    const user_id = req.user_id
+    if (!user_id) {
+        return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
+    }
+    next()
+}, clientsController.findClientsForDebts)
+
 
 //Rutas de clientes-entregas
 clientsRouter.post("/delivers/create-deliver",verifyToken, (req, res, next) => {
