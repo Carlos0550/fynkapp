@@ -17,7 +17,7 @@ const development_environment = {
     port: 5432,
 }
     
-const pool = new Pool(production_environment);
+const pool = new Pool(development_environment);
 
 // const pool = new Pool({
 //     connectionString: process.env.CONNECTION_STRING,

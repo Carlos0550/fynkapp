@@ -1,7 +1,8 @@
 export const base_api={
-    url: "https://fynkapp-server.vercel.app",
+    url: "http://localhost:5000",
 }
 
+//https://fynkapp-server.vercel.app
 
 export const logic_apis = {
     clients: new URL(`${base_api.url}/clients`),
