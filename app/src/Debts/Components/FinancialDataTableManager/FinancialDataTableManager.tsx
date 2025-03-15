@@ -86,28 +86,29 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                         })
                         : "0.00"}
                 </p>
-                <div className="client-debt-tables">
-                    {tableType === "debts"
+                <div className="custom-table-container">
+                    {/* {tableType === "debts"
                         ? <h4>Deudas</h4>
                         : <h4>Pagos</h4>
-                    }
-                    <table>
+                    } */}
+                    <table className='custom-table'>
                         <thead>
                             {tableType === "debts"
                             ? (
-                                <React.Fragment>
-                                    <th>Fecha de compra</th>
-                                    <th>Vencimiento</th>
-                                    <th>Estado</th>
-                                    <th>Productos</th>
-                                    <th>Monto total</th>
-                                </React.Fragment>
+                                    <tr>
+                                        <th>Fecha de compra</th>
+                                        <th>Vencimiento</th>
+                                        <th>Estado</th>
+                                        <th>Productos</th>
+                                        <th>Monto total</th>
+                                        <th></th>
+                                    </tr>
                             )
                             : (
-                                <React.Fragment>
+                                <tr>
                                     <th>Fecha de entrega</th>
                                     <th>Monto entregado</th>
-                                </React.Fragment>
+                                </tr>
                             )
                         }
 
@@ -115,15 +116,15 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                         <tbody>
                             {tableType === "debts" && clientDebts.map((debt, index) => (
                                 <tr key={index}>
-                                    <td>{dayjs(debt.debt_date).format("YYYY-MM-DD")}</td>
-                                    <td>{dayjs(debt.debt_exp).format("YYYY-MM-DD")}</td>
-                                    <td>{debt.debt_status}</td>
+                                    <td><p>{dayjs(debt.debt_date).format("YYYY-MM-DD")}</p></td>
+                                    <td><p>{dayjs(debt.debt_exp).format("YYYY-MM-DD")}</p></td>
+                                    <td><p>{debt.debt_status}</p></td>
                                     <td>{debt.debt_products.map((product, idx) => (
                                         <ul key={idx} style={{ listStyle: "none" }}>
-                                            <li>{product.product_quantity} {product.product_name} {parseFloat(product.product_price).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</li>
+                                            <li><p>{product.product_quantity} {product.product_name} {parseFloat(product.product_price).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></li>
                                         </ul>
                                     ))}</td>
-                                    <td>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                    <td><p>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
                                     <td className='client-debt-table-actions'>
                                         <Button color='blue' onClick={() => handleEditDebt(debt)}><FaEdit /> Editar</Button>
                                         <Popover shadow='md'>
@@ -144,8 +145,8 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                             ))}
                             {tableType === "payments" && clientDelivers && clientDelivers.length > 0 && clientDelivers.map((payment, index) => (
                                 <tr key={index}>
-                                    <td>{dayjs(payment.deliver_date).format("YYYY-MM-DD")}</td>
-                                    <td>{payment.deliver_amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                    <td><p>{dayjs(payment.deliver_date).format("YYYY-MM-DD")}</p></td>
+                                    <td><p>{payment.deliver_amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
                                     <td className='client-debt-table-actions'>
                                         <Button 
                                             onClick={() => 

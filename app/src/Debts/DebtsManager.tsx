@@ -12,6 +12,7 @@ import ClientDebtsFormModal from './Components/ClientDebtsFormModal';
 import FinancialDataTableManager from './Components/FinancialDataTableManager/FinancialDataTableManager';
 import ClientDeliversFormModal from './Components/ClientDeliversFormModal';
 import ClientsFinder from './Components/ClientsFinder/ClientsFinder';
+import { Button } from '@mantine/core';
 
 function DebtsManager() {
   const [searchParams] = useSearchParams()
@@ -27,7 +28,7 @@ function DebtsManager() {
   });
   const { isValidUUID, clientsHook, debtsHook } = useAppContext()
   const { getClientData } = clientsHook
-  const { getFinancialClientData } = debtsHook
+  const { getFinancialClientData, financialClientData:{totalDebtAmount} } = debtsHook
 
   const [switchMode, setSwitchMode] = useState<"debts" | "payments">("debts")
 
@@ -66,9 +67,9 @@ function DebtsManager() {
               <ClientInfo clientData={clientData} />
 
               <div className="client-data-actions">
-                <button onClick={() => setShowFormModal(true)}><MdOutlineAccountBalanceWallet /> Agregar deuda</button>
-                <button onClick={() => setShowDeliversFormModal(true)}><MdPayments /> Registrar pago</button>
-                <button><FaTrash /> Vaciar cuenta</button>
+                <Button color='dark' onClick={() => setShowFormModal(true)}><MdOutlineAccountBalanceWallet/> Agregar deuda</Button>
+                <Button color='dark' onClick={() => setShowDeliversFormModal(true)}><MdPayments /> Registrar pago</Button>
+                <Button disabled={totalDebtAmount === 0} color='red'><FaTrash /> Vaciar cuenta</Button>
               </div>
 
               <div className="switch-container">

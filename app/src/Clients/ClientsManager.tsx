@@ -59,8 +59,8 @@ const ClientsManager = () => {
                         )}
                     </div>
                 </div>
-                <div className="clients-table-container">
-                    <table className="clients-table">
+                <div className="custom-table-container">
+                    <table className="custom-table">
                         <thead>
                             <tr>
                                 <th>Cliente</th>

@@ -73,29 +73,3 @@ input:checked + .slider:before {
     padding: .5rem;
 }
 
-.client-data-actions button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 3px;
-    transition: all 0.3s ease;
-    background-color: rgb(23, 23, 23);
-    color: white;
-}
-
-.client-data-actions button:last-child{
-    background-color: rgb(255, 0, 0);
-}
-
-.client-data-actions button:last-child:hover{
-    background-color: rgb(139, 0, 0);
-}
-
-.client-data-actions button:hover{
-    transform: translateY(-2px);
-    background-color: black;
-    cursor: pointer;
-}

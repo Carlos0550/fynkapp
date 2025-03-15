@@ -59,9 +59,9 @@ function ClientsFinder() {
                     disabled={searching}
                 />
 
-                <div className="client-finder-table-container">
+                <div className="custom-table-container">
                     <Table
-                        className='client-finder-table'
+                        className='custom-table'
 
                     >
                         <thead>
@@ -110,7 +110,7 @@ function ClientsFinder() {
                                       </p>
                                     </td>
 
-                                    <td className='client-finder-table-actions'>
+                                    <td>
                                         <Button 
                                             variant="outline" 
                                             color="dark" 

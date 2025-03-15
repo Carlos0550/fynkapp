@@ -16,62 +16,6 @@ h2 {
     color: #333;
 }
 
-.clients-table {
-    width: 100%;
-
-    background: rgba(204, 204, 204, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(157, 157, 157, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid #ccc;
-    border-radius: 1rem;
-    padding: 5px;
-    margin-bottom: 2rem;
-    min-width: 768px;
-
-}
-
-.clients-table-container {
-    flex: 1;
-    overflow-x: auto;
-    width: 100%;
-}
-
-@media(max-width:568px){
-    .clients-table{
-        min-width: 368px;
-    }
-}
-
-.clients-table th,
-.clients-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 5px solid #000000;
-}
-
-.clients-table th:first-child,
-.clients-table td:first-child {
-    border-radius: 1rem 0 0 1rem;
-}
-
-.clients-table th:last-child,
-.clients-table td:last-child {
-    border-radius: 0 1rem 1rem 0;
-}
-
-.clients-table th {
-    background: #000000;
-    color: white;
-}
-
-.clients-table tr:hover {
-    background: #f3f3f3;
-}
-
-.clients-table td {
-    color: #333;
-}
 
 
 .table-actions {
