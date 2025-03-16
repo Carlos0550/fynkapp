@@ -17,6 +17,7 @@ verifyDbConnection()
 app.use("/users", require("./routes/users.routes.js"))
 app.use("/clients", require("./routes/clients.routes.js"))
 app.use("/fast-actions", require("./routes/fastactions.routes.js"))
+app.use("/debts", require("./routes/debts.routes.js"))
 
 app.listen(5000, () => {
     console.log("Server is running on port 5000")

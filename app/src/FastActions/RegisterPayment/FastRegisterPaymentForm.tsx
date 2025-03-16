@@ -16,7 +16,6 @@ function FastRegisterPaymentForm({ closeModal }: FormModal) {
   } = useFastRegisterPaymentForm(
     closeModal
   )
-
   const [deliverAmount, setDeliverAmount] = useState<number>(0)
   return (
     <form className="fastPayment-form-container">
@@ -49,8 +48,10 @@ function FastRegisterPaymentForm({ closeModal }: FormModal) {
               {clientData.client_name && (
                 <h3>{clientData.client_name}</h3>
               )}
-              {clientData.total > 0 && (
+              {clientData.total > 0 ? (
                 <p>{clientData.total.toLocaleString("es-AR", { style: "currency", currency: "ARS" })}</p>
+              ) : (
+                <p>Deuda: $0</p>
               )}
             </>
           )}

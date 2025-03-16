@@ -59,7 +59,7 @@ const ClientsManager = () => {
                         )}
                     </div>
                 </div>
-                <div className="custom-table-container">
+                <div className="custom-table-container" style={{overflow: "auto"}}>
                     <table className="custom-table">
                         <thead>
                             <tr>

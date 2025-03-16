@@ -220,6 +220,7 @@ async function deleteClient(req, res) {
     const { clientID } = req.query;
     const user_id = req.user_id
     let client;
+
     try {
         client = await pool.connect();
         const result = await client.query("DELETE FROM clients WHERE client_id = $1 AND fk_user_id = $2", [clientID, user_id]);
@@ -303,21 +304,21 @@ async function getClientFinancialData(req, res) {
         client = await pool.connect()
         const result = await client.query(clientQueries[0], [client_id, user_id]);
         if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" })
-            let clientDebts = result.rows[0].clientdebts
-            let clientDelivers = result.rows[0].clientdelivers
-            console.log(clientDebts)
-            if(!clientDebts) return res.status(404).json({
-                msg: "No se encontraron deudas para este cliente"
-            })
-            
-            let totalDelivers = 0
-            if(clientDelivers && clientDelivers.length > 0){
-                totalDelivers = clientDelivers.reduce((acc, deliver) => {
-                    return acc + parseFloat(deliver.deliver_amount);
-                },0)
-            }
+        let clientDebts = result.rows[0].clientdebts
+        let clientDelivers = result.rows[0].clientdelivers
 
-            clientDebts = result.rows[0].clientdebts.map((debt) => {
+        if (!clientDebts) return res.status(404).json({
+            msg: "No se encontraron deudas para este cliente"
+        })
+
+        let totalDelivers = 0
+        if (clientDelivers && clientDelivers.length > 0) {
+            totalDelivers = clientDelivers.reduce((acc, deliver) => {
+                return acc + parseFloat(deliver.deliver_amount);
+            }, 0)
+        }
+
+        clientDebts = result.rows[0].clientdebts.map((debt) => {
             return {
                 debt_id: debt.debt_id,
                 debt_amount: debt.debt_amount,
@@ -348,76 +349,8 @@ async function getClientFinancialData(req, res) {
     }
 }
 
-async function findClientsForDebts(req, res) {
-    const { "findClientsForDebts.sql": clientQueries } = queries;
-    const { search } = req.query
-    const user_id = req.user_id
-    let client;
-    try {
-        client = await pool.connect();
-        if (search !== "") {
-            const dniRegex = /^\d{8,9}$/;
-            if (dniRegex.test(search)) {
-                const encryptDniForSearch = encrypt(search);
-                const result = await client.query(clientQueries[1], [user_id,encryptDniForSearch]);
-                if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron clientes con ese DNI." })
-                const decriptedDni = decrypt(result.rows[0].client_dni);
 
-                const client_result = {
-                    client_id: result.rows[0].client_id,
-                    client_fullname: result.rows[0].client_fullname,
-                    client_dni: decriptedDni,
-                    debt_amount: result.rows[0].debt_amount,
-                    debt_status: result.rows[0].debt_status
-                }
 
-                return res.status(200).json({
-                    client_result: [client_result]
-                })
-            } else {
-                const result = await client.query(clientQueries[0], [user_id,`%${search.toLowerCase()}%`]);
-                if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron clientes con ese nombre." })
-                const client_result = result.rows.map(client => {
-                    const decryptedDni = decrypt(client.client_dni);
-                    return {
-                        client_id: client.client_id,
-                        client_fullname: client.client_fullname,
-                        client_dni: decryptedDni,
-                        debt_amount: client.debt_amount,
-                        debt_status: client.debt_status
-                    }
-                })
-                return res.status(200).json({
-                    client_result
-                })
-            }
-        } else {
-            const result = await client.query(clientQueries[2], [user_id]);
-            if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron clientes." })
-            const client_result = result.rows.map(client => {
-                const decryptedDni = decrypt(client.client_dni);
-                return {
-                    client_id: client.client_id,
-                    client_fullname: client.client_fullname,
-                    client_dni: decryptedDni,
-                    debt_amount: client.debt_amount,
-                    debt_status: client.debt_status
-                }
-            })
-            return res.status(200).json({
-                client_result
-            })
-        }
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
-        })
-    } finally {
-        if (client) client.release();
-    }
-}
 module.exports = {
-    createClient, getClients, editClient, deleteClient, getClientData, getClientFinancialData,
-    findClientsForDebts
+    createClient, getClients, editClient, deleteClient, getClientData, getClientFinancialData
 };

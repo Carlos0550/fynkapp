@@ -3,7 +3,6 @@ import { ClientsInterface } from "./Typescript/ClientsTypes"
 import { logic_apis } from "../apis"
 
 import { showNotification } from "@mantine/notifications"
-import { useAppContext } from "./AppContext"
 
 function useClients(verifyToken, loginData) {
     const [clients, setClients] = useState<ClientsInterface[]>([])

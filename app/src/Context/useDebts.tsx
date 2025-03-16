@@ -85,7 +85,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     
 
     const createDebt = useCallback(async (formValues: any, clientName: string):Promise<boolean>=>{
-        const newUrl = new URL(logic_apis.clients + "/debts/create-debt")
+        const newUrl = new URL(logic_apis.debts + "/debts/create-debt")
         
 
         try {
@@ -130,7 +130,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     },[getFinancialClientData])
 
     const editDebts = useCallback(async(formValues: any) => {
-        const url = new URL(logic_apis.clients + "/debts/edit-debt")
+        const url = new URL(logic_apis.debts + "/debts/edit-debt")
         console.log(editDebtHook)
         url.searchParams.append("debtID", editDebtHook.debtID || "")
         try {
@@ -178,7 +178,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     },[getFinancialClientData, editDebtHook])
 
     const deleteDebt = useCallback(async(debtID: string) => {
-        const url = new URL(logic_apis.clients + "/debts/delete-debt")
+        const url = new URL(logic_apis.debts + "/debts/delete-debt")
         url.searchParams.append("debtID", debtID || "")
         try {
             const response = await fetch(url, {
@@ -223,7 +223,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
 
     const [clientsForDebts, setClientsForDebts] = useState<ClientsForDebtsInterface []>([])
     const findClientsForDebts = useCallback(async (searchValue: string) => {
-        const url = new URL(logic_apis.clients + "/find-client-for-debts")
+        const url = new URL(logic_apis.debts + "/find-client-for-debts")
         url.searchParams.append("search", searchValue || "")
         try {
           const response = await fetch(url, {
