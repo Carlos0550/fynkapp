@@ -88,7 +88,7 @@ const Layout = ({ content }) => {
                     </Link>
                     <Link to="/clients">
                         <span className="icon"><MdGroups2 /></span>
-                        <span className="text" onClick={() => navigate("/clients/new")}>Clientes/Deudas</span>
+                        <span className="text">Clientes</span>
                     </Link>
 
                     <Link to="/debts">
