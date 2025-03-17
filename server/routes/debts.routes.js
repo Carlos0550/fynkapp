@@ -9,7 +9,7 @@ const multer = require("multer")
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
-debtsRouter.post("/debts/create-debt", verifyToken, upload.none(), (req, res, next) => {
+debtsRouter.post("/create-debt", verifyToken, upload.none(), (req, res, next) => {
     const { debt_date, debt_products, client_id } = req.body;
 
     if (!debt_date || !debt_products || !client_id) {
@@ -37,7 +37,7 @@ debtsRouter.post("/debts/create-debt", verifyToken, upload.none(), (req, res, ne
     next();
 }, debtsController.createDebt);
 
-debtsRouter.put("/debts/edit-debt", verifyToken, upload.none(), (req, res, next) => {
+debtsRouter.put("/edit-debt", verifyToken, upload.none(), (req, res, next) => {
     const { debt_date, debt_products } = req.body;
     const { debtID } = req.query;
     if (!debt_date || !debt_products) {
@@ -64,7 +64,7 @@ debtsRouter.put("/debts/edit-debt", verifyToken, upload.none(), (req, res, next)
     next();
 }, debtsController.editDebt)
 
-debtsRouter.delete("/debts/delete-debt", verifyToken, (req, res, next) => {
+debtsRouter.delete("/delete-debt", verifyToken, (req, res, next) => {
     const { debtID } = req.query
     const user_id = req.user_id
     if (!user_id) {
@@ -83,5 +83,18 @@ debtsRouter.get("/find-client-for-debts", verifyToken, async (req, res, next) =>
     }
     next()
 }, debtsController.findClientsForDebts)
+
+debtsRouter.post("/cancel-debt", verifyToken, async(req, res, next) => {
+    const { clientID } = req.query
+    const user_id = req.user_id
+    if (!user_id) {
+        return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
+    }
+    if (!clientID) {
+        return res.status(400).json({ msg: "El ID del cliente no fue proporcionado." })
+    }
+    next()
+}, debtsController.cancelDebt)
+
 
 module.exports = debtsRouter
