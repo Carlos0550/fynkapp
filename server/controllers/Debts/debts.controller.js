@@ -2,6 +2,7 @@ const { pool } = require("../../database.js")
 const fs = require("fs").promises
 const path = require("path")
 const crypto = require("crypto");
+const dayjs = require("dayjs");
 let queries = {};
 
 (async () => {
@@ -207,6 +208,47 @@ async function findClientsForDebts(req, res) {
     }
 }
 
+async function cancelDebt(req, res) {
+    const { "cancelDebt.sql": cdqueries } = queries
+    const { clientID } = req.query
+    const user_id = req.user_id
+    let client;
+    try {
+        client = await pool.connect()   
+        await client.query("BEGIN");
+        const result1 = await client.query(cdqueries[0], [user_id,clientID])
+        if (result1.rowCount === 0){
+            await client.query("ROLLBACK");
+            throw new Error("Hubo un error inesperado al cancelar la deuda.")
+        }
+    
+        for (const history of result1.rows) {
+            await client.query(cdqueries[1], [
+                history.client_id,
+               JSON.stringify(history.debt_details),
+                JSON.stringify(history.deliver_details),
+                history.total_debt_amount,
+                history.total_delivers_amount,
+                dayjs(history.debt_date).format("YYYY-MM-DD"),
+                user_id
+            ])
+        }
+
+        await client.query(cdqueries[2], [clientID])
+        await client.query(cdqueries[3], [clientID])
+        await client.query("COMMIT");
+        return res.status(200).json({ msg: "Deuda cancelada exitosamente" })
+    } catch (error) {
+        console.log(error)
+        await client.query("ROLLBACK");
+        return res.status(500).json({
+            msg: error.message || "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
+        })
+    } finally {
+        if (client) client.release();
+    }
+}
+
 module.exports = {
-    createDebt, editDebt, deleteDebt, findClientsForDebts
+    createDebt, editDebt, deleteDebt, findClientsForDebts, cancelDebt
 };
