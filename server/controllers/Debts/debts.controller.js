@@ -217,9 +217,25 @@ async function cancelDebt(req, res) {
         client = await pool.connect()   
         await client.query("BEGIN");
         const result1 = await client.query(cdqueries[0], [user_id,clientID])
+        console.log(result1.rows)
         if (result1.rowCount === 0){
             await client.query("ROLLBACK");
             throw new Error("Hubo un error inesperado al cancelar la deuda.")
+        }
+
+        if(result1.rows[0].debt_details.length === 0) {
+            await client.query("ROLLBACK");
+            throw new Error("No hay deudas para cancelar.")
+        }
+
+        if(result1.rows[0].deliver_details.length === 0) {
+            await client.query("ROLLBACK");
+            throw new Error("No hay entregas hechas por el cliente, no es posible cancelar.")
+        }
+
+        if(result1.rows[0].total_debt_amount !== 0) {
+            await client.query("ROLLBACK");
+            throw new Error("El cliente aún tiene un saldo pendiente, no es posible cancelar.")
         }
     
         for (const history of result1.rows) {
