@@ -85,7 +85,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     
 
     const createDebt = useCallback(async (formValues: any, clientName: string):Promise<boolean>=>{
-        const newUrl = new URL(logic_apis.debts + "/debts/create-debt")
+        const newUrl = new URL(logic_apis.debts + "/create-debt")
         
 
         try {
@@ -130,8 +130,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     },[getFinancialClientData])
 
     const editDebts = useCallback(async(formValues: any) => {
-        const url = new URL(logic_apis.debts + "/debts/edit-debt")
-        console.log(editDebtHook)
+        const url = new URL(logic_apis.debts + "/edit-debt")
         url.searchParams.append("debtID", editDebtHook.debtID || "")
         try {
             const response = await fetch(url,{
@@ -178,7 +177,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     },[getFinancialClientData, editDebtHook])
 
     const deleteDebt = useCallback(async(debtID: string) => {
-        const url = new URL(logic_apis.debts + "/debts/delete-debt")
+        const url = new URL(logic_apis.debts + "/delete-debt")
         url.searchParams.append("debtID", debtID || "")
         try {
             const response = await fetch(url, {
@@ -252,20 +251,58 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         }
       }, [token])
 
+      const cancelDebt = useCallback(async () => {
+        const url = new URL(logic_apis.debts + "/cancel-debt")
+        url.searchParams.append("clientID", clientID || "")
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          });
+          const responseData = await response.json()
+          if(!response.ok) throw new Error(responseData.msg || "Error desconocido")
+          showNotification({
+            title: "Deuda cancelada",
+            message: responseData.msg,
+            color: "green",
+            autoClose: 3000,
+            position: "top-right"
+          })
+          getFinancialClientData()
+          return true
+        } catch (error) {
+          console.log(error)
+          showNotification({
+            title: "Error al cancelar la deuda",
+            message: error.message,
+            color: "red",
+            autoClose: 3000,
+            position: "top-right"
+          })
+
+          return false
+        }
+      },[clientID])
+
   return useMemo(() => ({
     createDebt,
     getFinancialClientData,
     financialClientData,
     editDebtHook, setEditDebtHook,
     editDebts, deleteDebt,
-    clientsForDebts, findClientsForDebts
+    clientsForDebts, findClientsForDebts,
+    cancelDebt
   }),[
     createDebt,
     getFinancialClientData,
     financialClientData,
     editDebtHook, setEditDebtHook,
     editDebts, deleteDebt,
-    clientsForDebts, findClientsForDebts
+    clientsForDebts, findClientsForDebts,
+    cancelDebt
   ])
 }
 
