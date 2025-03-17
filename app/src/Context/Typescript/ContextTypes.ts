@@ -33,7 +33,7 @@ export interface ClientsHookInterface {
     } | null>>,
     editClient: (clientData: ClientsInterface) => Promise<boolean>,
     deleteClient: (clientID: string) => Promise<boolean>,
-    getClientData: (clientID: string) => Promise<boolean>,
+    getClientData: (clientID: string) => Promise<{ client: ClientsInterface }>;
 }
 
 export interface UsersHookInterface {

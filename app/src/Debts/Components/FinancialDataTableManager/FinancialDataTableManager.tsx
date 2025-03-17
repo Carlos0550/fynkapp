@@ -16,6 +16,8 @@ import ClientDebtsFormModal from '../ClientDebtsFormModal';
 
 import "./FinancialDataTableManager.css"
 import ClientDeliversFormModal from '../ClientDeliversFormModal';
+import DebtTable from '../Components/DebtTable';
+import DeliversTable from '../Components/DeliversTable';
 
 function FinancialDataTableManager({ tableType, clientData }: FinancialDataTableManagerProps) {
     const { debtsHook, deliversHook } = useAppContext();
@@ -72,13 +74,6 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
             }
         })
     }
-
-    const calculateTotalDebt = (products: ClientDebt["debt_products"]) => {
-        return products.reduce((total, product) => {
-            return total + parseFloat(product.product_price) * parseInt(product.product_quantity);
-        }, 0);
-    }
-
     return (
         <React.Fragment>
             <div className="client-financial-data">
@@ -93,96 +88,10 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                         : "0.00"}
                 </p>
                 <div className="custom-table-container">
-                    {/* {tableType === "debts"
-                        ? <h4>Deudas</h4>
-                        : <h4>Pagos</h4>
-                    } */}
-                    <table className='custom-table'>
-                        <thead>
-                            {tableType === "debts"
-                            ? (
-                                    <tr>
-                                        <th>Fecha de compra</th>
-                                        <th>Vencimiento</th>
-                                        <th>Estado</th>
-                                        <th>Productos</th>
-                                        <th>Monto total</th>
-                                        <th></th>
-                                    </tr>
-                            )
-                            : (
-                                <tr>
-                                    <th>Fecha de entrega</th>
-                                    <th>Monto entregado</th>
-                                </tr>
-                            )
-                        }
-
-                        </thead>
-                        <tbody>
-                            {tableType === "debts" && clientDebts.map((debt, index) => (
-                                <tr key={index}>
-                                    <td><p>{dayjs(debt.debt_date).format("YYYY-MM-DD")}</p></td>
-                                    <td><p>{dayjs(debt.debt_exp).format("YYYY-MM-DD")}</p></td>
-                                    <td><p>{debt.debt_status}</p></td>
-                                    <td>{debt.debt_products.map((product, idx) => (
-                                        <ul key={idx} style={{ listStyle: "none" }}>
-                                            <li><p>{product.product_quantity} {product.product_name} {parseFloat(product.product_price).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></li>
-                                        </ul>
-                                    ))}</td>
-                                    <td><p>{calculateTotalDebt(debt.debt_products).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
-                                    <td className='client-debt-table-actions'>
-                                        <Button color='blue' onClick={() => handleEditDebt(debt)}><FaEdit /> Editar</Button>
-                                        <Popover shadow='md'>
-                                            <Popover.Target>
-                                                <Button color='red'><FaTrash /> Eliminar</Button>
-                                            </Popover.Target>
-                                            <Popover.Dropdown>
-                                                <p><strong>Está seguro de querer eliminar esta deuda?</strong></p>
-
-                                                <p>Esta acción no se puede deshacer</p>
-                                                <Button color='red'
-                                                    onClick={() => deleteDebt(debt.debt_id)}
-                                                ><FaTrash /> Eliminar</Button>
-                                            </Popover.Dropdown>
-                                        </Popover>
-                                    </td>
-                                </tr>
-                            ))}
-                            {tableType === "payments" && clientDelivers && clientDelivers.length > 0 && clientDelivers.map((payment, index) => (
-                                <tr key={index}>
-                                    <td><p>{dayjs(payment.deliver_date).format("YYYY-MM-DD")}</p></td>
-                                    <td><p>{payment.deliver_amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
-                                    <td className='client-debt-table-actions'>
-                                        <Button 
-                                            onClick={() => 
-                                                setEditDeliverHook({
-                                                    isEditing: true,
-                                                    deliverID: payment.deliver_id || "",
-                                                    deliverData: payment
-                                                })
-                                            }
-                                        ><FaEdit /> Editar</Button>
-                                        <Popover>
-                                            <Popover.Target>
-                                                <Button color='red'><FaTrash /> Eliminar</Button>
-                                            </Popover.Target>
-                                            <Popover.Dropdown>
-                                                <p><strong>Está seguro de querer eliminar este pago?</strong></p>
-
-                                                <p>Estaacción no se puede deshacer</p>
-                                                <Button color='red'
-                                                    onClick={() => {
-                                                        deleteDeliver(payment.deliver_id || "")
-                                                    }}
-                                                ><FaTrash /> Eliminar</Button>
-                                            </Popover.Dropdown>
-                                        </Popover>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {tableType === "debts"
+                        ? <DebtTable clientDebts={clientDebts || []} handleEditDebt={handleEditDebt} deleteDebt={deleteDebt} />
+                        : <DeliversTable clientDelivers={clientDelivers || []} setEditDeliverHook={setEditDeliverHook} deleteDeliver={deleteDeliver} />
+                    }
                 </div>
                 {editDebtHook.editingDebt && <ClientDebtsFormModal clientData={clientData} closeModal={handleCloseModal} isEditing={true} />}
                 {editDeliverHook.isEditing && <ClientDeliversFormModal clientData={clientData} closeModal={handleCloseDeliverModal} isEditing={true} />}
