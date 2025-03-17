@@ -28,7 +28,11 @@ function DebtsManager() {
   });
   const { isValidUUID, clientsHook, debtsHook } = useAppContext()
   const { getClientData } = clientsHook
-  const { getFinancialClientData, financialClientData:{totalDebtAmount} } = debtsHook
+  const { 
+    getFinancialClientData, 
+    financialClientData:{totalDebtAmount},
+    cancelDebt
+   } = debtsHook
 
   const [switchMode, setSwitchMode] = useState<"debts" | "payments">("debts")
 
@@ -68,8 +72,8 @@ function DebtsManager() {
 
               <div className="client-data-actions">
                 <Button color='dark' onClick={() => setShowFormModal(true)}><MdOutlineAccountBalanceWallet/> Agregar deuda</Button>
-                <Button color='dark' onClick={() => setShowDeliversFormModal(true)}><MdPayments /> Registrar pago</Button>
-                <Button disabled={totalDebtAmount === 0} color='red'><FaTrash /> Vaciar cuenta</Button>
+                <Button disabled={totalDebtAmount === 0} color='dark' onClick={() => setShowDeliversFormModal(true)}><MdPayments /> Registrar pago</Button>
+                <Button onClick={() => cancelDebt()} disabled={totalDebtAmount > 0} color='red'><FaTrash /> Vaciar cuenta</Button>
               </div>
 
               <div className="switch-container">
