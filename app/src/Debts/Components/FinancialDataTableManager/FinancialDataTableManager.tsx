@@ -73,6 +73,12 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
         })
     }
 
+    const calculateTotalDebt = (products: ClientDebt["debt_products"]) => {
+        return products.reduce((total, product) => {
+            return total + parseFloat(product.product_price) * parseInt(product.product_quantity);
+        }, 0);
+    }
+
     return (
         <React.Fragment>
             <div className="client-financial-data">
@@ -124,7 +130,7 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                                             <li><p>{product.product_quantity} {product.product_name} {parseFloat(product.product_price).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></li>
                                         </ul>
                                     ))}</td>
-                                    <td><p>{debt.debt_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
+                                    <td><p>{calculateTotalDebt(debt.debt_products).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
                                     <td className='client-debt-table-actions'>
                                         <Button color='blue' onClick={() => handleEditDebt(debt)}><FaEdit /> Editar</Button>
                                         <Popover shadow='md'>
