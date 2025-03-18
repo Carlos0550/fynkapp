@@ -7,10 +7,6 @@ interface FinancialDataTableManagerProps {
     clientData: ClientsInterface
 }
 
-import dayjs from "dayjs"
-import { Button, Popover } from '@mantine/core';
-
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { ClientDebt } from '../../../Context/Typescript/FinancialClientData';
 import ClientDebtsFormModal from '../ClientDebtsFormModal';
 
@@ -18,6 +14,7 @@ import "./FinancialDataTableManager.css"
 import ClientDeliversFormModal from '../ClientDeliversFormModal';
 import DebtTable from '../Components/DebtTable';
 import DeliversTable from '../Components/DeliversTable';
+import HistoryTable from '../Components/HistoryTable';
 
 function FinancialDataTableManager({ tableType, clientData }: FinancialDataTableManagerProps) {
     const { debtsHook, deliversHook } = useAppContext();
@@ -49,7 +46,6 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
             }
         })
     }
-
     const handleCloseModal = () => {
         setEditDebtHook({
             editingDebt: false,
@@ -90,7 +86,9 @@ function FinancialDataTableManager({ tableType, clientData }: FinancialDataTable
                 <div className="custom-table-container">
                     {tableType === "debts"
                         ? <DebtTable clientDebts={clientDebts || []} handleEditDebt={handleEditDebt} deleteDebt={deleteDebt} />
-                        : <DeliversTable clientDelivers={clientDelivers || []} setEditDeliverHook={setEditDeliverHook} deleteDeliver={deleteDeliver} />
+                        : tableType === "payments"
+                        ? <DeliversTable clientDelivers={clientDelivers || []} setEditDeliverHook={setEditDeliverHook} deleteDeliver={deleteDeliver} />
+                        : <HistoryTable/>
                     }
                 </div>
                 {editDebtHook.editingDebt && <ClientDebtsFormModal clientData={clientData} closeModal={handleCloseModal} isEditing={true} />}
