@@ -17,7 +17,7 @@ CREATE TABLE clients (
   client_city TEXT,
   client_phone TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_client_admin FOREIGN KEY(fk_user_id) REFERENCES users(user_id)
+  CONSTRAINT fk_client_admin FOREIGN KEY(fk_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE debts(
@@ -29,8 +29,8 @@ CREATE TABLE debts(
 	exp_date DATE,
 	debt_status TEXT NOT NULL DEFAULT 'active',
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_client_debt_id FOREIGN KEY(client_debt_id) REFERENCES clients(client_id),
-	CONSTRAINT fk_user_client_id FOREIGN KEY(fk_user_id) REFERENCES users(user_id)
+	CONSTRAINT fk_client_debt_id FOREIGN KEY(client_debt_id) REFERENCES clients(client_id) ON DELETE CASCADE,
+	CONSTRAINT fk_user_client_id FOREIGN KEY(fk_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE OR REPLACE FUNCTION set_exp_date()
@@ -53,8 +53,8 @@ CREATE TABLE delivers(
 	deliver_amount BIGINT NOT NULL,
 	deliver_date DATE NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_deliver_client_id FOREIGN KEY(deliver_client_id) REFERENCES clients(client_id),
-	CONSTRAINT fk_deliver_user_id FOREIGN KEY(deliver_user_id) REFERENCES users(user_id)
+	CONSTRAINT fk_deliver_client_id FOREIGN KEY(deliver_client_id) REFERENCES clients(client_id) ON DELETE CASCADE,
+	CONSTRAINT fk_deliver_user_id FOREIGN KEY(deliver_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE OR REPLACE FUNCTION update_exp_date_on_delivers()
@@ -75,19 +75,18 @@ AFTER INSERT ON delivers
 FOR EACH ROW
 EXECUTE FUNCTION update_exp_date_on_delivers();
 
-CREATE TYPE record_type_enum AS ENUM ('debt', 'deliver');
-CREATE TYPE source_table_enum AS ENUM ('debts', 'delivers');
 
-CREATE TABLE history_debts (
+CREATE TABLE client_history (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     client_id UUID NOT NULL,
-    record_type record_type_enum NOT NULL,
-    source_record_id UUID NOT NULL,
-    source_table source_table_enum NOT NULL,
-    details JSON NOT NULL,
-    total DECIMAL(10,2) NOT NULL,
-    operation_date DATE NOT NULL,
+    debt_details JSONB NOT NULL,
+    deliver_details JSONB NOT NULL,
+	total_delivers DECIMAL(10,2) NOT NULL,
+	total_debts DECIMAL(10,2) NOT NULL,
+	debt_date DATE NOT NULL,
+	administrator_id UUID,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_client_history_id FOREIGN KEY (client_id) REFERENCES clients(client_id)
+    CONSTRAINT fk_client_history_id FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE CASCADE,
+	CONSTRAINT fk_administrator_id FOREIGN KEY (administrator_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
