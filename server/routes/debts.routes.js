@@ -96,5 +96,17 @@ debtsRouter.post("/cancel-debt", verifyToken, async(req, res, next) => {
     next()
 }, debtsController.cancelDebt)
 
+debtsRouter.get("/get-history-client", verifyToken, async (req, res, next) => {
+    const user_id = req.user_id
+    const { clientID } = req.query
+    if (!user_id) {
+        return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
+    }
+    if (!clientID) {
+        return res.status(400).json({ msg: "El ID del cliente no fue proporcionado." })
+    }
+    next()
+}, debtsController.getHistoryClient)
+
 
 module.exports = debtsRouter
