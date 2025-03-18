@@ -281,13 +281,15 @@ async function getClientData(req, res) {
 const calculateDebtAmount = (debt) => {
     let total = 0;
     for (let i = 0; i < debt.length; i++) {
-        const product = debt[i]
+        const product = debt[i];
 
-        total += parseFloat(product.product_price) * parseInt(product.product_quantity);
+        const price = parseFloat(product.product_price) || 0;
+        const quantity = parseInt(product.product_quantity) || 0;
+
+        total += price * quantity;
     }
     return total;
-}
-
+};
 async function getClientFinancialData(req, res) {
     const { "getClientFinancialData.sql": clientQueries } = queries;
 
@@ -296,54 +298,50 @@ async function getClientFinancialData(req, res) {
         return res.status(500).json({ msg: "Error interno del servidor. Inténtalo más tarde." });
     }
 
-    const user_id = req.user_id
-    const { client_id } = req.query
+    const user_id = req.user_id;
+    const { client_id } = req.query;
     let client;
 
     try {
-        client = await pool.connect()
+        client = await pool.connect();
         const result = await client.query(clientQueries[0], [client_id, user_id]);
-        if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" })
-        let clientDebts = result.rows[0].clientdebts
-        let clientDelivers = result.rows[0].clientdelivers
+        
+        if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" });
 
-        if (!clientDebts) return res.status(404).json({
-            msg: "No se encontraron deudas para este cliente"
-        })
+        let clientDebts = result.rows[0].clientdebts || [];
+        let clientDelivers = result.rows[0].clientdelivers || [];
 
-        let totalDelivers = 0
-        if (clientDelivers && clientDelivers.length > 0) {
-            totalDelivers = clientDelivers.reduce((acc, deliver) => {
-                return acc + parseFloat(deliver.deliver_amount);
-            }, 0)
-        }
+        let totalDelivers = clientDelivers.reduce((acc, deliver) => {
+            return acc + (parseFloat(deliver.deliver_amount) || 0);
+        }, 0);
 
-        clientDebts = result.rows[0].clientdebts.map((debt) => {
+        clientDebts = clientDebts.map((debt) => {
+            const debtTotal = calculateDebtAmount(debt.debt_products);
+
             return {
                 debt_id: debt.debt_id,
                 debt_amount: debt.debt_amount,
                 debt_date: debt.debt_date,
                 debt_products: debt.debt_products,
-                debt_total: calculateDebtAmount(debt.debt_products) - totalDelivers,
+                debt_total: debtTotal, 
                 debt_exp: debt.exp_date,
-                debt_status: debt.debt_status === "active" ? "Al día" : "Vencido"
-            }
-        })
+                debt_status: debt.debt_status === "active" ? "Al día" : "Vencido"
+            };
+        });
 
-        const totalDebtAmount = clientDebts.reduce((acc, debt) => {
-            return acc + debt.debt_total;
-        }, 0);
+        const totalDebtAmount = clientDebts.reduce((acc, debt) => acc + debt.debt_total, 0) - totalDelivers;
 
         return res.status(200).json({
             clientDebts,
             totalDebtAmount,
             clientDelivers
-        })
+        });
+
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(500).json({
             msg: "Error interno del servidor, espera unos segundos y vuelve a intentarlo."
-        })
+        });
     } finally {
         if (client) client.release();
     }
