@@ -217,7 +217,6 @@ async function cancelDebt(req, res) {
         client = await pool.connect()   
         await client.query("BEGIN");
         const result1 = await client.query(cdqueries[0], [user_id,clientID])
-        console.log(result1.rows)
         if (result1.rowCount === 0){
             await client.query("ROLLBACK");
             throw new Error("Hubo un error inesperado al cancelar la deuda.")
@@ -232,8 +231,11 @@ async function cancelDebt(req, res) {
             await client.query("ROLLBACK");
             throw new Error("No hay entregas hechas por el cliente, no es posible cancelar.")
         }
-
-        if(result1.rows[0].total_debt_amount !== 0) {
+        
+        const settledAccount = result1.rows.reduce((acc, item) => {
+            return acc + item.total_debt_amount - item.total_delivers_amount;
+        },0)
+        if(settledAccount !== 0) {
             await client.query("ROLLBACK");
             throw new Error("El cliente aún tiene un saldo pendiente, no es posible cancelar.")
         }
@@ -265,6 +267,76 @@ async function cancelDebt(req, res) {
     }
 }
 
+async function getHistoryClient(req, res) {
+    const { "getHistoryClient.sql": ghqueries } = queries;
+    const { clientID } = req.query;
+    const user_id = req.user_id;
+
+    if (!ghqueries) {
+        console.log("❌ Archivo SQL getHistoryClient NO ENCONTRADO");
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        });
+    }
+
+    let client;
+    try {
+        client = await pool.connect();
+        const response = await client.query(ghqueries[0], [clientID, user_id]);
+
+        if (response.rowCount === 0) {
+            return res.status(404).json({ msg: "No se encontraron historiales" });
+        }
+
+        const clientHistory = response.rows.reduce((acc, history) => {
+            const debtDate = history.debt_date;
+
+            if (!acc[debtDate]) {
+                acc[debtDate] = {
+                    debt_date: debtDate,
+                    total_debts: parseFloat(history.total_debts) || 0,
+                    total_delivers: parseFloat(history.total_delivers) || 0,
+                    debt_details: [],
+                    deliver_details: []
+                };
+            }
+
+            if (
+                history.debt_detail &&
+                !acc[debtDate].debt_details.some(
+                    (item) => JSON.stringify(item) === JSON.stringify(history.debt_detail)
+                )
+            ) {
+                acc[debtDate].debt_details.push(history.debt_detail);
+            }
+
+            if (
+                history.deliver_detail &&
+                !acc[debtDate].deliver_details.some(
+                    (item) => JSON.stringify(item) === JSON.stringify(history.deliver_detail)
+                )
+            ) {
+                acc[debtDate].deliver_details.push(history.deliver_detail);
+            }
+
+            return acc;
+        }, {});
+
+        const formattedHistory = Object.values(clientHistory);
+
+        return res.status(200).json({ history: formattedHistory });
+
+    } catch (error) {
+        console.log("❌ Error en getHistoryClient:", error);
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        });
+    } finally {
+        if (client) client.release();
+    }
+}
+
+
 module.exports = {
-    createDebt, editDebt, deleteDebt, findClientsForDebts, cancelDebt
+    createDebt, editDebt, deleteDebt, findClientsForDebts, cancelDebt, getHistoryClient
 };
