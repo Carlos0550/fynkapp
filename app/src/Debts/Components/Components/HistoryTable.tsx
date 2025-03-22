@@ -170,7 +170,7 @@ const HistoryTable: React.FC = () => {
                         key={history.id}
                         onClick={() => handleSelectHistory(history.id, history.created_at)}
                       >
-                        {dayjs(history.created_at).format('DD/MM/YYYY')} ({getDaysDifference(history.created_at)})
+                        {dayjs(history.created_at).format('DD/MM/YYYY HH:mm')} ({getDaysDifference(history.created_at)})
                       </li>
                     ))}
                   </ul>
