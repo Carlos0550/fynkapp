@@ -267,22 +267,58 @@ async function cancelDebt(req, res) {
     }
 }
 
-async function getHistoryClient(req, res) {
+async function getHistoryRegistry(req,res) {
     const { "getHistoryClient.sql": ghqueries } = queries;
-    const { clientID } = req.query;
-    const user_id = req.user_id;
-
     if (!ghqueries) {
         console.log("❌ Archivo SQL getHistoryClient NO ENCONTRADO");
         return res.status(500).json({
             msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
         });
     }
+    const { clientID } = req.query;
+    const user_id = req.user_id;
+
+    if (!clientID) {
+        return res.status(400).json({ msg: "Debe proporcionar un ID de cliente" });
+    }
 
     let client;
     try {
         client = await pool.connect();
         const response = await client.query(ghqueries[0], [clientID, user_id]);
+
+        if (response.rowCount === 0) {
+            return res.status(404).json({ msg: "No se encontraron historiales de compra para este cliente." });
+        }
+
+        const history = response.rows;
+        return res.status(200).json({ history });
+    } catch (error) {
+        console.log("❌ Error en getHistoryRegistry:", error);
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        });
+    } finally {
+        if (client) client.release();
+    }
+}
+
+async function getHistoryClient(req, res) {
+    const { "getHistoryClient.sql": ghqueries } = queries;
+    const { clientID, history_id } = req.query;
+    const user_id = req.user_id;
+    console.log("History ID: ", history_id)
+    if (!ghqueries) {
+        console.log("❌ Archivo SQL getHistoryClient NO ENCONTRADO");
+        return res.status(500).json({
+            msg: "Error interno en el servidor, espere unos segundos e intente nuevamente"
+        });
+    }
+    
+    let client;
+    try {
+        client = await pool.connect();
+        const response = await client.query(ghqueries[1], [clientID, user_id, history_id]);
 
         if (response.rowCount === 0) {
             return res.status(404).json({ msg: "No se encontraron historiales" });
@@ -295,9 +331,9 @@ async function getHistoryClient(req, res) {
                 acc[debtDate] = {
                     debt_date: debtDate,
                     total_debts: parseFloat(history.total_debts) || 0,
-                    total_delivers: parseFloat(history.total_delivers) || 0,
                     debt_details: [],
-                    deliver_details: []
+                    deliver_details: [],
+                    created_at: history.created_at
                 };
             }
 
@@ -338,5 +374,5 @@ async function getHistoryClient(req, res) {
 
 
 module.exports = {
-    createDebt, editDebt, deleteDebt, findClientsForDebts, cancelDebt, getHistoryClient
+    createDebt, editDebt, deleteDebt, findClientsForDebts, cancelDebt, getHistoryClient, getHistoryRegistry
 };
