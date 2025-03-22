@@ -2,7 +2,13 @@ const { pool } = require("../../database.js")
 const fs = require("fs").promises
 const path = require("path")
 const bcryptjs = require("bcryptjs")
+const crypto = require('crypto');
 const { generateToken } = require("../../routes/Security/JWT.js")
+
+// Configurar el fallback para usar crypto.randomBytes
+bcryptjs.setRandomFallback((length) => {
+  return crypto.randomBytes(length);
+});
 
 let queries = {};
 
