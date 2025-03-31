@@ -28,6 +28,9 @@ let queries = {};
 })();
 
 const algorithm = "aes-256-cbc";
+if (!process.env.ENCRYPTION_KEY || !process.env.ENCRYPTION_IV) {
+    throw new Error("ENCRYPTION_KEY or ENCRYPTION_IV not found in environment variables");
+}
 const key = Buffer.from(process.env.ENCRYPTION_KEY, "hex");
 const iv = Buffer.from(process.env.ENCRYPTION_IV, "hex");
 
@@ -305,7 +308,7 @@ async function getClientFinancialData(req, res) {
     try {
         client = await pool.connect();
         const result = await client.query(clientQueries[0], [client_id, user_id]);
-        
+
         if (result.rowCount === 0) return res.status(404).json({ msg: "No se encontraron deudas ni entregas de dinero para este cliente" });
 
         let clientDebts = result.rows[0].clientdebts || [];
@@ -323,7 +326,7 @@ async function getClientFinancialData(req, res) {
                 debt_amount: debt.debt_amount,
                 debt_date: debt.debt_date,
                 debt_products: debt.debt_products,
-                debt_total: debtTotal, 
+                debt_total: debtTotal,
                 debt_exp: debt.exp_date,
                 debt_status: debt.debt_status === "active" ? "Al día" : "Vencido"
             };

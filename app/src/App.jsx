@@ -6,8 +6,16 @@ import UserDashboard from "./UserDashboard/UserDashboard"
 import ClientsManager from "./Clients/ClientsManager.tsx"
 import DebtsManager from "./Debts/DebtsManager.tsx"
 
-function App() {
+// import { useEffect, useRef } from "react"
+// import { createClients } from "./test/test_populate_db.js"
 
+function App() {
+  // const alreadyTestes = useRef(false)
+  // useEffect(()=>{
+  //   if(alreadyTestes.current) return;
+  //   alreadyTestes.current = true
+  //   createClients(30)
+  // },[])
   return (
     <Routes>
       <Route path='/' element={<Layout content={<UserDashboard />} />} />

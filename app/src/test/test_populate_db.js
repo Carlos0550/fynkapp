@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker"
-import { useAppContext } from "../Context/AppContext"
 import { logic_apis } from "../apis";
 
 const generateDNI = () => faker.number.int({ min: 10000000, max: 49999999 }).toString();
@@ -13,16 +12,22 @@ const generateFakeClient = () => ({
     client_city: faker.location.city(),  
 });
 
-const createClients = async (count = 100) => {
+const createClients = async (count) => {
+    if(!count || count < 10){
+        throw new Error("La cantidad de clientes a generar debe ser mayor a 10.")
+    }
     const clients = Array.from({ length: count }, generateFakeClient);
 
     for (const client of clients) {
         try {
             const url = new URL(logic_apis.clients + "/create-client");
+            const token = localStorage.getItem("token")
+
             const response = await fetch(url,{
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(client)
             })

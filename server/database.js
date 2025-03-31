@@ -12,7 +12,7 @@ const production_environment = {
 const development_environment = {
     user: "postgres",
     host: "localhost",
-    database: "fynkapp",
+    database: "fynkapp_database",
     password: "35218889",
     port: 5432,
 }

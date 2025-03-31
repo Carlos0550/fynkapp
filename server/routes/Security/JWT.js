@@ -9,9 +9,10 @@ const publicKeyPath = path.join(__dirname, "public-key.pem");
 async function getPrivateKey() {
     try {
         if (fs.existsSync(privateKeyPath)) {
-            return await fs.promises.readFile(privateKeyPath, "utf-8");
+            return await fs.promises.readFile(privateKeyPath, "utf8");
         } else if (process.env.PRIVATE_KEY) {
-            return process.env.PRIVATE_KEY.replace(/\\n/g, "\n"); // Corrige los saltos de línea
+            const formatted = process.env.PRIVATE_KEY.replace(/\\n/g, '\n').trim();
+            return formatted;
         } else {
             throw new Error("No se encontró una clave privada válida.");
         }
@@ -24,9 +25,10 @@ async function getPrivateKey() {
 async function getPublicKey() {
     try {
         if (fs.existsSync(publicKeyPath)) {
-            return await fs.promises.readFile(publicKeyPath, "utf-8");
+            return await fs.promises.readFile(publicKeyPath, "utf8");
         } else if (process.env.PUBLIC_KEY) {
-            return process.env.PUBLIC_KEY.replace(/\\n/g, "\n"); // Corrige los saltos de línea
+            const formatted = process.env.PUBLIC_KEY.replace(/\\n/g, '\n').trim();
+            return formatted;
         } else {
             throw new Error("No se encontró una clave pública válida.");
         }
@@ -47,10 +49,12 @@ const generateToken = async (payload) => {
 
         const { user_password, ...user } = payload;
 
-        return jwt.sign(user, privateKey, {
+        const token = jwt.sign(user, privateKey, {
             algorithm: "ES256",
-            expiresIn: `${diffHours}h`
+            expiresIn: `${diffHours}h`,
         });
+
+        return token;
     } catch (error) {
         console.error("❌ Error al generar el token:", error);
         throw new Error("No fue posible generar el token");
@@ -58,11 +62,13 @@ const generateToken = async (payload) => {
 };
 
 const verifyToken = async (req, res, next) => {
-    if (!req.headers.authorization) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
         return res.status(401).json({ msg: "No se detectó el token de usuario, reintente cerrando e iniciando sesión nuevamente." });
     }
 
-    const token = req.headers.authorization.split(" ")[1];
+    const token = authHeader.split(" ")[1];
 
     if (!token) {
         return res.status(401).json({ msg: "Sesión expirada o no válida." });
@@ -70,6 +76,7 @@ const verifyToken = async (req, res, next) => {
 
     try {
         const publicKey = await getPublicKey();
+
         const decoded = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
 
         req.user = decoded;
