@@ -60,6 +60,7 @@ function useUsers() {
   const loginUser = useCallback(async (formValues: UserLoginFormValuesInterface) => {
     
     const newUrl = new URL(logic_apis.users + "/login-user")
+    console.log(newUrl)
     try {
       const response = await fetch(newUrl, {
         method: "POST",

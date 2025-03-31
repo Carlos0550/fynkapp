@@ -153,7 +153,7 @@ const HistoryTable: React.FC = () => {
       {isFetching ? (
         <Skeleton height={20} width={350} radius={8} variant="text" />
       ) : (
-        historyRegistries.length > 0 && (
+        historyRegistries && historyRegistries.length > 0 && (
           <h3>Historial de {historyRegistries[0].client_fullname}</h3>
         )
       )}
@@ -161,7 +161,7 @@ const HistoryTable: React.FC = () => {
       <div className='history-registry-container'>
         {!showDetails ? (
           isFetching ? null : (
-            historyRegistries.length > 0 ? (
+            historyRegistries && historyRegistries.length > 0 ? (
               historyRegistries.map((registry, idx) => (
                 <div className='history-registry' key={idx}>
                   <ul>
