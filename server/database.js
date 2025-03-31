@@ -1,13 +1,6 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
-const production_environment = {
-    user: "postgres",
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,    
-    password: process.env.DB_PASSWORD,
-    port: 5432,
-}
 
 const development_environment = {
     user: "postgres",
@@ -17,14 +10,14 @@ const development_environment = {
     port: 5432,
 }
     
-const pool = new Pool(development_environment);
+//const pool = new Pool(development_environment);
 
-// const pool = new Pool({
-//     connectionString: process.env.CONNECTION_STRING,
-//     ssl: {
-//         rejectUnauthorized: false
-//     }
-// })
+const pool = new Pool({
+    connectionString: process.env.PG_CONNECTION_STRING,
+    ssl: {
+        rejectUnauthorized: false
+    }
+})
 
 async function verifyDbConnection() {
     try {
