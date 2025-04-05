@@ -224,7 +224,7 @@ const HistoryTable: React.FC = () => {
                       {details.deliver_details.map((deliver, i) => (
                         <ul key={i}>
                           <li>
-                            {deliver.deliver_date} |{" "}
+                            {dayjs(deliver.deliver_date).format("DD/MM/YYYY")} |{" "}
                             {parseFloat(deliver.deliver_amount).toLocaleString("es-AR", {
                               style: "currency",
                               currency: "ARS"

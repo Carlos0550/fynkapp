@@ -23,7 +23,7 @@ function DeliversTable({ clientDelivers, setEditDeliverHook, deleteDeliver }: De
             <tbody>
                 {clientDelivers && clientDelivers.map((payment, index) => (
                     <tr key={index}>
-                        <td><p>{dayjs(payment.deliver_date).format("YYYY-MM-DD")}</p></td>
+                        <td><p>{dayjs(payment.deliver_date).format("DD-MM-YYYY")}</p></td>
                         <td><p>{payment.deliver_amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</p></td>
                         <td className='client-debt-table-actions'>
                             <Button onClick={() => setEditDeliverHook({
