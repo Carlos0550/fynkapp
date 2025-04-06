@@ -125,13 +125,15 @@ function ClientsFinder() {
                             ))}
                         </tbody>
                     </Table>
-                    {searchValue.trim().length > 0 && clientsForDebts && clientsForDebts.length === 0 && (
-                        <p>No se encontraron resultados</p>
-                    )}
+                    <div className="info-client-table-container">
+                        {searchValue.trim().length > 0 && clientsForDebts && clientsForDebts.length === 0 && (
+                            <p>No se encontraron resultados</p>
+                        )}
 
-                    {clientsForDebts && clientsForDebts.length === 0 && (
-                        <p>Lista de clientes vacía</p>
-                    )}
+                        {!searchValue && clientsForDebts && clientsForDebts.length === 0 && (
+                            <p>Lista de clientes vacía</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </React.Fragment>
