@@ -18,35 +18,32 @@ function useClientForm(closeModal, clientData) {
             fields[0].focus()
             fields.forEach((field) => {
                 
-                if(field.id === "client_phone") field.value = clientData["client_phone"].toString()
-                field.value = clientData[field.id as keyof ClientsInterface]
+                if(field.name === "client_phone") field.value = clientData["client_phone"].toString()
+                field.value = clientData[field.name as keyof ClientsInterface]
             })
         }
     },[clientData])
 
     const [formValues, setFormValues] = useState<ClientsInterface>({
         client_id: "",
-        client_dni: 0,
+        client_dni: "",
         client_fullname: "",
         client_email: "",
-        client_address: "",
-        client_city: "",
-        client_phone: 0,
+
+        client_phone: "",
     });
 
     const [errors, setErrors] = useState<ClientInterfaceErrors>({
         client_dni: "",
         client_fullname: "",
         client_email: "",
-        client_address: "",
-        client_city: "",
         client_phone: "",
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues((prev) => ({
             ...prev,
-            [e.target.id]: e.target.value,
+            [e.target.name]: e.target.value,
         }));
     };
 
@@ -55,36 +52,42 @@ function useClientForm(closeModal, clientData) {
             client_dni: "",
             client_fullname: "",
             client_email: "",
-            client_address: "",
-            client_city: "",
             client_phone: "",
-        })
-
+        });
+    
         let newErrors: Partial<ClientInterfaceErrors> = {};
     
-        for (const field in formValues) {
-            if(formValues.client_id === "") continue
-            if (!formValues[field as keyof ClientsInterface]) {
-                newErrors[field as keyof ClientInterfaceErrors] = "Campo requerido";
+        if (!formValues.client_dni) {
+            newErrors.client_dni = "Campo requerido";
+        }
+    
+        if (!formValues.client_fullname) {
+            newErrors.client_fullname = "Campo requerido";
+        }
+    
+        if (formValues.client_dni) {
+            const regexDNI = /^\d{8}$/;
+            if (!regexDNI.test(formValues.client_dni.toString())) {
+                newErrors.client_dni = "DNI inválido";
             }
         }
     
-        const regexDNI = /^\d{8}$/;
-        if (!regexDNI.test(formValues.client_dni.toString())) {
-            newErrors.client_dni = "DNI inválido";
+        if (formValues.client_phone) {
+            const regexPhone = /^\d{7,10}$/;
+            if (!regexPhone.test(formValues.client_phone.toString())) {
+                newErrors.client_phone = "Teléfono inválido";
+            }
         }
     
-        const regexPhone = /^\d{7,10}$/;
-        if (!regexPhone.test(formValues.client_phone.toString())) {
-            newErrors.client_phone = "Teléfono inválido";
-        }
     
         setErrors(newErrors);
     
         return Object.keys(newErrors).length === 0;
     };
-
     
+    useEffect(()=>{
+        console.log(formValues)
+    },[formValues])
     const onFinish = async (e: React.FormEvent) => {
         e.preventDefault();
         const notificationID = Date.now().toString();
@@ -106,20 +109,16 @@ function useClientForm(closeModal, clientData) {
             if(result){
                 setFormValues({
                     client_id: "",
-                    client_dni: 0,
+                    client_dni: "",
                     client_fullname: "",
                     client_email: "",
-                    client_address: "",
-                    client_city: "",
-                    client_phone: 0
+                    client_phone: ""
                 })
 
                 setErrors({
                     client_dni: "",
                     client_fullname: "",
                     client_email: "",
-                    client_address: "",
-                    client_city: "",
                     client_phone: "",
                 })
 
@@ -136,20 +135,6 @@ function useClientForm(closeModal, clientData) {
         }
     };
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (clientFormRef.current) {    
-                const inputs = Array.from(clientFormRef.current.querySelectorAll<HTMLInputElement>("input"));
-                inputs.forEach((input) => input.addEventListener("input", handleInputChange));
-    
-                clearInterval(interval);
-            }
-        }, 500); 
-    
-        return () => clearInterval(interval); 
-    }, []);
-    
-
     return {
         clientFormRef,
         formValues,
@@ -158,6 +143,7 @@ function useClientForm(closeModal, clientData) {
         setErrors,
         validateFields,
         onFinish,
+        handleInputChange,
     };
 }
 
