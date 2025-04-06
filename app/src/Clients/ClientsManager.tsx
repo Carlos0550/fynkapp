@@ -65,7 +65,6 @@ const ClientsManager = () => {
                             <tr>
                                 <th>Cliente</th>
                                 {width > 768 && <th>Contacto</th>}
-                                {width > 768 && <th>Dirección</th>}
                                 <th></th>
                             </tr>
                         </thead>
@@ -78,18 +77,12 @@ const ClientsManager = () => {
                                     </td>
                                     {width > 768 && (
                                         <td>
-                                            <p><MdEmail /> {client.client_email}</p>
-                                            <p><MdPhone /> {client.client_phone}</p>
+                                            <p><MdEmail /> {client.client_email || "N/A"}</p>
+                                            <p><MdPhone /> {client.client_phone || "N/A"}</p>
 
                                         </td>
                                     )}
-                                    {width > 768 && (
-                                        <td>
-                                            {client.client_address && <p><MdMap /> {client.client_address}</p>}
-                                            {client.client_city && <p><FaCity /> {client.client_city}</p>}
-
-                                        </td>
-                                    )}
+                                    
                                     <td>
                                         <div className="client-cell-actions">
                                             {/* <button className='review-client-btn'
