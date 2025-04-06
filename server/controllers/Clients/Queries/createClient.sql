@@ -5,15 +5,11 @@ INSERT INTO clients(
     client_email,
     client_phone,
     client_dni,
-    client_address,
-    client_city,
     fk_user_id
 ) VALUES(
     $1,
     $2,
     $3,
     $4,
-    $5,
-    $6,
-    $7
+    $5
 );

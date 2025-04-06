@@ -58,7 +58,7 @@ async function createClient(req, res) {
     }
 
     let client;
-    const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
+    const { client_fullname, client_dni, client_phone, client_email } = req.body;
 
     try {
         client = await pool.connect();
@@ -66,9 +66,7 @@ async function createClient(req, res) {
 
         const encryptedDni = encrypt(client_dni);
 
-        const encryptedPhone = encrypt(client_phone);
-
-        const encryptedAddress = encrypt(client_address);
+        const encryptedPhone = client_phone ? encrypt(client_phone) : null;
 
         const result1 = await client.query(clientQueries[0], [encryptedDni, user_id]);
 
@@ -77,7 +75,7 @@ async function createClient(req, res) {
         }
 
         const result = await client.query(clientQueries[1], [
-            client_fullname, client_email, encryptedPhone, encryptedDni, encryptedAddress, client_city, user_id
+            client_fullname, client_email || null, encryptedPhone, encryptedDni, user_id
         ]);
 
         if (result.rowCount === 0) {
@@ -119,15 +117,13 @@ const getClients = async (req, res) => {
 
                 if (result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese DNI." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
-                const decryptedPhone = decrypt(result.rows[0].client_phone);
-                const decryptedAddress = decrypt(result.rows[0].client_address);
+                const decryptedPhone = result.rows[0]?.client_phone ? decrypt(result.rows[0].client_phone) : "";
 
                 const clientData = {
                     client_id: result.rows[0].client_id,
                     client_fullname: result.rows[0].client_fullname,
                     client_dni: decryptedDni,
                     client_phone: decryptedPhone,
-                    client_address: decryptedAddress,
                     client_email: result.rows[0].client_email,
                     client_city: result.rows[0].client_city
                 }
@@ -139,15 +135,13 @@ const getClients = async (req, res) => {
                 const result = await client.query(clientQueries[1], [`%${searchQuery.toLowerCase()}%`, user_id]);
                 if (result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes con ese nombre." })
                 const decryptedDni = decrypt(result.rows[0].client_dni);
-                const decryptedPhone = decrypt(result.rows[0].client_phone);
-                const decryptedAddress = decrypt(result.rows[0].client_address);
+                const decryptedPhone = result.rows[0]?.client_phone ? decrypt(result.rows[0].client_phone) : "";
 
                 const clientData = result.rows.map((client) => ({
                     client_id: client.client_id,
                     client_fullname: client.client_fullname,
                     client_dni: decryptedDni,
                     client_phone: decryptedPhone,
-                    client_address: decryptedAddress,
                     client_email: client.client_email,
                     client_city: client.client_city
                 }))
@@ -160,17 +154,14 @@ const getClients = async (req, res) => {
             const result = await client.query(clientQueries[2], [user_id]);
             if (result.rowCount === 0) return res.status(400).json({ msg: "No se encontraron clientes." })
             const decryptedDni = decrypt(result.rows[0].client_dni);
-            const decryptedPhone = decrypt(result.rows[0].client_phone);
-            const decryptedAddress = decrypt(result.rows[0].client_address);
+            const decryptedPhone = result.rows[0]?.client_phone ? decrypt(result.rows[0].client_phone) : "";
 
             let clientsData = result.rows.map((client) => ({
                 client_id: client.client_id,
                 client_fullname: client.client_fullname,
                 client_dni: decryptedDni,
                 client_phone: decryptedPhone,
-                client_address: decryptedAddress,
                 client_email: client.client_email,
-                client_city: client.client_city
             }))
             return res.status(200).json({
                 clients: clientsData,
@@ -187,7 +178,7 @@ const getClients = async (req, res) => {
 }
 
 async function editClient(req, res) {
-    const { client_fullname, client_dni, client_phone, client_address, client_email, client_city } = req.body;
+    const { client_fullname, client_dni, client_phone, client_email } = req.body;
     const { clientID } = req.query;
     let client;
     const user_id = req.user_id
@@ -202,10 +193,9 @@ async function editClient(req, res) {
         client = await pool.connect();
 
         const encryptedDni = encrypt(client_dni);
-        const encryptedPhone = encrypt(client_phone);
-        const encryptedAddress = encrypt(client_address);
+        const encryptedPhone = client_phone ? encrypt(client_phone) : null;
 
-        const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email, encryptedAddress, client_city, clientID, user_id]);
+        const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email || null, clientID, user_id]);
         if (result.rowCount === 0) return res.status(400).json({ msg: "No se pudo editar el cliente." })
 
         return res.status(200).json({ msg: "Cliente editado exitosamente." });

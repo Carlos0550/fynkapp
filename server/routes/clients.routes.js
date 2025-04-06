@@ -13,10 +13,7 @@ clientsRouter.post("/create-client", verifyToken, (req, res, next) => {
     const {
         client_fullname,
         client_dni,
-        client_phone,
-        client_address,
-        client_email,
-        client_city
+
     } = req.body;
 
     const user_id = req.user_id
@@ -24,7 +21,7 @@ clientsRouter.post("/create-client", verifyToken, (req, res, next) => {
         return res.status(401).json({ msg: "EL servidor no recibio su ID de administrador, espere unos segundos y vuelva a intentarlo." })
     }
 
-    if (!client_fullname || !client_dni || !client_phone || !client_address || !client_email || !client_city) {
+    if (!client_fullname || !client_dni) {
         return res.status(400).json({ msg: "Todos los campos son obligatorios" })
     }
 
@@ -43,10 +40,6 @@ clientsRouter.put("/edit-client", verifyToken, (req, res, next) => {
     const {
         client_fullname,
         client_dni,
-        client_phone,
-        client_address,
-        client_email,
-        client_city
     } = req.body;
 
     const { clientID } = req.query
@@ -59,7 +52,7 @@ clientsRouter.put("/edit-client", verifyToken, (req, res, next) => {
         return res.status(400).json({ msg: "El ID del Cliente no fue proporcionado." })
     }
 
-    if (!client_fullname || !client_dni || !client_phone || !client_address || !client_email || !client_city) {
+    if (!client_fullname || !client_dni) {
         return res.status(400).json({ msg: "Todos los campos son obligatorios" })
     }
 
