@@ -245,14 +245,12 @@ async function getClientData(req, res) {
         const result = await client.query(clientQueries[3], [user_id, clientID]);
         if (result.rowCount === 0) return res.status(400).json({ msg: "No se pudo obtener los datos del cliente." })
         const decryptedDni = decrypt(result.rows[0].client_dni);
-        const decryptedPhone = decrypt(result.rows[0].client_phone);
-        const decryptedAddress = decrypt(result.rows[0].client_address);
+        const decryptedPhone = result.rows[0].client_phone ? decrypt(result.rows[0].client_phone) : "";
         const clientData = {
             client_id: result.rows[0].client_id,
             client_fullname: result.rows[0].client_fullname,
             client_dni: decryptedDni,
             client_phone: decryptedPhone,
-            client_address: decryptedAddress,
             client_email: result.rows[0].client_email,
             client_city: result.rows[0].client_city
         }
