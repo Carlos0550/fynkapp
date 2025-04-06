@@ -1,85 +1,91 @@
 import React from 'react'
 import useClientForm from './utils/useClientForm'
 import { IoMdPersonAdd } from "react-icons/io";
-import "./ClientForm.css"
 import { FaSave } from 'react-icons/fa';
-
+import { Input } from '@mantine/core';
+import "./ClientForm.css"
 
 function ClientForm({ closeModal, clientData }) {
     const {
         clientFormRef,
         onFinish,
-        errors
+        errors, 
+        handleInputChange,
+        formValues
     } = useClientForm(closeModal, clientData)
 
     return (
         <form className='client-form' onSubmit={onFinish} ref={clientFormRef}>
-            <div className="client-form-labels-group">
-                <label htmlFor="client_fullname">Nombre completo:
-                    <input type="text" id="client_fullname" name="client_fullname" />
-                    {errors.client_fullname && <span
-                        style={{
-                            color: "red",
-                        }}
-                    >{errors.client_fullname}</span>}
-                </label>
+            <Input.Wrapper
+                label="Nombre completo"
+                htmlFor="client_fullname"
+                required
 
-                <label htmlFor="client_dni">DNI:
-                    <input type="number" id="client_dni" name="client_dni" />
-                    {errors.client_dni && <span
-                        style={{
-                            color: "red",
-                        }}
-                    >{errors.client_dni}</span>}
-                </label>
-            </div>
+                error={errors.client_fullname}
+            >
+                <Input
+                    name="client_fullname"
+                    type="text"
+                    value={formValues.client_fullname}
+                    onChange={handleInputChange}
+                />
+            </Input.Wrapper>
 
-            <div className="client-form-labels-group">
-                <label htmlFor="client_email">Correo:
-                    <input type="email" id="client_email" name="client_email" />
-                    {errors.client_email && <span
-                        style={{
-                            color: "red",
-                        }}
-                    >{errors.client_email}</span>}
-                </label>
+            <Input.Wrapper
+                label="DNI"
+                required
 
-                <label htmlFor="client_phone">Telefono:
-                    <input type="number" id="client_phone" name="client_phone" />
-                    {errors.client_phone && <span
-                        style={{
-                            color: "red",
-                        }}
-                    >{errors.client_phone}</span>}
-                </label>
-            </div>
+                error={errors.client_dni}
+            >
+                <Input
+                    name="client_dni"
+                    type="number"
+                    value={formValues.client_dni}
+                    onChange={handleInputChange}
+                />
+            </Input.Wrapper>
 
-            <div className="client-form-labels-group">
-                <label htmlFor="client_address">Direccion:
-                    <input type="text" id="client_address" name="client_address" />
-                    {errors.client_address && <span
-                        style={{
-                            color: "red",
-                        }}
-                    >{errors.client_address}</span>}
-                </label>
+            <Input.Wrapper
+                label="Correo"
+                htmlFor="client_email"
 
-                <label htmlFor="client_city">Ciudad:
-                    <input type="text" id="client_city" name="client_city" />
-                    {errors.client_city && <span style={{
-                        color: "red",
-                    }}>{errors.client_city}</span>}
-                </label>
-            </div>
-            <button 
+
+                error={errors.client_email}
+            >
+                <Input
+                    name="client_email"
+                    type="email"
+                    value={formValues.client_email}
+                    onChange={handleInputChange}
+                />
+            </Input.Wrapper>
+
+            <Input.Wrapper
+                label="Teléfono"
+                htmlFor="client_phone"
+                error={errors.client_phone}
+            >
+                <Input
+                    name="client_phone"
+                    type="number"
+                    value={formValues.client_phone}
+                    onChange={handleInputChange}
+                />
+            </Input.Wrapper>
+
+
+
+            <button
                 style={{
                     maxWidth: clientData && "200px"
                 }}
-            type='submit' className='client-form-button'>
+                type='submit'
+                className='client-form-button'
+            >
                 {
-                clientData 
-                ? <>Guardar cambios <FaSave/></>
-                : <>Añadir cliente <IoMdPersonAdd /></>
+                    clientData
+                        ? <>Guardar cambios <FaSave /></>
+                        : <>Añadir cliente <IoMdPersonAdd /></>
                 }
             </button>
         </form>
