@@ -7,33 +7,29 @@ import ClientForm from '../ClientForm/ClientForm.jsx'
 import {ClientsInterface} from "../../Context/Typescript/ClientsTypes.ts"
 
 function EditClientModal() {
-    const { width, 
+    const { 
         clientsHook:{
             setEditingClient, clients, editingClient
         }
      } = useAppContext()
-    const [fullScreeen] = useState(width < 768)
 
     
     const [clientData, setClientData] = useState<ClientsInterface>({
         client_id: "",
-        client_dni: 0,
+        client_dni: "",
         client_fullname: "",
         client_email: "",
-        client_address: "",
-        client_city: "",
-        client_phone: 0
+        client_phone: ""
     })
 
     const handleCloseModal = () => {
         setClientData({
             client_id: "",
-            client_dni: 0,
+            client_dni: "",
             client_fullname: "",
             client_email: "",
-            client_address: "",
-            client_city: "",
-            client_phone: 0
+
+            client_phone: ""
         })
         setEditingClient({ isEditing: false, clientID: "" })
     }
