@@ -5,6 +5,7 @@ import UsersManager from './Users/UsersManager'
 import UserDashboard from "./UserDashboard/UserDashboard"
 import ClientsManager from "./Clients/ClientsManager.tsx"
 import DebtsManager from "./Debts/DebtsManager.tsx"
+import Management from "./Management/Management.tsx"
 
 // import { useEffect, useRef } from "react"
 // import { createClients } from "./test/test_populate_db.js"
@@ -22,6 +23,7 @@ function App() {
       <Route path='/auth-user' element={<UsersManager />} />
       <Route path="/clients" element={<Layout content={<ClientsManager/>}/>}/>
       <Route path="/debts/*" element={<Layout content={<DebtsManager/>}/>}/>
+      <Route path="/management/*" element={<Layout content={<Management/>}/>}/>
     </Routes>
   )
 }
