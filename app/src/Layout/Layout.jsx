@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Layout.css';
 import { Icons } from '../Context/IconsManager';
+
 import { LuCalendarX2, LuClockAlert, LuSettings } from "react-icons/lu";
 import { GrMoney } from "react-icons/gr";
 import { MdSpaceDashboard, MdGroups2 } from "react-icons/md";
 import { FaRegCreditCard } from "react-icons/fa";
 import { IoMdEye, IoMdEyeOff, IoMdPersonAdd } from "react-icons/io";
+import { MdOutlineEngineering } from "react-icons/md";
+
 import { useAppContext } from '../Context/AppContext';
 import { Button, Divider, Popover } from '@mantine/core';
 import FastAddClientModal from '../FastActions/AddClient/FastAddClientModal';
@@ -64,22 +67,22 @@ const Layout = ({ content }) => {
                         <span className="text">Nuevo cliente</span>
                     </button>
 
-                    {width > 768 && (
+                    {sidebarOpen && (
                         <Divider 
-                            color="gray"
-                            size="sm"
-                            my="md"
-                            mx="xs"
-                            label="General"
-                            labelPosition="center"
-                            styles={{
-                                label: {
-                                    color: "#000000",
-                                    fontSize: "18px",
-                                    fontWeight: "600"
-                                }
-                            }}
-                        />
+                        color="gray"
+                        size="sm"
+                        my="md"
+                        mx="xs"
+                        label="General"
+                        labelPosition="center"
+                        styles={{
+                            label: {
+                                color: "#000000",
+                                fontSize: "18px",
+                                fontWeight: "600"
+                            }
+                        }}
+                    />
                     )}
 
                     <Link to="/">
@@ -96,22 +99,27 @@ const Layout = ({ content }) => {
                         <span className="text">Deudas</span>
                     </Link>
 
-                    {width > 768 && (
+                    <Link to={"/management"}>
+                        <span className='icon'><MdOutlineEngineering/></span>
+                        <span className='text'>Gestión</span>
+                    </Link>
+
+                    {sidebarOpen && (
                         <Divider 
-                            color="gray"
-                            size="sm"
-                            my="md"
-                            mx="xs"
-                            label="Vencimientos"
-                            labelPosition="center"
-                            styles={{
-                                label: {
-                                    color: "#000000",
-                                    fontSize: "18px",
-                                    fontWeight: "600"
-                                }
-                            }}
-                        />
+                        color="gray"
+                        size="sm"
+                        my="md"
+                        mx="xs"
+                        label="Vencimientos"
+                        labelPosition="center"
+                        styles={{
+                            label: {
+                                color: "#000000",
+                                fontSize: "18px",
+                                fontWeight: "600"
+                            }
+                        }}
+                    />
                     )}
 
                     <button className="yellow">
