@@ -16,7 +16,8 @@ export interface DebtsHookInterface {
     clientsForDebts: ClientsForDebtsInterface[],
     setClientsForDebts: React.Dispatch<React.SetStateAction<ClientsForDebtsInterface[]>>,
     findClientsForDebts: (searchValue: string) => Promise<boolean>;
-    cancelDebt: () => Promise<boolean>
+    cancelDebt: () => Promise<boolean>;
+    gettingClientData: boolean;
 }
 
 export interface ClientsHookInterface {
@@ -34,6 +35,8 @@ export interface ClientsHookInterface {
     editClient: (clientData: ClientsInterface) => Promise<boolean>,
     deleteClient: (clientID: string) => Promise<boolean>,
     getClientData: (clientID: string) => Promise<{ client: ClientsInterface }>;
+    deleting: boolean;
+    gettingClients: boolean
 }
 
 export interface UsersHookInterface {

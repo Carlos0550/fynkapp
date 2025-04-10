@@ -25,6 +25,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
         }
     })
 
+    const [gettingClientData, setGettingClientData] = useState<boolean>(false)
     const getFinancialClientData = useCallback(async () => {
         const attemptFetch = async (retries = 2) => {
             const url = new URL(logic_apis.clients + "/get-client-financial-data");
@@ -35,6 +36,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
             }
     
             try {
+                setGettingClientData(true)
                 const response = await fetch(url, {
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -77,6 +79,8 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
                     position: "top-right"
                 });
                 return false;
+            }finally{
+                setGettingClientData(false)
             }
         };
     
@@ -294,7 +298,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     editDebtHook, setEditDebtHook,
     editDebts, deleteDebt,
     clientsForDebts, findClientsForDebts,
-    cancelDebt
+    cancelDebt, gettingClientData
   }),[
     createDebt,
     getFinancialClientData,
@@ -302,7 +306,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     editDebtHook, setEditDebtHook,
     editDebts, deleteDebt,
     clientsForDebts, findClientsForDebts,
-    cancelDebt
+    cancelDebt, gettingClientData
   ])
 }
 

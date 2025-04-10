@@ -36,8 +36,6 @@ function useClientForm(closeModal, clientData) {
     const [errors, setErrors] = useState<ClientInterfaceErrors>({
         client_dni: "",
         client_fullname: "",
-        client_email: "",
-        client_phone: "",
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,8 +49,6 @@ function useClientForm(closeModal, clientData) {
         setErrors({
             client_dni: "",
             client_fullname: "",
-            client_email: "",
-            client_phone: "",
         });
     
         let newErrors: Partial<ClientInterfaceErrors> = {};
@@ -72,22 +68,13 @@ function useClientForm(closeModal, clientData) {
             }
         }
     
-        if (formValues.client_phone) {
-            const regexPhone = /^\d{7,10}$/;
-            if (!regexPhone.test(formValues.client_phone.toString())) {
-                newErrors.client_phone = "Teléfono inválido";
-            }
-        }
-    
     
         setErrors(newErrors);
     
         return Object.keys(newErrors).length === 0;
     };
     
-    useEffect(()=>{
-        console.log(formValues)
-    },[formValues])
+    const [savingClient, setSavingClient] = useState(false)
     const onFinish = async (e: React.FormEvent) => {
         e.preventDefault();
         const notificationID = Date.now().toString();
@@ -102,10 +89,12 @@ function useClientForm(closeModal, clientData) {
                 autoClose: false,
                 position: "top-right",
             })
+            setSavingClient(true)
             const result = clientData 
             ? await editClient(formValues)
             : await createClient(formValues)
             hideNotification(notificationID)
+            setSavingClient(false)
             if(result){
                 setFormValues({
                     client_id: "",
@@ -118,8 +107,6 @@ function useClientForm(closeModal, clientData) {
                 setErrors({
                     client_dni: "",
                     client_fullname: "",
-                    client_email: "",
-                    client_phone: "",
                 })
 
                 closeModal()
@@ -144,6 +131,7 @@ function useClientForm(closeModal, clientData) {
         validateFields,
         onFinish,
         handleInputChange,
+        savingClient
     };
 }
 

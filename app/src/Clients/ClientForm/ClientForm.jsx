@@ -2,7 +2,7 @@ import React from 'react'
 import useClientForm from './utils/useClientForm'
 import { IoMdPersonAdd } from "react-icons/io";
 import { FaSave } from 'react-icons/fa';
-import { Input } from '@mantine/core';
+import { Input, Loader } from '@mantine/core';
 import "./ClientForm.css"
 
 function ClientForm({ closeModal, clientData }) {
@@ -11,7 +11,8 @@ function ClientForm({ closeModal, clientData }) {
         onFinish,
         errors, 
         handleInputChange,
-        formValues
+        formValues,
+        savingClient
     } = useClientForm(closeModal, clientData)
 
     return (
@@ -81,12 +82,16 @@ function ClientForm({ closeModal, clientData }) {
                 }}
                 type='submit'
                 className='client-form-button'
+                disabled={savingClient}
+                
             >
-                {
-                    clientData
-                        ? <>Guardar cambios <FaSave /></>
-                        : <>Añadir cliente <IoMdPersonAdd /></>
-                }
+                {!savingClient && clientData && (
+                    <>Guardar cambios <FaSave /></>
+                )}
+                {!savingClient && !clientData && (
+                    <>Añadir cliente <IoMdPersonAdd /></>
+                )}
+                {savingClient && <Loader/>}
             </button>
         </form>
     )

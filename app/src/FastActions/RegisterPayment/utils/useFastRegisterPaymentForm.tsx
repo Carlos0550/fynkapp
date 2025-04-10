@@ -118,7 +118,6 @@ function useFastRegisterPaymentForm(
           total: 0
         })
         setStep(1)
-        navigate(`/clients/customer-credit/${clientData.client_id}`)
         
         closeModal()
       }, 1000);

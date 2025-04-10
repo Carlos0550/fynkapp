@@ -14,7 +14,7 @@ interface FormProps {
 
 function DeliversForm({ clientData, closeModal, isEditing }: FormProps) {
 
-    const { formValues, handleInputChange, handleDateChange, onFinish } = useDeliversForm(
+    const { formValues, handleInputChange, handleDateChange, onFinish, saving } = useDeliversForm(
         closeModal, isEditing, clientData
     );
 
@@ -57,7 +57,7 @@ function DeliversForm({ clientData, closeModal, isEditing }: FormProps) {
                     />
                 </Input.Wrapper>
             </div>
-            <Button color='dark' style={{ maxWidth: "150px" }} type='submit'>
+            <Button color='dark' style={{ maxWidth: "150px" }} type='submit' disabled={saving} loading={saving}>
                 Guardar entrega
             </Button>
         </form>

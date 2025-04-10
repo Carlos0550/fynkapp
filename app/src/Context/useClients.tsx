@@ -16,7 +16,7 @@ function useClients(verifyToken, loginData) {
         clientID: ""
     })
     
-
+    const [gettingClients, setGettingClients] = useState<boolean>(false)
     const getClient = useCallback(async (searchQuery?: any) => {
         if(!token) return;
         await verifyToken()
@@ -24,6 +24,7 @@ function useClients(verifyToken, loginData) {
         url.searchParams.append("searchQuery", searchQuery || "")
 
         try {
+            setGettingClients(true)
             const response = await fetch(url,{
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -78,6 +79,8 @@ function useClients(verifyToken, loginData) {
                 position: "top-right"
             })
             return false
+        }finally{
+            setGettingClients(false)
         }
 
     }, [])
@@ -181,11 +184,13 @@ function useClients(verifyToken, loginData) {
         }
     },[clients, editingClient])
 
+    const [deleting, setDeleting] = useState<boolean>(false)
     const deleteClient = useCallback(async (clientID: string) => {
         const url = new URL(logic_apis.clients + "/delete-client")
         url.searchParams.append("clientID", clientID)
 
         try {
+            setDeleting(true)
             const response = await fetch(url, {
                 method: "DELETE",
                 headers: {
@@ -217,6 +222,8 @@ function useClients(verifyToken, loginData) {
                 position: "top-right"
             })
             return false
+        }finally{
+            setDeleting(false)
         }
     },[setClients])
 
@@ -227,7 +234,7 @@ function useClients(verifyToken, loginData) {
             const timer = setTimeout(() => {
                 getClient();
                 hasFetched.current = true; 
-            }, 1000); 
+            }, 100); 
 
             return () => clearTimeout(timer);
         }
@@ -265,7 +272,9 @@ function useClients(verifyToken, loginData) {
         setEditingClient,
         editClient,
         deleteClient,
-        getClientData
+        getClientData,
+        deleting,
+        gettingClients
     }), [
         clients,
         createClient,
@@ -274,7 +283,9 @@ function useClients(verifyToken, loginData) {
         setEditingClient,
         editClient,
         deleteClient,
-        getClientData
+        getClientData,
+        deleting,
+        gettingClients
     ])
 }
 

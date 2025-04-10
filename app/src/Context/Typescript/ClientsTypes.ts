@@ -10,7 +10,4 @@ export interface ClientsInterface {
 export interface ClientInterfaceErrors{
     client_dni: string,
     client_fullname: string,
-    client_email: string,
-
-    client_phone: string
 }
