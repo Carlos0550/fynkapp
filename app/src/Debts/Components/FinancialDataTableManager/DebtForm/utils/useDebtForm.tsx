@@ -130,6 +130,7 @@ function useDebtForm(clientData: ClientsInterface, closeModal: () => void, isEdi
     return parsed.isValid() ? parsed.toDate() : null;
   };
 
+  const [savingDebt, setSavingDebt] = useState(false)
   const onFinish = async(e: React.FormEvent) => {
     e.preventDefault()
     if(validationsErrors.length > 0) return showNotification({
@@ -153,11 +154,11 @@ function useDebtForm(clientData: ClientsInterface, closeModal: () => void, isEdi
     formData.append("debt_date", dayjs(formValues.debt_date).format("YYYY-MM-DD"))
     !isEditing && formData.append("client_id", formValues.client_id.toString())
 
-
+    setSavingDebt(true)
     const result = isEditing
     ? await editDebts(formData)
     : await createDebt(formData, clientData.client_fullname)
-
+    setSavingDebt(false)
     if(result){
       closeModal()
     }
@@ -199,7 +200,8 @@ function useDebtForm(clientData: ClientsInterface, closeModal: () => void, isEdi
     dateError,
     products,
     total,
-    onFinish
+    onFinish,
+    savingDebt
   };
 }
 

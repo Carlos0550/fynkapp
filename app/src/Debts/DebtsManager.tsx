@@ -16,12 +16,10 @@ function DebtsManager() {
   const clientID = searchParams.get("clientID");
   const [clientData, setClientData] = useState<ClientsInterface>({
     client_id: "",
-    client_dni: 0,
+    client_dni: "",
     client_fullname: "",
     client_email: "",
-    client_address: "",
-    client_city: "",
-    client_phone: 0
+    client_phone: ""
   });
   const { isValidUUID, clientsHook, debtsHook } = useAppContext();
   const { getClientData } = clientsHook;

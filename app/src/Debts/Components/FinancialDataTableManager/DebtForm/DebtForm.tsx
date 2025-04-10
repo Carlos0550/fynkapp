@@ -20,7 +20,8 @@ function DebtForm({ clientData, closeModal, isEditing }: FormProps) {
     validationsErrors,
     dateError,
     total,
-    onFinish
+    onFinish,
+    savingDebt
   } = useDebtForm(clientData, closeModal, isEditing);
 
   return (
@@ -62,7 +63,7 @@ function DebtForm({ clientData, closeModal, isEditing }: FormProps) {
         <p>Total: {parseFloat(total).toLocaleString("es-AR",{style: "currency", currency: "ARS"})}</p>
       </div>
 
-      <Button type="submit" color="black">{isEditing ? "Actualizar" : "Guardar"}</Button>
+      <Button disabled={savingDebt} loading={savingDebt} type="submit" color="black">{isEditing ? "Actualizar" : "Guardar"}</Button>
     </form>
   );
 }
