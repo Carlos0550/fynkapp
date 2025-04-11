@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './clientsManager.css';
 import { useAppContext } from '../Context/AppContext';
-import { FaCity, FaSearch, FaTimes, FaUser } from 'react-icons/fa';
-import { PiIdentificationCardFill } from 'react-icons/pi';
-import { MdDelete, MdEdit, MdEmail, MdMap, MdPhone } from 'react-icons/md';
+import {  FaSearch, FaTimes } from 'react-icons/fa';
+
 import { useDisclosure } from '@mantine/hooks';
 import ClientForm from './ClientForm/ClientFormModal';
 import EditClientModal from './EditClient/EditClientModal';
-import { Flex, Loader, Popover, Skeleton } from '@mantine/core';
+import { Flex, Skeleton } from '@mantine/core';
+import ClientsTable from './ClientsTable/ClientsTable';
 
 const ClientsManager = () => {
     const [searchFocus, setSearchFocus] = useState(true);
     const [opened, { open, close }] = useDisclosure(false);
-    const { clientsHook, width } = useAppContext();
-    const { getClient, clients, editingClient, setEditingClient, deleteClient, deleting, gettingClients } = clientsHook
+    const { clientsHook } = useAppContext();
+    const { getClient, editingClient, gettingClients } = clientsHook
     const [searchQuery, setSearchQuery] = useState('');
-    // const navigate = useNavigate();
 
     useEffect(() => {
         if (searchQuery.trim() === '') return;
@@ -103,55 +102,7 @@ const ClientsManager = () => {
                             )}
                         </div>
                     </div>
-                    <div className="custom-table-container" style={{ overflow: "auto" }}>
-                        <table className="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    {width > 768 && <th>Contacto</th>}
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {clients && clients.length > 0 && clients.map((client) => (
-                                    <tr key={client.client_id}>
-                                        <td>
-                                            <p><FaUser /> {client.client_fullname}</p>
-                                            {client.client_dni && <p><PiIdentificationCardFill /> {client.client_dni}</p>}
-                                        </td>
-                                        {width > 768 && (
-                                            <td>
-                                                <p><MdEmail /> {client.client_email || "N/A"}</p>
-                                                <p><MdPhone /> {client.client_phone || "N/A"}</p>
-
-                                            </td>
-                                        )}
-
-                                        <td>
-                                            <div className="client-cell-actions">
-                                                <button className='edit-client-btn'
-                                                    onClick={() => setEditingClient({ isEditing: true, clientID: client.client_id })}
-                                                ><MdEdit size={18} /> Editar</button>
-                                                <Popover>
-                                                    <Popover.Target>
-                                                        <button className='delete-client-btn'>
-                                                            <MdDelete size={18} /> Eliminar
-                                                        </button>
-                                                    </Popover.Target>
-                                                    <Popover.Dropdown>
-                                                        <p>¿Desea eliminar el cliente {client.client_fullname}?</p>
-                                                        <button className='delete-client-btn' disabled={deleting}
-                                                            onClick={() => deleteClient(client.client_id)}
-                                                        ><MdDelete size={18} /> {deleting ? <Loader /> : "Si, eliminar"}</button>
-                                                    </Popover.Dropdown>
-                                                </Popover>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <ClientsTable/>
                 </div>
             )}
             {opened && <ClientForm closeModal={close} />}
