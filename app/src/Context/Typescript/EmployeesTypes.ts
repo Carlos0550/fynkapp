@@ -5,3 +5,20 @@ export interface EmployeesInterface{
     hireDate: Date | undefined, 
     state: boolean
 }
+
+export interface SectionsForRolesInterface {
+  fast_actions: string,
+  clients: string,
+  debts: string,
+  expirations: string,
+  admin_dashboard: string,
+  managment: string,
+}
+
+export type RoleLevel = 'level1' | 'level2' | 'level3' | 'custom'
+
+export type RolesInterface = {
+  [key in Exclude<RoleLevel, 'custom'>]: {
+    access_to: (keyof SectionsForRolesInterface)[]
+  }
+}
