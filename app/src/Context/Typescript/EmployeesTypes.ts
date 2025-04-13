@@ -19,6 +19,18 @@ export type RoleLevel = 'level1' | 'level2' | 'level3' | 'custom'
 
 export type RolesInterface = {
   [key in Exclude<RoleLevel, 'custom'>]: {
-    access_to: (keyof SectionsForRolesInterface)[]
+    access_to?: (keyof SectionsForRolesInterface)[]
   }
+}
+
+export type EmployeeRole = {
+    level: 'level1' | 'level2' | 'level3' | 'custom',
+    access_to: (keyof SectionsForRolesInterface)[]
+}
+
+export interface EmployeeFormData {
+    employee_name: string,
+    employee_dni: string,
+    employee_email: string,
+    employee_role: EmployeeRole
 }

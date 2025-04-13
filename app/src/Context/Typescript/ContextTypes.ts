@@ -1,6 +1,7 @@
 import { ClientsInterface } from "./ClientsTypes"
 import { ClientsForDebtsInterface } from "./DebtsTypes"
 import { DeliverDataInterface, EditDeliverHookInterface } from "./DeliversTypes"
+import { EmployeeFormData } from "./EmployeesTypes"
 import { EditDebtHookInterface, FinancialClientData } from "./FinancialClientData"
 import { LoginDataInterface, UserLoginFormValuesInterface, UserRegisterFormValuesInterface } from "./UsersTypes"
 
@@ -63,6 +64,9 @@ export interface DeliversHookInterface {
     setEditDeliverHook: React.Dispatch<React.SetStateAction<EditDeliverHookInterface>>
 }
 
+export interface EmployeersHookInterface{
+    saveEmployee: (employeeData: EmployeeFormData) => Promise<boolean>
+}
 
 export interface AppContextValueInterface {
     width: number
@@ -72,4 +76,5 @@ export interface AppContextValueInterface {
     usersHook: UsersHookInterface
     debtsHook: DebtsHookInterface
     deliversHook: DeliversHookInterface
+    employeersHook: EmployeersHookInterface
 }

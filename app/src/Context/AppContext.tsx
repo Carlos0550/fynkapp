@@ -7,6 +7,7 @@ import useDebts from "./useDebts";
 
 import {AppContextValueInterface} from "./Typescript/ContextTypes"
 import useDelivers from "./useDelivers";
+import useEmployeers from "./useEmployeers";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -46,6 +47,7 @@ export const AppContextProvider = ({ children }: any) => {
     
     const deliversHook = useDelivers(setCuentaRegresivaIniciada, showSessionExpiredNotification, getFinancialClientData)
 
+    const employersHook = useEmployeers()
     const contextValues = useMemo(() => ({
         clientsHook,
         usersHook,
@@ -53,14 +55,16 @@ export const AppContextProvider = ({ children }: any) => {
         debtsHook,
         deliversHook,
         width,
-        isValidUUID
+        isValidUUID,
+        employersHook
     }), [
         clientsHook,
         usersHook,
         authHook,
         debtsHook,
         deliversHook,
-        width
+        width,
+        employersHook
     ])
 
 
