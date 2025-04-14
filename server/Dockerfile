@@ -2,12 +2,15 @@ FROM node:20
 
 WORKDIR /app
 
+# Instalar dependencias
 COPY package.json package-lock.json ./
+RUN npm install
 
-RUN npm install --omit=dev
-
+# Copiar el resto del código (incluyendo tsconfig y src)
 COPY . .
 
-EXPOSE 5000
+# Compilar el código TypeScript
+RUN npm run build
 
-CMD ["node", "index.js"]
+# Usar el build compilado
+CMD ["node", "dist/index.js"]
