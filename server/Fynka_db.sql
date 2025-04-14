@@ -90,3 +90,11 @@ CREATE TABLE client_history (
 	CONSTRAINT fk_administrator_id FOREIGN KEY (administrator_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+CREATE TYPE employee_statuses AS ENUM ('verify_pending', 'active', 'not_active');
+CREATE TABLE employees (
+    employee_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    employee_name TEXT NOT NULL,
+    employee_email TEXT NOT NULL,
+    employee_dni TEXT NOT NULL,
+    employee_status employee_statuses DEFAULT 'verify_pending'
+);

@@ -1,138 +1,130 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ClientInterfaceErrors, ClientsInterface } from "../../../Context/Typescript/ClientsTypes";
-import { useAppContext } from "../../../Context/AppContext"
+import { useAppContext } from "../../../Context/AppContext";
 import { hideNotification, showNotification } from "@mantine/notifications";
-function useClientForm(closeModal, clientData) {
-    const clientFormRef = useRef<HTMLFormElement | null>(null);
 
-    const { 
-        clientsHook:{
-            createClient, editClient
-        }
-    } = useAppContext()
+function useClientForm(closeModal: () => void, clientData?: Partial<ClientsInterface>) {
+  const {
+    clientsHook: { createClient, editClient },
+  } = useAppContext();
 
-    useEffect(() => {
-        if(clientData && Object.keys(clientData).length > 0){
-            setFormValues(clientData)
-            const fields = Array.from(clientFormRef.current?.querySelectorAll<HTMLInputElement>("input") || [])
-            fields[0].focus()
-            fields.forEach((field) => {
-                
-                if(field.name === "client_phone") field.value = clientData["client_phone"].toString()
-                field.value = clientData[field.name as keyof ClientsInterface]
-            })
-        }
-    },[clientData])
+  const [formValues, setFormValues] = useState<ClientsInterface>({
+    client_id: "",
+    client_dni: "",
+    client_fullname: "",
+    client_email: "",
+    client_phone: "",
+  });
 
-    const [formValues, setFormValues] = useState<ClientsInterface>({
-        client_id: "",
-        client_dni: "",
-        client_fullname: "",
-        client_email: "",
+  const [errors, setErrors] = useState<ClientInterfaceErrors>({
+    client_dni: "",
+    client_fullname: "",
+  });
 
-        client_phone: "",
+  const [savingClient, setSavingClient] = useState(false);
+
+  useEffect(() => {
+    if (clientData && Object.keys(clientData).length > 0) {
+      setFormValues(prev => ({
+        ...prev,
+        ...clientData,
+        client_phone: clientData.client_phone?.toString() || ""
+      }));
+    }
+  }, [clientData]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validateFields = (): boolean => {
+    const newErrors: Partial<ClientInterfaceErrors> = {};
+
+    if (!formValues.client_dni) {
+      newErrors.client_dni = "Campo requerido";
+    } else {
+      const regexDNI = /^\d{8}$/;
+      if (!regexDNI.test(formValues.client_dni.toString())) {
+        newErrors.client_dni = "DNI inválido";
+      }
+    }
+
+    if (!formValues.client_fullname) {
+      newErrors.client_fullname = "Campo requerido";
+    }
+
+    setErrors({
+      client_dni: newErrors.client_dni || "",
+      client_fullname: newErrors.client_fullname || "",
     });
 
-    const [errors, setErrors] = useState<ClientInterfaceErrors>({
-        client_dni: "",
-        client_fullname: "",
-    });
+    return Object.keys(newErrors).length === 0;
+  };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
-    };
+  const onFinish = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const notificationID = Date.now().toString();
 
-    const validateFields = () => {
-        setErrors({
-            client_dni: "",
-            client_fullname: "",
+    if (validateFields()) {
+      showNotification({
+        id: notificationID,
+        title: "Guardando...",
+        message: "",
+        color: "blue",
+        loading: true,
+        autoClose: false,
+        position: "top-right",
+      });
+
+      setSavingClient(true);
+      const result = clientData
+        ? await editClient(formValues)
+        : await createClient(formValues);
+
+      hideNotification(notificationID);
+      setSavingClient(false);
+
+      if (result) {
+        setFormValues({
+          client_id: "",
+          client_dni: "",
+          client_fullname: "",
+          client_email: "",
+          client_phone: "",
         });
-    
-        let newErrors: Partial<ClientInterfaceErrors> = {};
-    
-        if (!formValues.client_dni) {
-            newErrors.client_dni = "Campo requerido";
-        }
-    
-        if (!formValues.client_fullname) {
-            newErrors.client_fullname = "Campo requerido";
-        }
-    
-        if (formValues.client_dni) {
-            const regexDNI = /^\d{8}$/;
-            if (!regexDNI.test(formValues.client_dni.toString())) {
-                newErrors.client_dni = "DNI inválido";
-            }
-        }
-    
-    
-        setErrors(newErrors);
-    
-        return Object.keys(newErrors).length === 0;
-    };
-    
-    const [savingClient, setSavingClient] = useState(false)
-    const onFinish = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const notificationID = Date.now().toString();
-        
-        if(validateFields()){
-            showNotification({
-                id: notificationID,
-                title: "Guardando...",
-                message: "",
-                color: "blue",
-                loading: true,
-                autoClose: false,
-                position: "top-right",
-            })
-            setSavingClient(true)
-            const result = clientData 
-            ? await editClient(formValues)
-            : await createClient(formValues)
-            hideNotification(notificationID)
-            setSavingClient(false)
-            if(result){
-                setFormValues({
-                    client_id: "",
-                    client_dni: "",
-                    client_fullname: "",
-                    client_email: "",
-                    client_phone: ""
-                })
 
-                setErrors({
-                    client_dni: "",
-                    client_fullname: "",
-                })
+        setErrors({
+          client_dni: "",
+          client_fullname: "",
+        });
 
-                closeModal()
-            }
-        }else{
-            showNotification({
-                title: "Verifique los campos, todos son obligatorios.",
-                message: "",
-                color: "red",
-                autoClose: 2000,
-                position: "top-right",
-            })
-        }
-    };
+        closeModal();
+      }
+    } else {
+      showNotification({
+        title: "Verifique los campos, todos son obligatorios.",
+        message: "",
+        color: "red",
+        autoClose: 2000,
+        position: "top-right",
+      });
+    }
+  };
 
-    return {
-        clientFormRef,
-        formValues,
-        setFormValues,
-        errors,
-        setErrors,
-        validateFields,
-        onFinish,
-        handleInputChange,
-        savingClient
-    };
+  return {
+    formValues,
+    setFormValues,
+    errors,
+    setErrors,
+    validateFields,
+    onFinish,
+    handleInputChange,
+    savingClient,
+  };
 }
 
 export default useClientForm;
