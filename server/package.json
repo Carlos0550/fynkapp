@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc && npm run copy-sql",
-    "copy-sql": "cp --parents $(find src/controllers -type f -path '*/Queries/*.sql') dist/",
+    "build": "tsc && node copySQL.js",
     "start": "node dist/index.js"
   },
   "keywords": [],
