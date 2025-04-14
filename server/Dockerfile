@@ -2,15 +2,20 @@ FROM node:20
 
 WORKDIR /app
 
-# Instalar dependencias
+# Copiar archivos de dependencias
 COPY package.json package-lock.json ./
+
+# Instalar TODO (incluyendo devDependencies como TypeScript)
 RUN npm install
 
-# Copiar el resto del código (incluyendo tsconfig y src)
+# Copiar el resto del proyecto
 COPY . .
 
-# Compilar el código TypeScript
+# Compilar TypeScript
 RUN npm run build
 
-# Usar el build compilado
+# Exponer puerto
+EXPOSE 5000
+
+# Ejecutar backend compilado
 CMD ["node", "dist/index.js"]
