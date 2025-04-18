@@ -1,5 +1,5 @@
 export const base_api={
-    url: "http://amiable-perception.railway.internal",
+    url: "https://fynkapp-production.up.railway.app",
 }
 
 //https://fynkapp-production.up.railway.app
