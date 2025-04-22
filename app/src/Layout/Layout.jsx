@@ -17,7 +17,7 @@ import FastAddClientModal from '../FastActions/AddClient/FastAddClientModal';
 import FastRegisterPaymentModal from '../FastActions/RegisterPayment/FastRegisterPaymentModal';
 const Layout = ({ content }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const { width, authHook:{
+    const { width, authHook: {
         loginData,
         handleCloseSession
     } } = useAppContext()
@@ -25,12 +25,12 @@ const Layout = ({ content }) => {
     const [openFastRegisterPaymentModal, setOpenFastRegisterPaymentModal] = useState(false)
 
 
-    useEffect(()=>{
-        console.log(loginData)
-    },[loginData])
+    const closeSidebar = () => {
+        if(width <= 768) setSidebarOpen(false)
+    }
 
     useEffect(() => {
-        if(width > 768) setSidebarOpen(true)
+        if (width > 768) setSidebarOpen(true)
     }, [width])
     return (
         <div className="layout">
@@ -41,43 +41,12 @@ const Layout = ({ content }) => {
                 </div>
 
                 <nav className="sidebar-nav">
-                    {sidebarOpen && (
-                        <Divider 
-                            color="gray"
-                            size="sm"
-                            my="md"
-                            mx="xs"
-                            label="Acciones Rápidas"
-                            labelPosition="center"
-                            styles={{
-                                label: {
-                                    color: "#000000",
-                                    fontSize: "18px",
-                                    fontWeight: "600"
-                                }
-                            }}
-                        />
-                    )}
-                    <button
-                        onClick={() => setOpenFastRegisterPaymentModal(true)}
-                    >
-                        <span className="icon"><FaRegCreditCard /></span>
-                        <span className="text">Registrar pago</span>
-                    </button>
-                    <button
-                        onClick={() => setOpenClientFormModal(true)}
-                    >
-                        <span className="icon"><IoMdPersonAdd /></span>
-                        <span className="text">Nuevo cliente</span>
-                    </button>
-
-                    {sidebarOpen && (
-                        <Divider 
+                    <Divider
                         color="gray"
                         size="sm"
                         my="md"
                         mx="xs"
-                        label="General"
+                        label={sidebarOpen ? "Acciones Rápidas" : ""}
                         labelPosition="center"
                         styles={{
                             label: {
@@ -87,18 +56,51 @@ const Layout = ({ content }) => {
                             }
                         }}
                     />
-                    )}
+                    <button
+                        onClick={() => {
+                            setOpenFastRegisterPaymentModal(true)
+                            closeSidebar()
+                        }}
+                    >
+                        <span className="icon"><FaRegCreditCard /></span>
+                        <span className="text">Registrar pago</span>
+                    </button>
+                    <button
+                        onClick={() => {
+                            setOpenClientFormModal(true)
+                            closeSidebar()
+                        }}
+                    >
+                        <span className="icon"><IoMdPersonAdd /></span>
+                        <span className="text">Nuevo cliente</span>
+                    </button>
+
+                    <Divider
+                        color="gray"
+                        size="sm"
+                        my="md"
+                        mx="xs"
+                        label={sidebarOpen ? "General" : ""}
+                        labelPosition="center"
+                        styles={{
+                            label: {
+                                color: "#000000",
+                                fontSize: "18px",
+                                fontWeight: "600"
+                            }
+                        }}
+                    />
 
                     {/* <Link to="/">
                         <span className="icon"><MdSpaceDashboard /></span>
                         <span className="text">Dashboard</span>
                     </Link> */}
-                    <Link to="/clients">
+                    <Link to="/clients" onClick={closeSidebar}>
                         <span className="icon"><MdGroups2 /></span>
                         <span className="text">Clientes</span>
                     </Link>
 
-                    <Link to="/debts">
+                    <Link to="/debts" onClick={closeSidebar}>
                         <span className="icon"><GrMoney /></span>
                         <span className="text">Deudas</span>
                     </Link>
@@ -107,33 +109,10 @@ const Layout = ({ content }) => {
                         <span className='icon'><MdOutlineEngineering/></span>
                         <span className='text'>Gestión</span>
                     </Link> */}
-
-                    {/* {sidebarOpen && (
-                        <Divider 
-                        color="gray"
-                        size="sm"
-                        my="md"
-                        mx="xs"
-                        label="Vencimientos"
-                        labelPosition="center"
-                        styles={{
-                            label: {
-                                color: "#000000",
-                                fontSize: "18px",
-                                fontWeight: "600"
-                            }
-                        }}
-                    />
-                    )}
-
-                    <button className="yellow">
-                        <span className="icon"><LuClockAlert /></span>
-                        <span className="text">Por vencer este mes</span>
-                    </button>
-                    <button className="red">
-                        <span className="icon"><LuCalendarX2 /></span>
-                        <span className="text">Vencidas</span>
-                    </button> */}
+                    <Link to={"/expired-debts"} onClick={closeSidebar}>
+                    <span className="icon"><LuClockAlert /></span>
+                    <span className="text">Vencimientos</span>
+                    </Link>
                 </nav>
 
                 <div className="sidebar-footer">
@@ -150,14 +129,14 @@ const Layout = ({ content }) => {
                             borderRadius: ".5rem",
                             backgroundColor: "#e3e3e3",
                         }}>
-                            <Button color='red' onClick={()=> handleCloseSession()}>Cerrar sesión</Button>
+                            <Button color='red' onClick={() => handleCloseSession()}>Cerrar sesión</Button>
                         </Popover.Dropdown>
                     </Popover>
                 </div>
             </aside>
 
             <main className="main-content"
-                
+
             >
                 {width < 768 && (
                     <button onClick={() => setSidebarOpen(!sidebarOpen)} className='sidebar-toggle-btn'>
@@ -172,8 +151,8 @@ const Layout = ({ content }) => {
                 >
                     {content}
                 </div>
-                {openClientFormModal && <FastAddClientModal closeModal={() => setOpenClientFormModal(false)}/>}
-                {openFastRegisterPaymentModal && <FastRegisterPaymentModal closeModal={() => setOpenFastRegisterPaymentModal(false)}/>}
+                {openClientFormModal && <FastAddClientModal closeModal={() => setOpenClientFormModal(false)} />}
+                {openFastRegisterPaymentModal && <FastRegisterPaymentModal closeModal={() => setOpenFastRegisterPaymentModal(false)} />}
             </main>
         </div>
     );

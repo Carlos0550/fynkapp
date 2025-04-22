@@ -109,11 +109,11 @@
   overflow-x: hidden;
 }
 
-hr {
+/* hr {
   margin: 1rem 0;
   border: none;
   border-top: 1px solid #dee2e6;
-}
+} */
 
 .yellow {
   color: #ffc107;
