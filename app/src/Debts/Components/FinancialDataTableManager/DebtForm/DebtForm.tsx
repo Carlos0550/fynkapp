@@ -28,6 +28,7 @@ function DebtForm({ clientData, closeModal, isEditing }: FormProps) {
     <form onSubmit={onFinish}>
       <Textarea
         label="Productos"
+        description="Para el precio de cada producto, no use puntos (.) ni comas (,) para separarlos. a menos que estén en decimal."
         placeholder="Ingrese productos en formato: CANTIDAD | PRODUCTO | PRECIO"
         value={formValues.debt_products}
         onChange={handleTextChange}
