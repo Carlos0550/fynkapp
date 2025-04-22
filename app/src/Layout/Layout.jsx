@@ -17,13 +17,17 @@ import FastAddClientModal from '../FastActions/AddClient/FastAddClientModal';
 import FastRegisterPaymentModal from '../FastActions/RegisterPayment/FastRegisterPaymentModal';
 const Layout = ({ content }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const { width, authHook } = useAppContext()
+    const { width, authHook:{
+        loginData,
+        handleCloseSession
+    } } = useAppContext()
     const [openClientFormModal, setOpenClientFormModal] = useState(false)
     const [openFastRegisterPaymentModal, setOpenFastRegisterPaymentModal] = useState(false)
 
-    const { loginData, handleCloseSession } = authHook
 
-    const navigate = useNavigate()
+    useEffect(()=>{
+        console.log(loginData)
+    },[loginData])
 
     useEffect(() => {
         if(width > 768) setSidebarOpen(true)
@@ -85,10 +89,10 @@ const Layout = ({ content }) => {
                     />
                     )}
 
-                    <Link to="/">
+                    {/* <Link to="/">
                         <span className="icon"><MdSpaceDashboard /></span>
                         <span className="text">Dashboard</span>
-                    </Link>
+                    </Link> */}
                     <Link to="/clients">
                         <span className="icon"><MdGroups2 /></span>
                         <span className="text">Clientes</span>
@@ -99,12 +103,12 @@ const Layout = ({ content }) => {
                         <span className="text">Deudas</span>
                     </Link>
 
-                    <Link to={"/management"}>
+                    {/* <Link to={"/management"}>
                         <span className='icon'><MdOutlineEngineering/></span>
                         <span className='text'>Gestión</span>
-                    </Link>
+                    </Link> */}
 
-                    {sidebarOpen && (
+                    {/* {sidebarOpen && (
                         <Divider 
                         color="gray"
                         size="sm"
@@ -129,7 +133,7 @@ const Layout = ({ content }) => {
                     <button className="red">
                         <span className="icon"><LuCalendarX2 /></span>
                         <span className="text">Vencidas</span>
-                    </button>
+                    </button> */}
                 </nav>
 
                 <div className="sidebar-footer">

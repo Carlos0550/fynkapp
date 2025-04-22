@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import "./Management.css"
 import { Tabs } from '@mantine/core'
 import EmployeesManager from '../employees/EmployeesManager';
+import BusinessManager from '../business/BusinessManager';
 
 type TabValue = 'employeesManagement' | 
 'rolesManagement' | 
@@ -24,7 +25,7 @@ function Management() {
           </Tabs.Panel>
 
           <Tabs.Panel value="businessManagement">
-            <h3>Gestión de sucursales</h3>
+            <BusinessManager/>
           </Tabs.Panel>
 
           <Tabs.Panel value="rolesManagement">

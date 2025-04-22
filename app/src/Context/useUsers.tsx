@@ -81,7 +81,7 @@ function useUsers() {
       })
       setTimeout(() => {
         return window.location.reload()
-      }, 1900);
+      }, 1000);
     } catch (error) {
       console.log(error)
       showNotification({

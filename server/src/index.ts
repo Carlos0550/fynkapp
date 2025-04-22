@@ -10,6 +10,7 @@ import clientsRoutes from "./routes/clients.routes";
 import fastActionsRoutes from "./routes/fastactions.routes";
 import debtsRoutes from "./routes/debts.routes";
 import * as cronJobs from "./controllers/Cron_Jobs/cron_jobs.controller";
+import businessRouter from "./routes/business.routes";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/users", usersRoutes);
 app.use("/clients", clientsRoutes);
 app.use("/fast-actions", fastActionsRoutes);
 app.use("/debts", debtsRoutes);
+app.use("/business", businessRouter)
 
 // Cron Jobs
 cron.schedule("0 */30 * * *", cronJobs.updateDebtsStatus);

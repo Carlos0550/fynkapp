@@ -1,3 +1,4 @@
+import React from "react"
 import { ClientsInterface } from "./ClientsTypes"
 import { ClientsForDebtsInterface } from "./DebtsTypes"
 import { DeliverDataInterface, EditDeliverHookInterface } from "./DeliversTypes"
@@ -68,6 +69,10 @@ export interface EmployeersHookInterface{
     saveEmployee: (employeeData: EmployeeFormData) => Promise<boolean>
 }
 
+export interface BusinessHookInterface{
+    createBusiness: (business_name: string) => Promise<boolean>
+}
+
 export interface AppContextValueInterface {
     width: number
     isValidUUID: (uuid: string) => boolean
@@ -77,4 +82,5 @@ export interface AppContextValueInterface {
     debtsHook: DebtsHookInterface
     deliversHook: DeliversHookInterface
     employeersHook: EmployeersHookInterface
+    businessHook: BusinessHookInterface
 }

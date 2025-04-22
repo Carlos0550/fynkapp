@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 //Controladores
 import * as debtsController from "../controllers/Debts/debts.controller"
 import { verifyToken } from "./Security/JWT";
+import { AuthenticatedRequest } from "../AuthenticatedRequest/AuthenticatedRequest";
 
 //Multer
 const multer = require("multer")
@@ -21,14 +22,7 @@ interface DebtInterface{
     client_id: string
 }
 
-interface AuthenticatedRequest<
-  P = {},
-  ResBody = any,
-  ReqBody = any,
-  ReqQuery = any
-> extends Request<P, ResBody, ReqBody, ReqQuery> {
-  user_id: string;
-}
+
 
 debtsRouter.post("/create-debt", verifyToken, upload.none(), (req:AuthenticatedRequest<DebtInterface>, res:Response, next:NextFunction): void => {
     const { debt_date, debt_products, client_id } = req.body;

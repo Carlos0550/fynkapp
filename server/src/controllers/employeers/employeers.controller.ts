@@ -26,6 +26,20 @@ let queries: Record<string, string[]> = {};
   }
 })();
 
+
+const PERMISSIONS_BY_ROLE = {
+  level1: ["beginner_dashboard", "fast_actions"],
+  level2: ["fast_actions", "clients", "debts", "beginner_dashboard"],
+  level3: ["fast_actions", "clients", "debts", "expirations", "admin_dashboard", "admin_dashboard"],
+};
+
+const getPermissionesByRole = (role: "level1" | "level2" | "level3" | "custom"): string[] => {
+  if(!role) return [];
+  if(role === "custom") return [];
+  return PERMISSIONS_BY_ROLE[role];
+}
+
+
 async function saveEmployeer(req: Request, res: Response): Promise<Response> {
   const { "saveEmployeer.sql": SEQueries } = queries;
 
@@ -39,20 +53,13 @@ async function saveEmployeer(req: Request, res: Response): Promise<Response> {
   const {
     employeer_name,
     employeer_email,
-    employee_role
-  } = req.query as Record<string, string>;
+    employee_role,
+    employee_permissions,
+    business_name
+  } = req.query;
+  const user_id = (req as any).user_id;
 
-  // Aquí se debería implementar la lógica de guardado del empleador.
-  // Por ejemplo:
-  // try {
-  //   const client = await pool.connect();
-  //   await client.query(SEQueries[0], [employeer_name, employeer_email, employee_role]);
-  //   client.release();
-  //   return res.status(200).json({ message: "Empleado guardado exitosamente" });
-  // } catch (error) {
-  //   console.error("Error al guardar empleado:", error);
-  //   return res.status(500).json({ message: "Error interno del servidor" });
-  // }
+  
 
   return res.status(200).json({ message: "Controlador operativo. Falta implementar la lógica de guardado." });
 }

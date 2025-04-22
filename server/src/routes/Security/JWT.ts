@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
+import { AuthenticatedRequest } from "../../AuthenticatedRequest/AuthenticatedRequest";
 
 dotenv.config();
 
@@ -73,15 +74,15 @@ async function generateToken(payload: UserPayload): Promise<string> {
   }
 }
 
-async function verifyToken(req: Request, res: Response, next: NextFunction) {
+const verifyToken: RequestHandler = async (req: Request,res:Response,next:NextFunction) => {
   const authHeader = req.headers.authorization;
-
   if (!authHeader) {
     res.status(401).json({ msg: "No se detectó el token de usuario, reintente cerrando e iniciando sesión nuevamente." });
     return;
   }
 
   const token = authHeader.split(" ")[1];
+  
   if (!token) {
     res.status(401).json({ msg: "Sesión expirada o no válida." });
     return;
@@ -90,9 +91,10 @@ async function verifyToken(req: Request, res: Response, next: NextFunction) {
   try {
     const publicKey = await getPublicKey();
     const decoded = jwt.verify(token, publicKey, { algorithms: ["ES256"] }) as UserPayload;
+    
+    (req as AuthenticatedRequest).user = decoded;
+    (req as AuthenticatedRequest).user_id = decoded.user_id;
 
-    (req as any).user = decoded;
-    (req as any).user_id = decoded.user_id;
     next();
   } catch (error: any) {
     console.error("❌ Error al verificar token:", error.message);

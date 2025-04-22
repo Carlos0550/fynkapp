@@ -6,7 +6,7 @@ const UserDashboard = () => {
     <div className="dashboard">
       <h1>Panel de Control</h1>
       <div className="dashboard-cards">
-        <div className="dashboard-card">
+        {/* <div className="dashboard-card">
           <h2>Clientes atrasados</h2>
           <p>15</p>
         </div>
@@ -14,7 +14,6 @@ const UserDashboard = () => {
           <h2>Total de este mes</h2>
           <p>$55,000</p>
         </div>
-        {/* Puedes duplicar estas tarjetas y cambiar el contenido segun necesites */}
         <div className="dashboard-card">
           <h2>Nuevos Clientes Este Mes</h2>
           <p>10</p>
@@ -22,10 +21,10 @@ const UserDashboard = () => {
         <div className="dashboard-card">
           <h2>Facturas Pendientes</h2>
           <p>5</p>
-        </div>
+        </div> */}
         <div className="dashboard-card">
-          <h2>Proyectos Completados</h2>
-          <p>12</p>
+          <h2>Sección en desarrollo</h2>
+          <p>Pronto tendrás tu dashboard listo!</p>
         </div>
       </div>
     </div>

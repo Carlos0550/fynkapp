@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { DeliverDataInterface, EditDeliverHookInterface } from './Typescript/DeliversTypes'
 import { logic_apis } from '../apis'
 import { showNotification } from '@mantine/notifications'
-import { ClientsForDebtsInterface } from './Typescript/DebtsTypes'
 
 function useDelivers(
   setCuentaRegresivaIniciada,

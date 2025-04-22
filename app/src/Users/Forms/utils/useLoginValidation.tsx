@@ -51,7 +51,6 @@ function useLoginValidation() {
           setLoggingIn(true)
           const result = await loginUser(formValues)
           setLoggingIn(false)
-          console.log(result)
           if(result) navigate("/")
         }
     } 
