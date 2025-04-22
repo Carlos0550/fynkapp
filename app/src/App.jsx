@@ -6,6 +6,7 @@ import UserDashboard from "./UserDashboard/UserDashboard"
 import ClientsManager from "./Clients/ClientsManager.tsx"
 import DebtsManager from "./Debts/DebtsManager.tsx"
 import Management from "./Management/Management.tsx"
+import ExpirationsManager from "./expirations/ExpirationsManager.tsx"
 
 // import { useEffect, useRef } from "react"
 // import { createClients } from "./test/test_populate_db.js"
@@ -24,6 +25,7 @@ function App() {
       <Route path="/clients" element={<Layout content={<ClientsManager/>}/>}/>
       <Route path="/debts/*" element={<Layout content={<DebtsManager/>}/>}/>
       <Route path="/management/*" element={<Layout content={<Management/>}/>}/>
+      <Route path="/expired-debts" element={<Layout content={<ExpirationsManager/>}/>}/>
     </Routes>
   )
 }
