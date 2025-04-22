@@ -16,7 +16,6 @@ function DebtTable({ clientDebts, handleEditDebt, deleteDebt }: DebtTableProps) 
             return total + parseFloat(product.product_price) * parseInt(product.product_quantity);
         }, 0);
     };
-
     return (
         <table className='custom-table'>
             <thead>
@@ -33,7 +32,7 @@ function DebtTable({ clientDebts, handleEditDebt, deleteDebt }: DebtTableProps) 
                 {clientDebts && clientDebts.map((debt, index) => (
                     <tr key={index}>
                         <td><p>{dayjs(debt.debt_date).format("DD-MM-YYYY")}</p></td>
-                        <td><p>{dayjs(debt.debt_exp).format("DD-MM-YYYY")}</p></td>
+                        <td><p>{dayjs(debt.exp_date).format("DD-MM-YYYY")}</p></td>
                         <td><p>{debt.debt_status}</p></td>
                         <td>
                             {debt.debt_products.map((product, idx) => (
