@@ -48,7 +48,6 @@ usersRouter.post("/login-user",
 }, usersController.loginUser)
 
 usersRouter.get("/verify-token", verifyToken, (req: any,res: any) => {
-    console.log("req.user_id", req.user)
     res.status(200).json({
         msg: "Token válido",
         user: req.user
