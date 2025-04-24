@@ -73,6 +73,10 @@ export interface BusinessHookInterface{
     createBusiness: (business_name: string) => Promise<boolean>
 }
 
+export interface ExpirationsHookInterface {
+    getExpirations: () => Promise<void>
+}
+
 export interface AppContextValueInterface {
     width: number
     isValidUUID: (uuid: string) => boolean
@@ -83,4 +87,5 @@ export interface AppContextValueInterface {
     deliversHook: DeliversHookInterface
     employeersHook: EmployeersHookInterface
     businessHook: BusinessHookInterface
+    expirationsHook: ExpirationsHookInterface
 }
