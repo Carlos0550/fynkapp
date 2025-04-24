@@ -9,6 +9,7 @@ import {AppContextValueInterface} from "./Typescript/ContextTypes"
 import useDelivers from "./useDelivers";
 import useEmployeers from "./useEmployeers";
 import useBusiness from "./useBusiness";
+import useExpirations from "./useExpirations";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -50,6 +51,7 @@ export const AppContextProvider = ({ children }: any) => {
 
     const employersHook = useEmployeers(loginData)
     const businessHook = useBusiness(loginData)
+    const expirationsHook = useExpirations(loginData)
     const contextValues = useMemo(() => ({
         clientsHook,
         usersHook,
@@ -59,7 +61,8 @@ export const AppContextProvider = ({ children }: any) => {
         width,
         isValidUUID,
         employersHook,
-        businessHook
+        businessHook,
+        expirationsHook
     }), [
         clientsHook,
         usersHook,
@@ -67,7 +70,8 @@ export const AppContextProvider = ({ children }: any) => {
         debtsHook,
         deliversHook,
         employersHook,
-        businessHook
+        businessHook,
+        expirationsHook
     ])
 
 
