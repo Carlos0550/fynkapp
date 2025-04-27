@@ -98,3 +98,4 @@ CREATE TABLE employees (
     employee_dni TEXT NOT NULL,
     employee_status employee_statuses DEFAULT 'verify_pending'
 );
+
