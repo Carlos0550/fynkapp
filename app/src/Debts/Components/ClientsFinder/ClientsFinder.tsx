@@ -12,7 +12,6 @@ function ClientsFinder() {
             clientsForDebts,
             findClientsForDebts
         },
-        width
     } = useAppContext()
     const [searchValue, setSearchValue] = React.useState("")
     const [searching, setIsSearching] = useState(false)
