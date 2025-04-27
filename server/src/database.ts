@@ -12,13 +12,13 @@ const development_environment = {
   port: 5432,
 };
 
-//export const pool = new Pool(development_environment);
+export const pool = new Pool(development_environment);
 
 // Alternativa para producción con cadena de conexión:
-export const pool = new Pool({
-  connectionString: process.env.PG_CONNECTION_STRING,
-  ssl: { rejectUnauthorized: false }
-});
+// export const pool = new Pool({
+//   connectionString: process.env.PG_CONNECTION_STRING,
+//   ssl: { rejectUnauthorized: false }
+// });
 
 export async function verifyDbConnection(): Promise<void> {
   try {
