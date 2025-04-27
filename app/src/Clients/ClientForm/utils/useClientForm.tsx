@@ -17,7 +17,6 @@ function useClientForm(closeModal: () => void, clientData?: Partial<ClientsInter
   });
 
   const [errors, setErrors] = useState<ClientInterfaceErrors>({
-    client_dni: "",
     client_fullname: "",
   });
 
@@ -44,9 +43,7 @@ function useClientForm(closeModal: () => void, clientData?: Partial<ClientsInter
   const validateFields = (): boolean => {
     const newErrors: Partial<ClientInterfaceErrors> = {};
 
-    if (!formValues.client_dni) {
-      newErrors.client_dni = "Campo requerido";
-    } else {
+    if(formValues.client_dni){
       const regexDNI = /^\d{8}$/;
       if (!regexDNI.test(formValues.client_dni.toString())) {
         newErrors.client_dni = "DNI inválido";
@@ -106,10 +103,10 @@ function useClientForm(closeModal: () => void, clientData?: Partial<ClientsInter
       }
     } else {
       showNotification({
-        title: "Verifique los campos, todos son obligatorios.",
-        message: "",
+        title: "Verifique los campos",
+        message: 'Los que tengan "*" en rojo son obligatorios, y verifique que estén correctos.',
         color: "red",
-        autoClose: 2000,
+        autoClose: 2500,
         position: "top-right",
       });
     }

@@ -34,8 +34,6 @@ function ClientForm({ closeModal, clientData }) {
 
             <Input.Wrapper
                 label="DNI"
-                required
-
                 error={errors.client_dni}
             >
                 <Input

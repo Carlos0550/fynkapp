@@ -18,9 +18,9 @@ function requireUserId(req: Request, res: Response, next: NextFunction) {
 
 // Rutas de Clientes
 clientsRouter.post("/create-client", verifyToken, requireUserId, (req: Request, res: Response, next: NextFunction) => {
-  const { client_fullname, client_dni } = req.body;
-  if (!client_fullname || !client_dni) {
-    res.status(400).json({ msg: "Todos los campos son obligatorios" });
+  const { client_fullname } = req.body;
+  if (!client_fullname) {
+    res.status(400).json({ msg: "El servidor no recibió el nombre del cliente." });
     return
   }
   next();
@@ -35,8 +35,8 @@ clientsRouter.put("/edit-client", verifyToken, requireUserId, (req: Request, res
     res.status(400).json({ msg: "El ID del Cliente no fue proporcionado." });
     return
   }
-  if (!client_fullname || !client_dni) {
-    res.status(400).json({ msg: "Todos los campos son obligatorios" });
+  if (!client_fullname ) {
+    res.status(400).json({ msg: "El servidor no recibió el nombre del cliente." });
     return
   }
   next();

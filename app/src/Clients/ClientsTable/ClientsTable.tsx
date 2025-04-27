@@ -31,7 +31,7 @@ function ClientsTable() {
                         <tr key={client.client_id}>
                             <td>
                                 <p><FaUser /> {client.client_fullname}</p>
-                                {client.client_dni && <p><PiIdentificationCardFill /> {client.client_dni}</p>}
+                                <p><PiIdentificationCardFill /> {client.client_dni ? client.client_dni : "N/A"}</p>
                             </td>
                             <td>
                                     <p><MdEmail /> {client.client_email || "N/A"}</p>

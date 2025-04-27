@@ -15,8 +15,8 @@ interface CustomRequest extends Request {
 interface ClientRow {
   client_id: string;
   client_fullname: string;
-  client_dni: string;
-  client_phone?: string;
+  client_dni: string | undefined;
+  client_phone?: string | undefined;
   client_email?: string;
   client_city?: string;
 }
@@ -99,19 +99,21 @@ async function createClient(req: CustomRequest, res: Response) {
     client = await pool.connect();
     await client.query("BEGIN");
 
-    const encryptedDni = encrypt(client_dni);
+    const encryptedDni = client_dni ? encrypt(client_dni) : null;
     const encryptedPhone = client_phone ? encrypt(client_phone) : null;
 
-    const result1 = await client.query(clientQueries[0], [encryptedDni, user_id]);
-    if (result1.rows[0]?.count > 0) {
-      throw new Error("Ya existe un cliente con ese DNI.");
+    if(encryptedDni){
+      const result1 = await client.query(clientQueries[0], [encryptedDni, user_id]);
+      if (result1.rows[0]?.count > 0) {
+        throw new Error("Ya existe un cliente con ese DNI.");
+      }
     }
 
     const result = await client.query(clientQueries[1], [
       client_fullname,
       client_email || null,
       encryptedPhone,
-      encryptedDni,
+      encryptedDni || null,
       user_id
     ]);
 
@@ -159,7 +161,7 @@ async function getClients(req: CustomRequest, res: Response) {
         const clientData: ClientRow = {
           client_id: row.client_id,
           client_fullname: row.client_fullname,
-          client_dni: decrypt(row.client_dni),
+          client_dni: row.client_dni ? decrypt(row.client_dni) : undefined,
           client_phone: row.client_phone ? decrypt(row.client_phone) : undefined,
           client_email: row.client_email,
           client_city: row.client_city
@@ -176,7 +178,7 @@ async function getClients(req: CustomRequest, res: Response) {
         const clients = result.rows.map((row): ClientRow => ({
           client_id: row.client_id,
           client_fullname: row.client_fullname,
-          client_dni: decrypt(row.client_dni),
+          client_dni: row.client_dni ? decrypt(row.client_dni) : undefined,
           client_phone: row.client_phone ? decrypt(row.client_phone) : undefined,
           client_email: row.client_email,
           client_city: row.client_city
@@ -194,7 +196,7 @@ async function getClients(req: CustomRequest, res: Response) {
       const clients = result.rows.map((row): ClientRow => ({
         client_id: row.client_id,
         client_fullname: row.client_fullname,
-        client_dni: decrypt(row.client_dni),
+        client_dni: row.client_dni ? decrypt(row.client_dni) : undefined,
         client_phone: row.client_phone ? decrypt(row.client_phone) : undefined,
         client_email: row.client_email
       }));
@@ -224,10 +226,10 @@ async function editClient(req: CustomRequest, res: Response) {
   let client;
   try {
     client = await pool.connect();
-    const encryptedDni = encrypt(client_dni);
+    const encryptedDni = client_dni ? encrypt(client_dni) : null;
     const encryptedPhone = client_phone ? encrypt(client_phone) : null;
 
-    const result = await client.query(clientQueries[0], [client_fullname, encryptedDni, encryptedPhone, client_email || null, clientID, user_id]);
+    const result = await client.query(clientQueries[0], [client_fullname, encryptedDni || null, encryptedPhone || null, client_email || null, clientID, user_id]);
     if (result.rowCount === 0) {
       res.status(400).json({ msg: "No se pudo editar el cliente." });
       return
