@@ -51,7 +51,7 @@ export const AppContextProvider = ({ children }: any) => {
 
     const employersHook = useEmployeers(loginData)
     const businessHook = useBusiness(loginData)
-    const expirationsHook = useExpirations(loginData)
+    const expirationsHook = useExpirations()
     const contextValues = useMemo(() => ({
         clientsHook,
         usersHook,
