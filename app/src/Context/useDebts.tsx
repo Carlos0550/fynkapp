@@ -239,6 +239,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
           const responseData = await response.json()
           if(response.status === 404){
             setClientsForDebts([])
+            return true
           }
           if(!response.ok) throw new Error(responseData.msg || "Error desconocido")
         
