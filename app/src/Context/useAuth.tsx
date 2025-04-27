@@ -117,7 +117,6 @@ function useAuth() {
                 },
             });
             const data = await response.json();
-            console.log(data)
             if (response.status === 401) {
                 if(loginData && Object.keys(loginData).length > 0){
                     showSessionExpiredNotification();
@@ -167,10 +166,6 @@ function useAuth() {
             return () => clearInterval(interval);
         }
     }, [loginData, verifyToken]);
-
-    useEffect(()=> {
-        console.log(loginData)
-    },[loginData])
 
     return useMemo(
         () => ({
