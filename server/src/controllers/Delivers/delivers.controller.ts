@@ -33,8 +33,8 @@ async function createDeliver(req: Request, res: Response) {
 
   if (!dsqueries) {
     console.log("Archivo SQL createDeliver NO ENCONTRADO");
-     res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
-     return
+    res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
+    return
   }
 
   const { deliver_date, deliver_amount, deliver_client_id } = req.body;
@@ -53,13 +53,16 @@ async function createDeliver(req: Request, res: Response) {
     if (response.rowCount === 0) {
       res.status(400).json({ msg: "No se pudo crear la entrega" });
       return
-    } 
-     res.status(200).json({ msg: "Entrega creada exitosamente" });
-     return
+    }
+
+    const nextWeek = dayjs().add(1, "month").format("YYYY-MM-DD");
+    await client.query(dsqueries[1], [nextWeek, deliver_client_id, user_id]);
+    res.status(200).json({ msg: "Entrega creada exitosamente" });
+    return
   } catch (error) {
     console.log(error);
-     res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
-     return
+    res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
+    return
   } finally {
     if (client) await client.release();
   }
@@ -70,8 +73,8 @@ async function editDeliver(req: Request, res: Response) {
 
   if (!dsqueries) {
     console.log("Archivo SQL editDeliver NO ENCONTRADO");
-     res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
-     return
+    res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
+    return
   }
 
   const { deliver_amount, deliver_date, deliver_id } = req.body;
@@ -88,13 +91,13 @@ async function editDeliver(req: Request, res: Response) {
     if (response.rowCount === 0) {
       res.status(400).json({ msg: "No se pudo editar la entrega" });
       return
-    } 
-     res.status(200).json({ msg: "Entrega editada exitosamente" });
-     return
+    }
+    res.status(200).json({ msg: "Entrega editada exitosamente" });
+    return
   } catch (error) {
     console.log(error);
-     res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
-     return
+    res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
+    return
   } finally {
     if (client) await client.release();
   }
@@ -114,13 +117,13 @@ async function deleteDeliver(req: Request, res: Response) {
     if (response.rowCount === 0) {
       res.status(400).json({ msg: "No se pudo eliminar la entrega" });
       return
-    } 
-     res.status(200).json({ msg: "Entrega eliminada exitosamente" });
-     return
+    }
+    res.status(200).json({ msg: "Entrega eliminada exitosamente" });
+    return
   } catch (error) {
     console.log(error);
-     res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
-     return
+    res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente" });
+    return
   } finally {
     if (client) await client.release();
   }

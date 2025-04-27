@@ -9,3 +9,7 @@ INSERT INTO delivers(
     $3,
     $4
 );
+
+UPDATE debts
+    SET exp_date = $1
+    WHERE client_debt_id = $2 AND fk_user_id = $3;
