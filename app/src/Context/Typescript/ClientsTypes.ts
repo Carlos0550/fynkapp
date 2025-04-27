@@ -8,6 +8,6 @@ export interface ClientsInterface {
 }
 
 export interface ClientInterfaceErrors{
-    client_dni: string,
+    client_dni?: string,
     client_fullname: string,
 }
