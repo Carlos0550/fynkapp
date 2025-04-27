@@ -1,6 +1,10 @@
 import React from 'react'
-
-function ToOvercome() {
+import { ExpirationClient } from '../../../Context/Typescript/ExpirationTypes'
+import dayjs from "dayjs"
+interface Props {
+    toOvercome: ExpirationClient["toOvercome"]
+}
+function ToOvercome({toOvercome}: Props) {
   return (
     <div className="expiration-table-manager">
         <table className='expiration-table'>
@@ -14,20 +18,15 @@ function ToOvercome() {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Cliente 1</td>
-                    <td>2023-03-15</td>
-                    <td>7 días</td>
-                    <td>$1000.00</td>
-                    <td>2023-02-15</td>
-                </tr>
-                <tr>
-                    <td>Cliente 2</td>
-                    <td>2023-04-15</td>
-                    <td>3 días</td>
-                    <td>$2000.00</td>
-                    <td>2023-03-15</td>
-                </tr>
+                {toOvercome && toOvercome.map((exp, idx) => (
+                    <tr key={idx}>
+                        <td>{exp.client_fullname}</td>
+                        <td>{dayjs(exp.exp_date).format("DD-MM-YYYY")}</td>
+                        <td>{exp.days_remaining} día/s</td>
+                        <td>N/A</td>
+                        <td>{exp.last_deliver_date || "N/A"}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     </div>
