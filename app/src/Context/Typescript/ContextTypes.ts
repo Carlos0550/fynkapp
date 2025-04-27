@@ -5,6 +5,7 @@ import { DeliverDataInterface, EditDeliverHookInterface } from "./DeliversTypes"
 import { EmployeeFormData } from "./EmployeesTypes"
 import { EditDebtHookInterface, FinancialClientData } from "./FinancialClientData"
 import { LoginDataInterface, UserLoginFormValuesInterface, UserRegisterFormValuesInterface } from "./UsersTypes"
+import { ExpirationClient } from "./ExpirationTypes"
 
 export interface DebtsHookInterface {
     financialClientData: FinancialClientData
@@ -75,6 +76,7 @@ export interface BusinessHookInterface{
 
 export interface ExpirationsHookInterface {
     getExpirations: () => Promise<void>
+    expirations: ExpirationClient
 }
 
 export interface AppContextValueInterface {
