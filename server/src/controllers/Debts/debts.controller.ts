@@ -143,7 +143,7 @@ async function findClientsForDebts(req: Request, res: Response): Promise<Respons
                 const client_result = result.rows.map(c => ({
                     client_id: c.client_id,
                     client_fullname: c.client_fullname,
-                    client_dni: decrypt(c.client_dni),
+                    client_dni: c.client_dni ? decrypt(c.client_dni) : c.client_dni,
                     debt_amount: c.debt_amount,
                     debt_status: c.debt_status
                 }));
@@ -155,7 +155,7 @@ async function findClientsForDebts(req: Request, res: Response): Promise<Respons
             const client_result = result.rows.map(c => ({
                 client_id: c.client_id,
                 client_fullname: c.client_fullname,
-                client_dni: decrypt(c.client_dni),
+                client_dni: c.client_dni ? decrypt(c.client_dni) : c.client_dni,
                 debt_amount: c.debt_amount,
                 debt_status: c.debt_status
             }));
