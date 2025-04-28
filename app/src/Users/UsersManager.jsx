@@ -19,7 +19,7 @@ function UsersManager() {
     const navigate = useNavigate()
 
     useEffect(()=>{
-        if(token) navigate("/")
+        if(token) navigate("/clients")
     },[token, navigate])
 
     useEffect(() => {
