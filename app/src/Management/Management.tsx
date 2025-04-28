@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./Management.css"
 import { Tabs } from '@mantine/core'
 import EmployeesManager from '../employees/EmployeesManager';
 import BusinessManager from '../business/BusinessManager';
+import { useNavigate } from 'react-router-dom';
 
 type TabValue = 'employeesManagement' | 
 'rolesManagement' | 
@@ -10,6 +11,10 @@ type TabValue = 'employeesManagement' |
 
 function Management() {
     const [activeTab, setActiveTab] = useState<TabValue>("employeesManagement")
+    const navigate = useNavigate()
+    useEffect(()=>{
+      navigate("/clients")
+    },[])
   return (
     <React.Fragment>
         <h2>Gestión general</h2>
