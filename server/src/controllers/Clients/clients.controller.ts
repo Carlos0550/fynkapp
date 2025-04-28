@@ -77,6 +77,7 @@ function encrypt(text: string): string {
 }
 
 function decrypt(encryptedText: string): string {
+  if(!encryptedText) return "";
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
   let decrypted = decipher.update(encryptedText, "hex", "utf8");
   decrypted += decipher.final("utf8");
