@@ -2,16 +2,26 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    position: relative;
 }
 .dashboard-search-container{
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1rem;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    overflow: hidden;
+    width: 96%;
+    position: fixed;
+    z-index: 3;
 }
 
 .dashboard-search-input{
     width: 100%;
+}
+
+@media(min-width:768px){
+    .dashboard-search-container{
+        position: static;
+        width: 100%;
+    }
 }

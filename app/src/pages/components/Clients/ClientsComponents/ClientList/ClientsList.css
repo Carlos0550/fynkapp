@@ -1,0 +1,106 @@
+.clients-list-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+}
+
+.client-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .avatar {
+    background-color: #eee;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 12px;
+  }
+  
+  .client-info {
+    flex: 1;
+  }
+  
+  .client-info .name {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+  
+  .client-info .dni {
+    color: #4569a0;
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .client-info .last-activity {
+    color: #98a0a8;
+    font-size: 0.8em;
+  }
+  
+  .client-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .client-status .debt {
+    background-color: #ef4444;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: 600;
+    position: absolute;
+    top: 30px;
+    right: 50px;
+  }
+  
+  .client-status .more {
+    font-weight: bold;
+    font-size: 1.3em;
+    margin: 0 auto;
+    cursor: pointer;
+  }
+
+  @media(max-width:380px){
+    .client-card{
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .client-status .debt{
+        top: 105px;
+        right: 9px;
+    }
+
+    .client-status .more{
+        position: absolute;
+        top: 0px;
+        right: 9px;
+        
+    }
+  }
+  

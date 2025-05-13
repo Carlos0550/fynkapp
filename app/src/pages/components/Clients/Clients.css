@@ -1,0 +1,23 @@
+.clients-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: scroll;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    height: 100%;
+    margin-top: 3rem;
+    padding: .5rem;
+}
+
+@media(min-width:768px){
+    .clients-container{
+        margin-top: 10px;
+    }
+}
+
+.clients-title{
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #2c2c2c;
+}

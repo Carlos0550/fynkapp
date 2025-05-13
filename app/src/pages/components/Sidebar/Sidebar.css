@@ -1,10 +1,10 @@
-.sidebar-container{
+.sidebar-container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.sidebar{
+.sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -13,7 +13,7 @@
     padding: 0 10px;
 }
 
-.sidebar-logo{
+.sidebar-logo {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +23,7 @@
     color: #2c2c2c;
 }
 
-.sidebar-list{
+.sidebar-list {
     display: flex;
     gap: 5px;
     align-items: center;
@@ -39,32 +39,25 @@
     width: 100%;
 }
 
-.sidebar-list:hover{
+.sidebar-list:hover {
     background-color: #363636;
     color: #ffffff;
 }
 
-.sidebar-divider{
+.sidebar-divider {
     width: 100%;
     height: 1px;
     background-color: #e7e7e7;
 }
 
-.sidebar-title{
+.sidebar-title {
     font-weight: 600;
     font-size: 1rem;
     color: #2c2c2c;
 }
 
-@media(max-width:768px){
-    .sidebar-list{
-        justify-content: flex-end;
-        align-items: flex-end;
-    }
 
-}
-
-.sidebar-mobile{
+.sidebar-mobile {
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
@@ -73,15 +66,21 @@
     position: relative;
 }
 
-.sidebar-mobile-list{
+.sidebar-mobile-list {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     flex: 1;
 }
 
-@media(max-width:490px){
-    .sidebar-menu-icon{
+
+@media(max-width:768px) {
+    .sidebar-list {
+        justify-content: flex-end;
+        align-items: flex-end;
+    }
+
+    .sidebar-menu-icon {
         display: flex;
         gap: 5px;
         align-items: center;
@@ -95,28 +94,29 @@
         position: absolute;
         top: 5px;
         right: 0;
-        /* bottom: 10px; */
     }
 
-    .sidebar-menu-icon:hover{
+    .sidebar-menu-icon:hover {
         background-color: white;
         color: black;
         transform: translateY(-2px);
     }
-    .sidebar-list{
+
+    .sidebar-list {
         justify-content: flex-start;
         align-items: center;
         margin: 0 auto;
     }
 
-    .sidebar-mobile{
+    .sidebar-mobile {
         flex-direction: column;
     }
 
-    .sidebar-mobile-list{
+    .sidebar-mobile-list {
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
         gap: 10px;
     }
+
 }

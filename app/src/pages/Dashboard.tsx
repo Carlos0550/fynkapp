@@ -1,15 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useAppContext } from '../Context/AppContext'
 import "./Dashboard.css"
 import InitLoader from './components/PageLaders/InitLoader'
 import { Input } from '@mantine/core'
 import { FaSearch } from "react-icons/fa";
+import Clients from './components/Clients/Clients'
 function Dashboard() {
     const {
         clientsHook:{
             gettingClients
         }
     } = useAppContext()
+
+    const [searchInput, setSearchInput] = useState("");
 
     if (gettingClients) {
         return (
@@ -25,8 +28,11 @@ function Dashboard() {
             leftSection={<FaSearch/>}
             radius={"md"}
             size='md'
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
         />
       </div>
+      <Clients searchInput={searchInput} setSearchInput={setSearchInput}/>
     </div>
   )
 }

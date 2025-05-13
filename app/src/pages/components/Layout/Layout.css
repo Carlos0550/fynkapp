@@ -31,6 +31,7 @@
     overflow-x: hidden;
     background-color: white;
     padding: .5rem;
+    position: relative;
 }
 
 @media(max-width:768px){

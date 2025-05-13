@@ -23,15 +23,6 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 
     ];
 
-    const [visibleCount, setVisibleCount] = useState(mobileItems.length);
-
-    useEffect(() => {
-        if ((width - 290) < 500) setVisibleCount(3);
-        if ((width - 290) < 420) setVisibleCount(2);
-        if ((width - 290) <= 200) setVisibleCount(0);
-    }, [width])
-
-
     useEffect(() => {
         console.log(mobileExtended)
     }, [mobileExtended])
@@ -53,24 +44,15 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                 : (
                     <div className={`sidebar-mobile ${mobileExtended ? "extended" : ""}`}>
                         <p className='sidebar-logo'>Fynkapp <FaMoneyBillTransfer /></p>
-                        {(width - 290) <= 200 && (
+                        {width <= 768 && (
                             <li className="sidebar-menu-icon" onClick={() => setMobileExtended(!mobileExtended)}>
                                 <IoMenu size={20} />
                                 <span></span>
                             </li>
                         )}
                         <ul className='sidebar-mobile-list'>
-                            {mobileItems.slice(0, visibleCount).map((item, index) => {
-                                return (
-                                    <li key={index} className="sidebar-list">
-                                        {item.icon}
-                                        <span>{item.label}</span>
-                                    </li>
-                                );
-                            })}
-
-
-                            {(width - 290) <= 200 && (
+                    
+                            {width <= 768 && (
                                 mobileItems.map((item, index) => (
                                     <li key={index} className="sidebar-list">
                                         {item.icon}
