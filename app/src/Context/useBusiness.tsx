@@ -1,9 +1,12 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { logic_apis } from '../apis'
 
 
 import { showNotification } from '@mantine/notifications'
+import { useDisclosure } from '@mantine/hooks'
 function useBusiness(loginData : any) {
+    const [openedBusinessModal, { open: openBusinessModal, close: closeBusinessModal }] = useDisclosure(false)
+    const [modalContext, setModalContent] = useState<"create" | "edit" | "">("")
     const createBusiness = useCallback(async (business_name: string) => {
         const url = new URL(logic_apis.business + "/create-business")
         const dataToSend = {
@@ -47,9 +50,11 @@ function useBusiness(loginData : any) {
 
 
     return useMemo(() => ({
-        createBusiness
+        createBusiness, closeBusinessModal, openBusinessModal, openedBusinessModal,
+        modalContext, setModalContent
     }), [
-        createBusiness
+        createBusiness, closeBusinessModal, openBusinessModal, openedBusinessModal,
+        modalContext, setModalContent
     ])
 }
 

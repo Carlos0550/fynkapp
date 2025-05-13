@@ -1,0 +1,17 @@
+.dashboard-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.dashboard-search-container{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+}
+
+.dashboard-search-input{
+    width: 100%;
+}

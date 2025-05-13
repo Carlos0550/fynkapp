@@ -7,6 +7,13 @@ CREATE TABLE users(
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE business(
+	business_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+	bs_admin_id UUID NOT NULL,
+	business_name TEXT NOT NULL
+);
+
+
 CREATE TABLE clients (
   client_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   fk_user_id UUID NOT NULL,
@@ -98,4 +105,5 @@ CREATE TABLE employees (
     employee_dni TEXT NOT NULL,
     employee_status employee_statuses DEFAULT 'verify_pending'
 );
+
 

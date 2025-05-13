@@ -72,6 +72,11 @@ export interface EmployeersHookInterface{
 
 export interface BusinessHookInterface{
     createBusiness: (business_name: string) => Promise<boolean>
+    closeBusinessModal: () => void, 
+    openBusinessModal: () => void, 
+    openedBusinessModal: boolean,
+    modalContext: "create" | "edit" | "", 
+    setModalContent: React.Dispatch<React.SetStateAction<"create" | "edit" | "">>
 }
 
 export interface ExpirationsHookInterface {

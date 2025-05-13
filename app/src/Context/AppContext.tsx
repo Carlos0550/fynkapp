@@ -49,7 +49,7 @@ export const AppContextProvider = ({ children }: any) => {
     
     const deliversHook = useDelivers(setCuentaRegresivaIniciada, showSessionExpiredNotification, getFinancialClientData)
 
-    const employersHook = useEmployeers(loginData)
+    const employeersHook = useEmployeers(loginData)
     const businessHook = useBusiness(loginData)
     const expirationsHook = useExpirations()
     const contextValues = useMemo(() => ({
@@ -60,7 +60,7 @@ export const AppContextProvider = ({ children }: any) => {
         deliversHook,
         width,
         isValidUUID,
-        employersHook,
+        employeersHook,
         businessHook,
         expirationsHook
     }), [
@@ -69,7 +69,7 @@ export const AppContextProvider = ({ children }: any) => {
         authHook,
         debtsHook,
         deliversHook,
-        employersHook,
+        employeersHook,
         businessHook,
         expirationsHook
     ])

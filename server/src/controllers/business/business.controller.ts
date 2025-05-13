@@ -6,22 +6,22 @@ import { AuthenticatedRequest } from "../../AuthenticatedRequest/AuthenticatedRe
 
 let queries: Record<string, string[]> = {};
 
-(async() => {
+(async () => {
     try {
         const files = await fs.readdir(path.join(__dirname, "./Queries"));
-    const sqlFiles = files.filter(file => file.endsWith(".sql"))
+        const sqlFiles = files.filter(file => file.endsWith(".sql"))
 
-    await Promise.all(sqlFiles.map(async(file)=>{
-        const filePath = path.join(__dirname, "./Queries", file)
-        const content = await fs.readFile(filePath, "utf-8")
+        await Promise.all(sqlFiles.map(async (file) => {
+            const filePath = path.join(__dirname, "./Queries", file)
+            const content = await fs.readFile(filePath, "utf-8")
 
-        const queriesArray = content
-            .split(";")
-            .map(query => query.trim())
-            .filter(q => q.length > 0)
+            const queriesArray = content
+                .split(";")
+                .map(query => query.trim())
+                .filter(q => q.length > 0)
 
-        queries[file] = queriesArray
-    }))
+            queries[file] = queriesArray
+        }))
     } catch (error) {
         console.error("Error cargando archivos SQL en la sección de negocios:", error);
     }
@@ -31,9 +31,9 @@ export async function saveBusiness(req: Request, res: Response): Promise<void> {
     const authReq = req as AuthenticatedRequest<{}, {}, { business_name: string }, {}>;
     const { business_name } = authReq.body;
     const user_id = authReq.user_id;
-    const {"saveBusiness.sql": SBQueries} = queries;
+    const { "saveBusiness.sql": SBQueries } = queries;
 
-    if(!SBQueries){
+    if (!SBQueries) {
         res.status(500).json({
             msg: "Error interno en el servidor, espere unos segundos e intente nuevamente."
         })
@@ -46,12 +46,12 @@ export async function saveBusiness(req: Request, res: Response): Promise<void> {
     try {
         client = await pool.connect()
 
-        const result = await client.query(SBQueries[0],[
+        const result = await client.query(SBQueries[0], [
             business_name,
             user_id
         ])
 
-        if(result.rowCount === 0){
+        if (result.rowCount === 0) {
             res.status(400).json({
                 msg: "No fué posible guardar el nuevo negocio, for favor intente nuevamente."
             })
@@ -70,7 +70,7 @@ export async function saveBusiness(req: Request, res: Response): Promise<void> {
             msg: "Error interno en el servidor, espere unos segundos e intente nuevamente."
         })
         return;
-    }finally{
-        if(client) client.release()
+    } finally {
+        if (client) client.release()
     }
 }

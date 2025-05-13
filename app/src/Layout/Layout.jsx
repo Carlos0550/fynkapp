@@ -90,11 +90,6 @@ const Layout = ({ content }) => {
                             }
                         }}
                     />
-
-                    {/* <Link to="/">
-                        <span className="icon"><MdSpaceDashboard /></span>
-                        <span className="text">Dashboard</span>
-                    </Link> */}
                     <Link to="/clients" onClick={closeSidebar}>
                         <span className="icon"><MdGroups2 /></span>
                         <span className="text">Clientes</span>
@@ -105,10 +100,10 @@ const Layout = ({ content }) => {
                         <span className="text">Deudas</span>
                     </Link>
 
-                    {/* <Link to={"/management"}>
+                    <Link to={"/management"}>
                         <span className='icon'><MdOutlineEngineering/></span>
                         <span className='text'>Gestión</span>
-                    </Link> */}
+                    </Link>
                     <Link to={"/expired-debts"} onClick={closeSidebar}>
                     <span className="icon"><LuClockAlert /></span>
                     <span className="text">Vencimientos</span>

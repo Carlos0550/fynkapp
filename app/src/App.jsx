@@ -1,31 +1,12 @@
 import "./App.css"
 import { Routes, Route } from 'react-router-dom'
-import Layout from './Layout/Layout'
-import UsersManager from './Users/UsersManager'
-import UserDashboard from "./UserDashboard/UserDashboard"
-import ClientsManager from "./Clients/ClientsManager.tsx"
-import DebtsManager from "./Debts/DebtsManager.tsx"
-import Management from "./Management/Management.tsx"
-import ExpirationsManager from "./expirations/ExpirationsManager.tsx"
 
-// import { useEffect, useRef } from "react"
-// import { createClients } from "./test/test_populate_db.js"
-
+import Layout from "./pages/components/Layout/Layout"
+import Dashboard from "./pages/Dashboard"
 function App() {
-  // const alreadyTestes = useRef(false)
-  // useEffect(()=>{
-  //   if(alreadyTestes.current) return;
-  //   alreadyTestes.current = true
-  //   createClients(30)
-  // },[])
   return (
     <Routes>
-      <Route path='/' element={<Layout content={<UserDashboard />} />} />
-      <Route path='/auth-user' element={<UsersManager />} />
-      <Route path="/clients" element={<Layout content={<ClientsManager/>}/>}/>
-      <Route path="/debts/*" element={<Layout content={<DebtsManager/>}/>}/>
-      <Route path="/management/*" element={<Layout content={<Management/>}/>}/>
-      <Route path="/expired-debts" element={<Layout content={<ExpirationsManager/>}/>}/>
+      <Route path='/' element={<Layout content={<Dashboard/>} />} />
     </Routes>
   )
 }

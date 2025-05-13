@@ -87,7 +87,7 @@ function decrypt(encryptedText: string): string {
 async function createClient(req: CustomRequest, res: Response) {
   const { "createClient.sql": clientQueries } = queries;
   const user_id = req.user_id;
-
+console.log(user_id)
   if (!clientQueries) {
     res.status(500).json({ msg: "Error interno del servidor." });
     return

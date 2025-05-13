@@ -48,9 +48,9 @@ function useEmployeers(loginData: any) {
         }
     },[loginData])
 
-    return useMemo(() => ({
+    return useMemo(()=> ({
         saveEmployee
-    }), [
+    }),[
         saveEmployee
     ])
 }
