@@ -3,6 +3,7 @@ import React, { useMemo, useContext, createContext, useRef, useEffect } from "re
 import {AppContextValueInterface} from "./Typescript/ContextTypes"
 
 import useModals from "./useModals";
+import useAuthentication from "./useAuthentication";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -23,13 +24,15 @@ export const AppContextProvider = ({ children }: any) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const authHook = useAuthentication()
+
     const modalsHook = useModals()
     const contextValues = useMemo(() => ({
         width,
-        modalsHook
+        modalsHook,authHook
     }), [
         modalsHook,
-        width
+        width, authHook
     ])
 
 
