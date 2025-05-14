@@ -6,14 +6,11 @@ import { MdDeleteOutline } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 function ClientsList({searchInput}) {
   const {
-    clientsHook: { 
-      clients
-    },
     modalsHook:{
       openClientModal,
     }
   } = useAppContext();
-
+  const [clients, setClients] = useState([])
   
   const [filteredClients, setFilteredClients] = useState([]);
 

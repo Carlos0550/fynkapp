@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "./Sidebar.css"
-import { useAppContext } from "../../../Context/AppContext"
+import { useAppContext } from "../../../../Context/AppContext"
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { MdOutlinePersonAddAlt1 } from "react-icons/md";
 import { GiTakeMyMoney } from "react-icons/gi";

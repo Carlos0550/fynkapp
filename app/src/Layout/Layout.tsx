@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import "./Layout.css"
-import Sidebar from '../Sidebar/Sidebar'
-import { useAppContext } from '../../../Context/AppContext'
+import Sidebar from '../pages/Dashboard/components/Sidebar/Sidebar'
+import { useAppContext } from '../Context/AppContext'
 import { Flex, Skeleton } from '@mantine/core'
 function Layout({ content }) {
-  
+  const [gettingClients] = useState(false)
   const {
     width,
-    clientsHook:{
-      gettingClients
-    }
   } = useAppContext()
   
   const [mobileExtended, setMobileExtended] = useState(false)
