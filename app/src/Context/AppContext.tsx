@@ -10,6 +10,7 @@ import useDelivers from "./useDelivers";
 import useEmployeers from "./useEmployeers";
 import useBusiness from "./useBusiness";
 import useExpirations from "./useExpirations";
+import useModals from "./useModals";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -52,6 +53,7 @@ export const AppContextProvider = ({ children }: any) => {
     const employeersHook = useEmployeers(loginData)
     const businessHook = useBusiness(loginData)
     const expirationsHook = useExpirations()
+    const modalsHook = useModals()
     const contextValues = useMemo(() => ({
         clientsHook,
         usersHook,
@@ -62,7 +64,8 @@ export const AppContextProvider = ({ children }: any) => {
         isValidUUID,
         employeersHook,
         businessHook,
-        expirationsHook
+        expirationsHook,
+        modalsHook
     }), [
         clientsHook,
         usersHook,
@@ -71,7 +74,8 @@ export const AppContextProvider = ({ children }: any) => {
         deliversHook,
         employeersHook,
         businessHook,
-        expirationsHook
+        expirationsHook,
+        modalsHook
     ])
 
 

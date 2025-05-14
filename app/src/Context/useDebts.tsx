@@ -88,7 +88,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
     }, [clientID]);
     
 
-    const createDebt = useCallback(async (formValues: any, clientName: string):Promise<boolean>=>{
+    const createDebt = useCallback(async (formValues: any):Promise<boolean>=>{
         const newUrl = new URL(logic_apis.debts + "/create-debt")
         
 
@@ -113,7 +113,7 @@ function useDebts(setCuentaRegresivaIniciada:any, showSessionExpiredNotification
 
              showNotification({
                 title: "Deuda creada",
-                message: "Deuda creada en la cuenta de " + clientName,
+                message: "Deuda creada exitosamente",
                 color: "green",
                 autoClose: 4000,
                 position: "top-right"

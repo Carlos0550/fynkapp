@@ -32,7 +32,7 @@ function Dashboard() {
             onChange={(e) => setSearchInput(e.target.value)}
         />
       </div>
-      <Clients searchInput={searchInput} setSearchInput={setSearchInput}/>
+      <Clients searchInput={searchInput} />
     </div>
   )
 }

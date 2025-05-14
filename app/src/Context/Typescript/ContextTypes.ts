@@ -11,7 +11,7 @@ export interface DebtsHookInterface {
     financialClientData: FinancialClientData
     fetchDebts: () => Promise<boolean>
     getFinancialClientData: () => Promise<boolean>
-    createDebt: (formValues: any, clientName: string) => Promise<boolean>,
+    createDebt: (formValues: any) => Promise<boolean>,
     editDebtHook: EditDebtHookInterface
     setEditDebtHook: React.Dispatch<React.SetStateAction<EditDebtHookInterface>>,
     editDebts: (formValues: any) => Promise<boolean>,
@@ -30,7 +30,7 @@ export interface ClientsHookInterface {
     editingClient: {
         isEditing: boolean,
         clientID: string
-    } | null, 
+    } | null,
     setEditingClient: React.Dispatch<React.SetStateAction<{
         isEditing: boolean,
         clientID: string
@@ -43,14 +43,14 @@ export interface ClientsHookInterface {
 }
 
 export interface UsersHookInterface {
-    registerUser: (formData:UserRegisterFormValuesInterface) => Promise<boolean>,
+    registerUser: (formData: UserRegisterFormValuesInterface) => Promise<boolean>,
     formSelection: number,
     setFormSelection: React.Dispatch<React.SetStateAction<number>>,
     loginUser: (formData: UserLoginFormValuesInterface) => Promise<boolean>,
     handleLogout: () => void
 }
 
-export interface AuthHookInterface{
+export interface AuthHookInterface {
     loginData: LoginDataInterface | null,
     verifyToken: () => Promise<void>,
     showSessionExpiredNotification: () => void,
@@ -66,22 +66,37 @@ export interface DeliversHookInterface {
     setEditDeliverHook: React.Dispatch<React.SetStateAction<EditDeliverHookInterface>>
 }
 
-export interface EmployeersHookInterface{
+export interface EmployeersHookInterface {
     saveEmployee: (employeeData: EmployeeFormData) => Promise<boolean>
 }
 
-export interface BusinessHookInterface{
+export interface BusinessHookInterface {
     createBusiness: (business_name: string) => Promise<boolean>
-    closeBusinessModal: () => void, 
-    openBusinessModal: () => void, 
+    closeBusinessModal: () => void,
+    openBusinessModal: () => void,
     openedBusinessModal: boolean,
-    modalContext: "create" | "edit" | "", 
+    modalContext: "create" | "edit" | "",
     setModalContent: React.Dispatch<React.SetStateAction<"create" | "edit" | "">>
 }
 
 export interface ExpirationsHookInterface {
     getExpirations: () => Promise<void>
     expirations: ExpirationClient
+}
+
+export interface ModalsHookInterface {
+    openedClientModal: boolean,
+    openClientModal: () => void,
+    closeClientModal: () => void,
+    openedAddDeliverModal : boolean,
+    openDeliverModal: () => void,
+    closeDeliverModal: () => void,
+    openedAddDebtModal: boolean,
+    openDebtModal: () => void,
+    closeDebtModal: () => void,
+    openedAddClientModal: boolean,
+    openAddClientModal: () => void,
+    closeAddClientModal: () => void
 }
 
 export interface AppContextValueInterface {
@@ -95,4 +110,5 @@ export interface AppContextValueInterface {
     employeersHook: EmployeersHookInterface
     businessHook: BusinessHookInterface
     expirationsHook: ExpirationsHookInterface
+    modalsHook: ModalsHookInterface
 }

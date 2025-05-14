@@ -15,17 +15,16 @@ function useClients(verifyToken, loginData) {
         isEditing: false,
         clientID: ""
     })
-    
-    const [gettingClients, setGettingClients] = useState<boolean>(false)
+
+    const [gettingClients, setGettingClients] = useState<boolean>(true)
     const getClient = useCallback(async (searchQuery?: any) => {
-        if(!token) return;
+        if (!token) return;
         await verifyToken()
         const url = new URL(logic_apis.clients + "/get-clients")
         url.searchParams.append("searchQuery", searchQuery || "")
 
         try {
-            setGettingClients(true)
-            const response = await fetch(url,{
+            const response = await fetch(url, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -43,9 +42,9 @@ function useClients(verifyToken, loginData) {
                 return false
             }
 
-            if(response.status === 404){
+            if (response.status === 404) {
                 setClients([])
-                 showNotification({
+                showNotification({
                     title: "No se encontraron clientes.",
                     message: "",
                     color: "yellow",
@@ -79,13 +78,15 @@ function useClients(verifyToken, loginData) {
                 position: "top-right"
             })
             return false
-        }finally{
-            setGettingClients(false)
+        } finally {
+            setTimeout(() => {
+                setGettingClients(false)
+            }, 1000);
         }
 
     }, [])
 
-    const createClient = useCallback(async (clientData:ClientsInterface) => {
+    const createClient = useCallback(async (clientData: ClientsInterface) => {
         const url = new URL(logic_apis.clients + "/create-client")
 
         try {
@@ -138,7 +139,7 @@ function useClients(verifyToken, loginData) {
         }
     }, [getClient])
 
-    const editClient = useCallback(async (clientData: ClientsInterface)=>{
+    const editClient = useCallback(async (clientData: ClientsInterface) => {
         const url = new URL(logic_apis.clients + "/edit-client")
         url.searchParams.append("clientID", clientData.client_id)
 
@@ -157,8 +158,8 @@ function useClients(verifyToken, loginData) {
                 throw new Error(responseData.msg || "Error desconocido")
             }
 
-            setClients(prevClient => 
-                prevClient.map(client => 
+            setClients(prevClient =>
+                prevClient.map(client =>
                     client.client_id === editingClient.clientID ? clientData : client
                 )
             )
@@ -182,7 +183,7 @@ function useClients(verifyToken, loginData) {
             })
             return false
         }
-    },[clients, editingClient])
+    }, [clients, editingClient])
 
     const [deleting, setDeleting] = useState<boolean>(false)
     const deleteClient = useCallback(async (clientID: string) => {
@@ -212,7 +213,7 @@ function useClients(verifyToken, loginData) {
                 position: "top-right"
             })
             return true
-        }catch (error) {
+        } catch (error) {
             console.log(error)
             showNotification({
                 title: "Error al eliminar el cliente",
@@ -222,21 +223,18 @@ function useClients(verifyToken, loginData) {
                 position: "top-right"
             })
             return false
-        }finally{
+        } finally {
             setDeleting(false)
         }
-    },[setClients])
+    }, [setClients])
 
 
-    const hasFetched = useRef(false); 
+    const hasFetched = useRef(false);
     useEffect(() => {
         if (loginData && Object.keys(loginData).length > 0 && !hasFetched.current) {
-            const timer = setTimeout(() => {
-                getClient();
-                hasFetched.current = true; 
-            }, 100); 
+            getClient();
+            hasFetched.current = true;
 
-            return () => clearTimeout(timer);
         }
     }, [loginData, getClient]);
 
@@ -258,17 +256,17 @@ function useClients(verifyToken, loginData) {
                 throw new Error(responseData.msg || "Error desconocido")
             }
             return responseData
-        }catch (error) {
+        } catch (error) {
             console.log(error)
             return false
         }
-    },[])
+    }, [])
 
     return useMemo(() => ({
         clients,
         createClient,
         getClient,
-        editingClient, 
+        editingClient,
         setEditingClient,
         editClient,
         deleteClient,
@@ -279,7 +277,7 @@ function useClients(verifyToken, loginData) {
         clients,
         createClient,
         getClient,
-        editingClient, 
+        editingClient,
         setEditingClient,
         editClient,
         deleteClient,

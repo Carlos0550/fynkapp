@@ -6,7 +6,12 @@ import { MdDeleteOutline } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 function ClientsList({searchInput}) {
   const {
-    clientsHook: { clients }
+    clientsHook: { 
+      clients
+    },
+    modalsHook:{
+      openClientModal,
+    }
   } = useAppContext();
 
   
@@ -46,14 +51,14 @@ function ClientsList({searchInput}) {
 
       {showClients && showClients.length > 0 ? (
         showClients.map((client) => (
-          <div className="client-card" key={client.client_id}>
+          <div className="client-card" key={client.client_id} onClick={() => openClientModal()}>
             <div className="avatar">{getInitials(client.client_fullname)}</div>
             <div className="client-info">
               <strong className="name">{client.client_fullname}</strong>
               <span className="dni">DNI: {client.client_dni}</span>
             </div>
             <div className="client-status">
-              <span className="debt">$65.000</span>
+              <span className="debt">No disponible</span>
               <Popover position="left-start" arrowSize={10} arrowOffset={10} withArrow>
                 <PopoverTarget><span className="more">...</span></PopoverTarget>
                 <Popover.Dropdown >
