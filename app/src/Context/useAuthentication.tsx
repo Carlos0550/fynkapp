@@ -38,8 +38,8 @@ function useAuthentication() {
             if (!response.ok) {
                 if (response.status === 404) throw new Error("El correo ingresado no es válido o no se encuentra registrado.");
                 if (response.status === 401) throw new Error("La contraseña ingresada es incorrecta.");
-                 const errorBody = await response.text();
-                 throw new Error(`Error ${response.status}: ${errorBody || response.statusText}`);
+                const errorBody = await response.text();
+                throw new Error(`Error ${response.status}: ${errorBody || response.statusText}`);
             }
 
             const responseJson = await response.json();
@@ -53,9 +53,9 @@ function useAuthentication() {
             });
 
             setLoginData({
-                 user_email: responseJson.manager_email,
-                 user_id: responseJson.manager_id,
-                 user_name: responseJson.manager_name
+                user_email: responseJson.manager_email,
+                user_id: responseJson.manager_id,
+                user_name: responseJson.manager_name
             });
 
             localStorage.setItem("token", responseJson.token);
@@ -63,6 +63,16 @@ function useAuthentication() {
             return;
         } catch (error) {
             console.error("Error en loginUser:", error);
+            if (error instanceof TypeError) {
+                showNotification({
+                    color: "red",
+                    title: "Error de conexión",
+                    message: "Verifique su conexión a internet, o espere un momento y vuelva a intentarlo",
+                    autoClose: 4500,
+                    position: "top-right"
+                })
+                return
+            };
             showNotification({
                 color: "red",
                 title: "Error al iniciar sesión",
@@ -96,7 +106,7 @@ function useAuthentication() {
             const responseData = await response.json();
 
             if (!response.ok) {
-                 throw new Error(responseData.msg || `Error al registrar usuario: ${response.statusText}`);
+                throw new Error(responseData.msg || `Error al registrar usuario: ${response.statusText}`);
             }
 
             showNotification({
@@ -109,6 +119,17 @@ function useAuthentication() {
             return true;
         } catch (error) {
             console.error("Error en registerUser:", error);
+            if (error instanceof TypeError) {
+                showNotification({
+                    color: "red",
+                    title: "Error de conexión",
+                    message: "Verifique su conexión a internet, o espere un momento y vuelva a intentarlo",
+                    autoClose: 4500,
+                    position: "top-right"
+                })
+                return false
+            };
+
             showNotification({
                 color: "red",
                 title: "Error al registrar usuario",
@@ -139,12 +160,12 @@ function useAuthentication() {
         const currentLoginData = loginDataRef.current;
 
         if (!token) {
-             if (currentLoginData.user_id !== '') {
-                 setLoginData({ user_email: '', user_id: '', user_name: '' });
-             }
-             if (location.pathname !== "/authentication") {
-                 navigate("/authentication");
-             }
+            if (currentLoginData.user_id !== '') {
+                setLoginData({ user_email: '', user_id: '', user_name: '' });
+            }
+            if (location.pathname !== "/authentication") {
+                navigate("/authentication");
+            }
             return null;
         }
 
@@ -163,62 +184,62 @@ function useAuthentication() {
 
             if ([401, 403].includes(response.status)) {
                 notificateUserWithoutSession();
-                 if (currentLoginData.user_id !== '') {
-                     localStorage.removeItem("token");
-                     setLoginData({ user_email: '', user_id: '', user_name: '' });
-                 }
-                 if (location.pathname !== "/authentication") {
-                     navigate("/authentication");
-                 }
+                if (currentLoginData.user_id !== '') {
+                    localStorage.removeItem("token");
+                    setLoginData({ user_email: '', user_id: '', user_name: '' });
+                }
+                if (location.pathname !== "/authentication") {
+                    navigate("/authentication");
+                }
                 return null;
             }
 
             const responseJson = await response.json();
-
-            if (currentLoginData.user_id === '' || 
-                currentLoginData.user_id === null || 
+            
+            if (currentLoginData.user_id === '' ||
+                currentLoginData.user_id === null ||
                 currentLoginData.user_id === undefined ||
                 currentLoginData.user_id !== responseJson.manager_id ||
                 currentLoginData.user_email !== responseJson.manager_email ||
                 currentLoginData.user_name !== responseJson.manager_name) {
 
-                 if (responseJson && responseJson.manager_id) {
-                     setLoginData({
-                         user_email: responseJson.manager_email,
-                         user_id: responseJson.manager_id,
-                         user_name: responseJson.manager_name
-                     });
-                 } else {
-                     console.error("Valid session response missing user data");
-                     notificateUserWithoutSession();
-                     if (currentLoginData.user_id !== '') {
-                         localStorage.removeItem("token");
-                         setLoginData({ user_email: '', user_id: '', user_name: '' });
-                     }
-                     if (location.pathname !== "/authentication") {
-                         navigate("/authentication");
-                     }
-                     return null;
-                 }
+                if (responseJson && responseJson.manager_id) {
+                    setLoginData({
+                        user_email: responseJson.manager_email,
+                        user_id: responseJson.manager_id,
+                        user_name: responseJson.manager_name
+                    });
+                } else {
+                    notificateUserWithoutSession();
+                    if (currentLoginData.user_id !== '') {
+                        localStorage.removeItem("token");
+                        setLoginData({ user_email: '', user_id: '', user_name: '' });
+                    }
+                    if (location.pathname !== "/authentication") {
+                        navigate("/authentication");
+                    }
+                    return null;
+                }
             }
 
             return responseJson as LoginData;
 
         } catch (error) {
+            if (error instanceof TypeError) return;
             console.error("Error en checkSessionStatus:", error);
             notificateUserWithoutSession();
-             if (currentLoginData.user_id !== '') {
-                 localStorage.removeItem("token");
-                 setLoginData({ user_email: '', user_id: '', user_name: '' });
-             }
-             if (location.pathname !== "/authentication") {
-                 navigate("/authentication");
-             }
+            if (currentLoginData.user_id !== '') {
+                localStorage.removeItem("token");
+                setLoginData({ user_email: '', user_id: '', user_name: '' });
+            }
+            if (location.pathname !== "/authentication") {
+                navigate("/authentication");
+            }
             return null;
         } finally {
-             setTimeout(() => {
-                 setValidatingSession(false);
-             }, 2000);
+            setTimeout(() => {
+                setValidatingSession(false);
+            }, 2000);
         }
     }, [location, navigate, notificateUserWithoutSession, setValidatingSession, setLoginData]);
 
@@ -235,7 +256,7 @@ function useAuthentication() {
         if (loginData.user_id !== '' && loginData.user_id !== null && loginData.user_id !== undefined) {
             timer = setInterval(() => {
                 checkSessionStatus();
-            }, 10000);
+            }, 10 * 1000);
         }
 
         return () => {
@@ -246,6 +267,12 @@ function useAuthentication() {
     }, [loginData.user_id, checkSessionStatus]);
 
     const alreadyFetched = useRef(false);
+
+    useEffect(()=>{
+        if(!validatingSession && !["", null, undefined].includes(loginData.user_id) && location.pathname === "/authentication") {
+            navigate("/");
+        }
+    },[loginData, location])
 
     return useMemo(() => ({
         loginData,

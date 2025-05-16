@@ -1,9 +1,8 @@
 import { Modal } from '@mantine/core'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppContext } from '../../../../../Context/AppContext'
-import ClientForm from './ClientForm/ClientForm';
-import ClientPayments from './ClientPayments/ClientPayments';
-import ClientDebtForm from './ClientDebtForm/ClientDebtForm';
+import ClientForm from '../../Clients/ClientsComponents/ClientForm/ClientForm';
+
 
 function ClientModal() {
   const {
@@ -66,7 +65,7 @@ function ClientModal() {
         blur: 5,
       }}
     >
-      {openedAddClientModal && <></>}
+      {openedAddClientModal && <ClientForm closeModal={onCloseModal}/>}
       {openedAddDeliverModal && <></>}
       {openedAddDebtModal && <></>}
     </Modal>

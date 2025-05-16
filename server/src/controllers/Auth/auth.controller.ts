@@ -1,14 +1,14 @@
 import { RequestHandler } from "express";
-import { CreateUserForm, LoginUserForm, ManagerData } from "../Types/AuthenticationTypes";
-import pool from "../connections/database_conn";
-import { getQueries } from "../utils/QueriesHandler";
+import { CreateUserForm, LoginUserForm, ManagerData } from "../../Types/AuthenticationTypes";
+import pool from "../../connections/database_conn";
+import { getQueries } from "../../utils/QueriesHandler";
 import path from "path";
-import { comparePassword, getHashPassword } from "../Security/PasswordSecurity";
-import { sendEmail } from "../utils/Emails/EmailVerification/SendEmailVerification";
-import { LinkData, UserVerification } from "../Types/UserVerificationTypes";
+import { comparePassword, getHashPassword } from "../../Security/PasswordSecurity";
+import { sendEmail } from "../../utils/Emails/EmailVerification/SendEmailVerification";
+import { LinkData, UserVerification } from "../../Types/UserVerificationTypes";
 import dayjs from "dayjs";
-import redis from "../connections/redis_conn";
-import { generateRandomKey } from "../Security/EncryptationModule";
+import redis from "../../connections/redis_conn";
+import { generateRandomKey } from "../../Security/EncryptationModule";
 
 const queriesFolder = path.join(__dirname, "./Queries")
 const queries = getQueries(queriesFolder)

@@ -1,8 +1,8 @@
 import { RequestHandler, Router } from "express";
-import { CreateUserForm, LoginUserForm } from "../Types/AuthenticationTypes";
+import { CreateUserForm, LoginUserForm, ManagerData } from "../Types/AuthenticationTypes";
 import pool from "../connections/database_conn";
 import validator from "validator"
-import { createUser, loginUser, userVerification } from "../controllers/auth.controller";
+import { createUser, loginUser, userVerification } from "../controllers/Auth/auth.controller";
 import { UserVerification } from "../Types/UserVerificationTypes";
 import redis from "../connections/redis_conn";
 const authRouter = Router()
@@ -99,8 +99,8 @@ const LoginUserRouter: RequestHandler<{}, {}, LoginUserForm, {}> = async (
     next();
 }
 
-const ValidateSessionRouter: RequestHandler = async (
-    req, res
+export const ValidateSessionRouter: RequestHandler = async (
+    req, res, next
 ): Promise<void> => {
     const authHeader = req.headers.authorization?.split(" ")[1];
     if (!authHeader) {
@@ -115,19 +115,22 @@ const ValidateSessionRouter: RequestHandler = async (
         res.status(403).json({ msg: 'Sesión expirada o no válida.' });
         return;
     }
-    const managerData = await redis.hgetall(redis_key); 
+    const managerData: Partial<ManagerData> = await redis.hgetall(redis_key); 
 
     if (Object.keys(managerData).length === 0) {
          res.status(403).json({ msg: 'Sesión expirada o no válida.' });
          return;
     }
-
-    res.status(200).json(managerData)
-    return
+    (req as any).manager_data = managerData
+    next()
 }
 
 authRouter.post("/create-user", CreateUserRouter, createUser)
 authRouter.get("/user-verification", UserVerificationRouter, userVerification)
 authRouter.post("/login-user", LoginUserRouter, loginUser)
-authRouter.get("/validate-session", ValidateSessionRouter)
+authRouter.get("/validate-session", ValidateSessionRouter, (req,res) => {
+    if((req as any).manager_data){
+        res.status(200).json((req as any).manager_data)
+    }
+})
 export default authRouter

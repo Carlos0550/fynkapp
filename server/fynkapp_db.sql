@@ -30,6 +30,10 @@ CREATE TABLE magic_links(
     CONSTRAINT fk_link_manager_id FOREIGN KEY(manager_id) REFERENCES managers(manager_id) ON DELETE CASCADE
 );
 
-SELECT * FROM managers;
-SELECT * FROM magic_links;
-TRUNCATE TABLE managers CASCADE;
+CREATE TABLE clients(
+	client_id UUID default gen_random_uuid() PRIMARY KEY,
+	client_name TEXT NOT NULL,
+	client_aditional_data JSONB,
+	manager_client_id UUID,
+	CONSTRAINT fk_manager_client_id FOREIGN KEY(manager_client_id) REFERENCES managers(manager_id)
+);
