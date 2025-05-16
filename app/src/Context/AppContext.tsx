@@ -27,6 +27,7 @@ export const AppContextProvider = ({ children }: any) => {
     const authHook = useAuthentication()
 
     const modalsHook = useModals()
+
     const contextValues = useMemo(() => ({
         width,
         modalsHook,authHook
@@ -40,7 +41,11 @@ export const AppContextProvider = ({ children }: any) => {
         <AppContext.Provider value={
             contextValues
         }>
-            {children}
+            {authHook?.validatingSession ? (
+                <div className='initLoader-container'>
+                    <div className="initLoader"></div>
+                </div>
+            ): (children)}
         </AppContext.Provider>
     )
 }

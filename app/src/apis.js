@@ -5,5 +5,5 @@ export const base_api={
 }
 
 export const logic_apis = {
-    authentication: new URL(base_api + "/auth")
+  authentication: new URL(`${base_api.url}/auth`)
 }

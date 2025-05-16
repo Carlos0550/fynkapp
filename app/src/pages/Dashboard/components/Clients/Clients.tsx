@@ -1,13 +1,11 @@
 import React from 'react'
 import "./Clients.css"
-import { useAppContext } from '../../../Context/AppContext'
+import { useAppContext } from '../../../../Context/AppContext'
 import ClientsList from './ClientsComponents/ClientList/ClientsList'
 import ClientModal from '../Modals/ClientsModal/ClientModal'
 function Clients({searchInput}) {
+    const [clients, setClients] = React.useState([])
     const {
-        clientsHook: {
-            clients
-        }
     } = useAppContext()
     return (
         <div className='clients-container'>

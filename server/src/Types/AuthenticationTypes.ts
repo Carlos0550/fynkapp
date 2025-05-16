@@ -1,7 +1,10 @@
-export interface LoginData{
-    user_email: string,
-    user_id: string,
-    user_name: string
+export interface ManagerData{
+    manager_id: string,
+    manager_name: string,
+    manager_email: string,
+    manager_password: string,
+    manager_verified: boolean,
+    token?: string
 }
 
 export interface LoginUserForm{

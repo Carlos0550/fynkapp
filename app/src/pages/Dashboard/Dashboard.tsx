@@ -8,9 +8,7 @@ import Clients from './components/Clients/Clients'
 import { useNavigate } from 'react-router-dom'
 function Dashboard() {
   const navigate = useNavigate()
-  useEffect(() => {
-    navigate("/authentication")
-  }, [])
+
   const [gettingClients, setGettingClients] = useState(false)
 
   const [searchInput, setSearchInput] = useState("");
@@ -33,7 +31,7 @@ function Dashboard() {
           onChange={(e) => setSearchInput(e.target.value)}
         />
       </div>
-      {/* <Clients searchInput={searchInput} /> */}
+       <Clients searchInput={searchInput} />
     </div>
   )
 }

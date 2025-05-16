@@ -1,17 +1,23 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { LoginData, LoginUserForm } from '../Context/Typescript/AuthenticationTypes'
-import { showNotification } from '@mantine/notifications'
-import { logic_apis } from '../apis'
-import { useNavigate } from 'react-router-dom'
-function useAuthentication() {
-    const navigate = useNavigate()
-    const [loginData, setLoginData] = useState<LoginData>({
-        user_email: '',
-        user_id: '',
-        user_name: ''
-    })
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CreateUserForm, LoginData, LoginUserForm } from '../Context/Typescript/AuthenticationTypes';
+import { showNotification } from '@mantine/notifications';
+import { logic_apis } from '../apis';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-    const loginUser = useCallback(async (formValues: LoginUserForm) => {
+function useAuthentication() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const loginDataRef = useRef<LoginData>({ user_email: '', user_id: '', user_name: '' });
+
+    const [loginData, _setLoginData] = useState<LoginData>(loginDataRef.current);
+
+    const setLoginData = useCallback((data: LoginData) => {
+        loginDataRef.current = data;
+        _setLoginData(data);
+    }, []);
+
+    const loginUser = useCallback(async (formValues: LoginUserForm): Promise<void> => {
         showNotification({
             color: "yellow",
             title: "Iniciando sesión",
@@ -27,40 +33,231 @@ function useAuthentication() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(formValues)
-            })
+            });
 
-            if (!response.ok) throw new Error(response.statusText)
-            if (response.status === 404) throw new Error("El usuario no existe")
-            if (response.status === 401) throw new Error("Contraseña incorrecta")
-            const responseJson = await response.json()
+            if (!response.ok) {
+                if (response.status === 404) throw new Error("El correo ingresado no es válido o no se encuentra registrado.");
+                if (response.status === 401) throw new Error("La contraseña ingresada es incorrecta.");
+                 const errorBody = await response.text();
+                 throw new Error(`Error ${response.status}: ${errorBody || response.statusText}`);
+            }
+
+            const responseJson = await response.json();
+
             showNotification({
                 color: "green",
-                title: `Bienvenido, ${responseJson.user_name}`,
+                title: `Bienvenido, ${responseJson.manager_name}`,
                 message: "",
                 autoClose: 2500,
                 position: "top-right"
-            })
-            setLoginData(responseJson)
-            navigate("/")
+            });
+
+            setLoginData({
+                 user_email: responseJson.manager_email,
+                 user_id: responseJson.manager_id,
+                 user_name: responseJson.manager_name
+            });
+
+            localStorage.setItem("token", responseJson.token);
+            navigate("/");
             return;
         } catch (error) {
-            console.log(error)
+            console.error("Error en loginUser:", error);
             showNotification({
                 color: "red",
                 title: "Error al iniciar sesión",
                 message: error instanceof Error ? error.message : "Error desconocido",
                 autoClose: 4500,
                 position: "top-right"
-            })
-
+            });
+            setLoginData({ user_email: '', user_id: '', user_name: '' });
+            localStorage.removeItem("token");
             return;
         }
-    }, [])
+    }, [navigate, setLoginData]);
+
+    const registerUser = useCallback(async (formValues: CreateUserForm): Promise<boolean> => {
+        showNotification({
+            color: "yellow",
+            title: "Registrando usuario",
+            message: "Aguarde un segundo...",
+            autoClose: 2000,
+            position: "top-right"
+        });
+
+        try {
+            const response = await fetch(logic_apis.authentication + "/create-user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formValues)
+            });
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                 throw new Error(responseData.msg || `Error al registrar usuario: ${response.statusText}`);
+            }
+
+            showNotification({
+                color: "green",
+                title: `Te damos la bienvenida a Fynkapp, ${responseData.manager_name}`,
+                message: "Gracias por registrarte, revisa tu correo para activar tu cuenta",
+                autoClose: 5000,
+                position: "top-right"
+            });
+            return true;
+        } catch (error) {
+            console.error("Error en registerUser:", error);
+            showNotification({
+                color: "red",
+                title: "Error al registrar usuario",
+                message: error instanceof Error ? error.message : "Error desconocido",
+                autoClose: 4500,
+                position: "top-right"
+            });
+
+            return false;
+        }
+    }, []);
+
+    const notificateUserWithoutSession = useCallback(() => {
+        return showNotification({
+            color: "red",
+            title: "Sesión no válida o expirada",
+            message: "Por favor inicia sesión nuevamente",
+            autoClose: 4000,
+            position: "top-right",
+        });
+    }, []);
+
+    const [validatingSession, setValidatingSession] = useState(false);
+    const alreadyShownLoader = useRef(false);
+
+    const checkSessionStatus = useCallback(async () => {
+        const token = localStorage.getItem("token");
+        const currentLoginData = loginDataRef.current;
+
+        if (!token) {
+             if (currentLoginData.user_id !== '') {
+                 setLoginData({ user_email: '', user_id: '', user_name: '' });
+             }
+             if (location.pathname !== "/authentication") {
+                 navigate("/authentication");
+             }
+            return null;
+        }
+
+        try {
+            if (!alreadyShownLoader.current && currentLoginData.user_id === '') {
+                setValidatingSession(true);
+                alreadyShownLoader.current = true;
+            }
+
+            const url = new URL(logic_apis.authentication + "/validate-session");
+            const response = await fetch(url, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if ([401, 403].includes(response.status)) {
+                notificateUserWithoutSession();
+                 if (currentLoginData.user_id !== '') {
+                     localStorage.removeItem("token");
+                     setLoginData({ user_email: '', user_id: '', user_name: '' });
+                 }
+                 if (location.pathname !== "/authentication") {
+                     navigate("/authentication");
+                 }
+                return null;
+            }
+
+            const responseJson = await response.json();
+
+            if (currentLoginData.user_id === '' || 
+                currentLoginData.user_id === null || 
+                currentLoginData.user_id === undefined ||
+                currentLoginData.user_id !== responseJson.manager_id ||
+                currentLoginData.user_email !== responseJson.manager_email ||
+                currentLoginData.user_name !== responseJson.manager_name) {
+
+                 if (responseJson && responseJson.manager_id) {
+                     setLoginData({
+                         user_email: responseJson.manager_email,
+                         user_id: responseJson.manager_id,
+                         user_name: responseJson.manager_name
+                     });
+                 } else {
+                     console.error("Valid session response missing user data");
+                     notificateUserWithoutSession();
+                     if (currentLoginData.user_id !== '') {
+                         localStorage.removeItem("token");
+                         setLoginData({ user_email: '', user_id: '', user_name: '' });
+                     }
+                     if (location.pathname !== "/authentication") {
+                         navigate("/authentication");
+                     }
+                     return null;
+                 }
+            }
+
+            return responseJson as LoginData;
+
+        } catch (error) {
+            console.error("Error en checkSessionStatus:", error);
+            notificateUserWithoutSession();
+             if (currentLoginData.user_id !== '') {
+                 localStorage.removeItem("token");
+                 setLoginData({ user_email: '', user_id: '', user_name: '' });
+             }
+             if (location.pathname !== "/authentication") {
+                 navigate("/authentication");
+             }
+            return null;
+        } finally {
+             setTimeout(() => {
+                 setValidatingSession(false);
+             }, 2000);
+        }
+    }, [location, navigate, notificateUserWithoutSession, setValidatingSession, setLoginData]);
+
+    useEffect(() => {
+        if (!alreadyFetched.current) {
+            alreadyFetched.current = true;
+            checkSessionStatus();
+        }
+    }, [checkSessionStatus]);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout | null = null;
+
+        if (loginData.user_id !== '' && loginData.user_id !== null && loginData.user_id !== undefined) {
+            timer = setInterval(() => {
+                checkSessionStatus();
+            }, 10000);
+        }
+
+        return () => {
+            if (timer) {
+                clearInterval(timer);
+            }
+        };
+    }, [loginData.user_id, checkSessionStatus]);
+
+    const alreadyFetched = useRef(false);
+
     return useMemo(() => ({
-        loginData, loginUser
+        loginData,
+        loginUser,
+        registerUser,
+        validatingSession
     }), [
-        loginData, loginUser
-    ])
+        loginData,
+        loginUser,
+        registerUser,
+        validatingSession
+    ]);
 }
 
-export default useAuthentication
+export default useAuthentication;

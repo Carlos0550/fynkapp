@@ -14,7 +14,10 @@ function Authentication() {
         const timeout2 = setTimeout(() => {
             setShowForms(true)
         },3000)
-        return () => clearTimeout(timeout)
+        return () => {
+            clearTimeout(timeout)
+            clearTimeout(timeout2)
+        }
     }, [])
     return (
         <div className="authentication-container">
@@ -26,8 +29,8 @@ function Authentication() {
                 <div className="authentication-forms">
                     {
                         showRegister
-                            ? <CreateUser />
-                            : <LoginUser />
+                            ? <CreateUser toggleForm={setShowRegister}/>
+                            : <LoginUser toggleForm={setShowRegister}/>
                     }
                 </div>
             )}

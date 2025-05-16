@@ -3,7 +3,7 @@ import "./LoginUser.css"
 import React, { useState } from 'react'
 import { useAppContext } from '../../../Context/AppContext'
 import { LoginUserForm } from '../../../Context/Typescript/AuthenticationTypes'
-function LoginUser() {
+function LoginUser({toggleForm}) {
     const {
         authHook: {
             loginUser
@@ -15,7 +15,8 @@ function LoginUser() {
         user_email: '',
         user_password: ''
     })
-    const handleLogin = async () => {
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
         setLoggingIn(true)
         await loginUser(formValues)
         setLoggingIn(false)
@@ -25,7 +26,7 @@ function LoginUser() {
             <h3>Iniciar sesión en Fynkapp</h3>
             <form className='login-form' onSubmit={handleLogin}>
                 <Input.Wrapper
-                    className='user_name'
+                    className='user_email'
                     label="Correo"
                     required
                     style={{ width: "100%" }}
@@ -50,7 +51,7 @@ function LoginUser() {
                 </Input.Wrapper>
                 <Button
                     color='dark'
-                    type='button'
+                    type='submit'
                     fullWidth
                     loading={loggingIn}
                     disabled={loggingIn}
@@ -67,8 +68,9 @@ function LoginUser() {
                 }}
                 loading={loggingIn}
                 disabled={loggingIn}
+                onClick={() => toggleForm(true)}
             >
-                ¿Ya tienes una cuenta?
+                ¿No tienes una cuenta?
             </Button>
         </div>
     )

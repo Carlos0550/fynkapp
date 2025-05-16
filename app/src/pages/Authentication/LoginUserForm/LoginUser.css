@@ -10,6 +10,21 @@
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 150ms ease-in-out;
+    opacity: 0;
+    transform: translateX(-200%);
+    transform-origin: right;
+    animation: slideRight 0.5s ease-in-out forwards;
+}
+
+@keyframes slideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .login-container:hover{

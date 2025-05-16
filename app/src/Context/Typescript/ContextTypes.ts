@@ -1,4 +1,4 @@
-import { LoginData, LoginUserForm } from "./AuthenticationTypes"
+import { CreateUserForm, LoginData, LoginUserForm } from "./AuthenticationTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -17,7 +17,9 @@ export interface ModalsHookInterface {
 
 export interface AuthenticationHookInterface {
     loginData: LoginData,
-    loginUser: (formValues: LoginUserForm) => Promise<void>
+    loginUser: (formValues: LoginUserForm) => Promise<void>,
+    registerUser: (formValues: CreateUserForm) => Promise<boolean>
+    validatingSession: boolean
 }
 
 export interface AppContextValueInterface {
