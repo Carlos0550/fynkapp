@@ -1,9 +1,14 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { logic_apis } from "../apis"
 import { ClientInterface, FormClient } from './Typescript/ClientsTypes'
 import { showNotification } from '@mantine/notifications'
-function useClients() {
+
+interface Props{
+    selectedClientData: ClientInterface["client_id"]
+}
+function useClients({selectedClientData}: Props) {
     const [clients, setClients] = useState<ClientInterface[]>([])
+    const [editingClient, setEditingClient] = useState<boolean>(false)
     const getAllClients = useCallback(async(): Promise<boolean> => {
         const url = new URL(logic_apis.clients + "/get-all-clients")
         try {
@@ -52,6 +57,8 @@ function useClients() {
 
     const saveClient = useCallback(async (formData: FormClient): Promise<boolean> => {
         const url = new URL(logic_apis.clients + "/save-client")
+        editingClient && url.searchParams.append("client_id", selectedClientData)
+        editingClient && url.searchParams.append("editing_client", true.toString())
         try {
             const result = await fetch(url, {
                 method: "POST",
@@ -82,11 +89,64 @@ function useClients() {
             })
             return false
         }
-    }, [])
+    }, [editingClient])
+
+    const getClientData = useCallback(async(client_id: string): Promise<boolean | ClientInterface> => {
+        const url = new URL(logic_apis.clients + "/get-client-data")
+        url.searchParams.set("client_id", client_id)
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
+                }
+            });
+
+            const responseData = await response.json()
+            if(response.status === 404){
+                showNotification({
+                    color: "red",
+                    title: "Error al obtener los datos del cliente",
+                    styles: (theme) => ({
+                        title:{color: "black"},
+                        description: {color: "black"}
+                    }),
+                    message: responseData.msg || "Error desconocido",
+                    autoClose: 3500,
+                    position: "top-right"
+                })
+                return false
+            }
+            if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
+            return responseData
+        } catch (error) {
+            console.log(error)
+            if (error instanceof TypeError) return false
+            showNotification({
+                color: "red",
+                title: "Error al obtener los datos del cliente",
+                styles: (theme) => ({
+                    title:{color: "black"},
+                    description: {color: "black"}
+                }),
+                message: error instanceof Error ? error.message : "Error desconocido",
+                autoClose: 3500,
+                position: "top-right"
+            })
+
+            return false
+        }
+    },[])
+
+    useEffect(()=>{
+        console.log(selectedClientData)
+    },[selectedClientData])
     return useMemo(() => ({
-        saveClient, clients, getAllClients
+        saveClient, clients, getAllClients, setClients,
+        getClientData, editingClient, setEditingClient
     }), [
-        saveClient, clients, getAllClients
+        saveClient, clients, getAllClients, setClients,
+        getClientData, editingClient, setEditingClient
     ])
 }
 

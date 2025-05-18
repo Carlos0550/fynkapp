@@ -15,3 +15,52 @@
     transition: all 150ms ease-in-out;
     z-index: 3;
 }
+
+.financial-client-name{
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.financial-client-actions-container{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.financial-client-data{
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+    gap: 10px;
+    width: 100%;
+    outline: 1px solid #ccc;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.financial-client-data p{
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.financial-client-data-micelaneous{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.financial-client-data-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.financial-client-data-p{
+    font-size: .1rem;
+    font-weight: 200;
+    margin: 0;
+}

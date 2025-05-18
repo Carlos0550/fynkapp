@@ -64,7 +64,7 @@ function ClientModal() {
       title={modalTitle}
       closeOnEscape={false}
       fullScreen={width < 768}
-      withCloseButton={false}
+      withCloseButton={openedClientModal ? false : true}
       size="100%"
       padding="sm"
       radius="md"

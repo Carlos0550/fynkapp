@@ -28,7 +28,9 @@ export const AppContextProvider = ({ children }: any) => {
     const authHook = useAuthentication()
 
     const modalsHook = useModals()
-    const clientsHook = useClients()
+    const clientsHook = useClients({
+        selectedClientData: modalsHook.selectedClientData
+    })
 
     const contextValues = useMemo(() => ({
         width,

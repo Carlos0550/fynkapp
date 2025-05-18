@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Input, Notification } from '@mantine/core';
 import { FormClient } from "../../../../../../Context/Typescript/ClientsTypes"
 import "./ClientForm.css"
@@ -9,7 +9,11 @@ function ClientForm({ closeModal }) {
     const [showNotif, setShowNotif] = useState(false)
     const {
         clientsHook: {
-            saveClient
+            saveClient,
+            editingClient
+        },
+        modalsHook:{
+            selectedClientData
         }
     } = useAppContext()
     const [formData, setFormData] = useState<FormClient>({
@@ -39,6 +43,18 @@ function ClientForm({ closeModal }) {
             }, 3000);
         }
     }
+
+    useEffect(()=>{
+        if(editingClient){
+            const { aditional_client_data } = selectedClientData
+            setFormData({
+                client_name: selectedClientData.client_name,
+                client_dni: aditional_client_data?.client_dni || "",
+                client_email: aditional_client_data?.client_email || "",
+                client_address: aditional_client_data?.client_address || ""
+            })
+        }
+    },[editingClient, selectedClientData])
     return (
         <form className='client-form' onSubmit={handleSaveClient}>
             {

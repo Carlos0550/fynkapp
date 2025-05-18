@@ -1,12 +1,12 @@
 import { RequestHandler, Router } from "express";
 import { ValidateSessionRouter } from "./auth.routes";
 import { ClientsRequest } from "../Types/ClientsTypes";
-import { GetAllClients, saveClient } from "../controllers/Clients/clients.controller";
+import { GetAllClients, getClientData, saveClient } from "../controllers/Clients/clients.controller";
 import validator from "validator"
 const clientRouter = Router()
 
 const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req, res, next): Promise<void> => {
-    const { client_name, client_dni, client_email, client_address } = req.body;
+    const { client_name, client_dni, client_email, editing_client } = req.body;
     if (!client_name) {
         res.status(400).json({ msg: 'El nombre del cliente es Obligatorio' });
         return;
@@ -42,6 +42,14 @@ const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req,
         res.status(400).json({ msg: 'El DNI ingresado no es valido.' });
         return;
     }
+
+    const parsedBoolean = editing_client === "true" ? true : false
+    if(parsedBoolean){
+        if(!req.body.client_id){
+            res.status(400).json({msg:"El ID del cliente es obligatorio."})
+            return
+        }
+    }
     next();
 }
 
@@ -54,7 +62,20 @@ const GetAllClientsRouter: RequestHandler = async (req, res, next): Promise<void
     next()
 }
 
+const GetClientDataRouter: RequestHandler<{},{},{},{client_id:string}> = async (req, res, next): Promise<void> => {
+    if(!(req as any).manager_data){
+        res.status(401).json({msg:"Acceso no autorizado."})
+        return
+    }
+
+    if(!req.query.client_id){
+        res.status(400).json({msg:"El ID del cliente es obligatorio."})
+        return
+    }
+    next()
+}
 clientRouter.post("/save-client", ValidateSessionRouter, SaveClientRouter, saveClient)
 clientRouter.get("/get-all-clients", ValidateSessionRouter, GetAllClientsRouter, GetAllClients)
+clientRouter.get("/get-client-data", ValidateSessionRouter, GetClientDataRouter, getClientData)
 
 export default clientRouter

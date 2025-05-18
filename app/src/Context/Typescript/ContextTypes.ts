@@ -28,8 +28,12 @@ export interface AuthenticationHookInterface {
 
 export interface ClientsHookInterface {
     clients: ClientInterface[],
+    setClients: React.Dispatch<React.SetStateAction<ClientInterface[]>>,
     saveClient: (formData: FormClient) => Promise<boolean>,
-    getAllClients: () => Promise<boolean>
+    getAllClients: () => Promise<boolean>,
+    getClientData: (client_id: string) => Promise<boolean | ClientInterface>,
+    editingClient: boolean, 
+    setEditingClient: React.Dispatch<React.SetStateAction<boolean>>
 }
 export interface AppContextValueInterface {
     width: number,
