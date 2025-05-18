@@ -5,8 +5,9 @@ import { GetAllClients, getClientData, saveClient } from "../controllers/Clients
 import validator from "validator"
 const clientRouter = Router()
 
-const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req, res, next): Promise<void> => {
-    const { client_name, client_dni, client_email, editing_client } = req.body;
+const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {editing_client?: string, client_id?: string}> = async (req, res, next): Promise<void> => {
+    const { client_name, client_dni, client_email } = req.body;
+    const {editing_client} = req.query
     if (!client_name) {
         res.status(400).json({ msg: 'El nombre del cliente es Obligatorio' });
         return;
@@ -45,7 +46,7 @@ const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req,
 
     const parsedBoolean = editing_client === "true" ? true : false
     if(parsedBoolean){
-        if(!req.body.client_id){
+        if(!req.query.client_id){
             res.status(400).json({msg:"El ID del cliente es obligatorio."})
             return
         }

@@ -14,3 +14,8 @@ INSERT INTO
         client_name
     )
 VALUES($1,$2, $3);
+
+UPDATE clients SET 
+    client_name = $1,
+    client_aditional_data = $2
+WHERE client_id = $3 RETURNING *;

@@ -7,7 +7,7 @@ import { encryptData } from "../../Security/EncryptationModule"
 import { decrypt } from "../../Security/EncryptationModule"
 
 const queries = getQueries(path.join(__dirname, "./Queries"))
-export const saveClient: RequestHandler<{},{},ClientsRequest,{}> = async (
+export const saveClient: RequestHandler<{}, {}, ClientsRequest, { editing_client?: string, client_id?: string }> = async (
     req,
     res
 ): Promise<void> => {
@@ -17,36 +17,51 @@ export const saveClient: RequestHandler<{},{},ClientsRequest,{}> = async (
         client_email,
         client_address
     } = req.body
+    const { editing_client } = req.query
+    const parsedBoolean = editing_client === "true" ? true : false
+
     const manager_client_id = (req as any).manager_data.manager_id
     const clientQuery = queries["saveClient.sql"]
     try {
         const encryptedDNI = client_dni ? encryptData(client_dni) : null
-        if(encryptedDNI && client_dni){
-            const result1 = await pool.query(clientQuery[0], [manager_client_id, encryptedDNI])
-
-            if(result1.rows[0].count === 0){
-                res.status(400).json({msg:"Ya existe un cliente con el DNI ingresado."})
-                return
-            }
-        }
-
         const encryptedEmail = client_email ? encryptData(client_email) : null
         const encryptedAddress = client_address ? encryptData(client_address) : null
-        
+
         const dataToSave = {
             client_dni: encryptedDNI,
             client_email: encryptedEmail,
             client_address: encryptedAddress
         }
-        
-        const result2 = await pool.query(clientQuery[1],[manager_client_id,JSON.stringify(dataToSave), client_name])
+        if (parsedBoolean) {
+            const result = await pool.query(clientQuery[2], [client_name, JSON.stringify(dataToSave), req.query.client_id])
+            if(result.rowCount! > 0) {
+                res.status(200).json({ msg: "Cliente actualizado con exito", updatedClient: result.rows[0] })
+                return;
+            }else{
+                res.status(400).json({
+                    msg: "Error al actualizar el cliente, espere unos segundos e intente nuevamente."
+                })
+                return;
+            }
+        } else {
+            if (encryptedDNI && client_dni) {
+                const result1 = await pool.query(clientQuery[0], [manager_client_id, encryptedDNI])
 
-        if(result2.rowCount! > 0){
-            res.status(200).json({msg:"Cliente guardado con exito"})
-        }else{
-            res.status(400).json({
-                msg: "Error al guardar el cliente, espere unos segundos e intente nuevamente."
-            })
+                if (result1.rows[0].count === 0) {
+                    res.status(400).json({ msg: "Ya existe un cliente con el DNI ingresado." })
+                    return
+                }
+            }
+
+            const result2 = await pool.query(clientQuery[1], [manager_client_id, JSON.stringify(dataToSave), client_name])
+
+            if (result2.rowCount! > 0) {
+                res.status(200).json({ msg: "Cliente guardado con exito" })
+            } else {
+                res.status(400).json({
+                    msg: "Error al guardar el cliente, espere unos segundos e intente nuevamente."
+                })
+            }
         }
 
     } catch (error) {
@@ -61,15 +76,15 @@ export const GetAllClients: RequestHandler = async (
 ): Promise<void> => {
     const { manager_id } = (req as any).manager_data
     const clientQuery = `
-    SELECT client_name, client_id FROM clients WHERE manager_client_id = $1;
+    SELECT client_name, client_id FROM clients WHERE manager_client_id = $1 ORDER BY client_name ASC;
     `
 
     try {
         const result = await pool.query(clientQuery, [manager_id])
-        if(result.rowCount === 0){
-            res.status(404).json({msg:"No se encontraron clientes."})
+        if (result.rowCount === 0) {
+            res.status(404).json({ msg: "No se encontraron clientes." })
             return
-        }else{
+        } else {
             res.status(200).json(result.rows)
             return
         }
@@ -80,8 +95,8 @@ export const GetAllClients: RequestHandler = async (
     }
 }
 
-export const getClientData: RequestHandler<{},{},{},{client_id:string}> = async (
-    req,res
+export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = async (
+    req, res
 ): Promise<void> => {
     const { client_id } = req.query
     const clientQuery = `
@@ -89,16 +104,16 @@ export const getClientData: RequestHandler<{},{},{},{client_id:string}> = async 
     `
     try {
         const result = await pool.query(clientQuery, [client_id])
-        if(result.rowCount === 0){
-            res.status(404).json({msg:"No se encontraron clientes con el ID ingresado."})
+        if (result.rowCount === 0) {
+            res.status(404).json({ msg: "No se encontraron clientes con el ID ingresado." })
             return
-        }else{
-            const aditionalData:ClientsFromDB["aditional_client_data"] = result.rows[0].client_aditional_data
+        } else {
+            const aditionalData: ClientsFromDB["aditional_client_data"] = result.rows[0].client_aditional_data
 
             const decryptedDNI = aditionalData.client_dni ? decrypt(aditionalData.client_dni) : null
             const decryptedEmail = aditionalData.client_email ? decrypt(aditionalData.client_email) : null
             const decryptedAddress = aditionalData.client_address ? decrypt(aditionalData.client_address) : null
-            
+
             const client = {
                 client_id: result.rows[0].client_id,
                 client_name: result.rows[0].client_name,
@@ -109,7 +124,7 @@ export const getClientData: RequestHandler<{},{},{},{client_id:string}> = async 
                     client_address: decryptedAddress
                 }
             }
-            console.log("client",client)
+            console.log("client", client)
             res.status(200).json(client)
             return
         }
