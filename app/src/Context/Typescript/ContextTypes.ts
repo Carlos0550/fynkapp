@@ -13,7 +13,10 @@ export interface ModalsHookInterface {
     closeDebtModal: () => void,
     openedAddClientModal: boolean,
     openAddClientModal: () => void,
-    closeAddClientModal: () => void
+    closeAddClientModal: () => void,
+    selectedClientData: ClientInterface,
+    clearClientData: () => void,
+    setSelectedClientData: React.Dispatch<React.SetStateAction<ClientInterface>>
 }
 
 export interface AuthenticationHookInterface {

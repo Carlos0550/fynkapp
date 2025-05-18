@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import "./ClientsList.css";
 import { useAppContext } from '../../../../../../Context/AppContext';
+import { showNotification } from '@mantine/notifications';
 
 function ClientsList({searchInput}) {
   const {
     modalsHook:{
       openClientModal,
+      setSelectedClientData
     },
     clientsHook:{
       clients
@@ -42,13 +44,27 @@ function ClientsList({searchInput}) {
   }, [searchInput, clients]);
 
   const showClients = searchInput.length > 0 ? filteredClients : clients;
-
+  const handleOpenModal = (client_id: string) => {
+    if(!client_id){
+      showNotification({
+        color: 'red',
+        title: 'Ups, no encontramos el cliente',
+        message: 'Intenta recargar esta sección',
+        autoClose: 3000,
+        position: 'top-right'
+      })
+      return;
+    }
+    const selectedClient: any = clients.find((client) => client.client_id === client_id);
+    setSelectedClientData(selectedClient);
+    openClientModal();
+  }
   return (
     <div className='clients-list-container'>
 
       {showClients && showClients.length > 0 ? (
         showClients.map((client) => (
-          <div className="client-card" key={client.client_id} onClick={() => openClientModal()}>
+          <div className="client-card" key={client.client_id} onClick={() => handleOpenModal(client.client_id)}>
             <div className="avatar">{getInitials(client.client_name)}</div>
             <div className="client-info">
               <strong className="name">{client.client_name}</strong>

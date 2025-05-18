@@ -61,7 +61,7 @@ export const GetAllClients: RequestHandler = async (
 ): Promise<void> => {
     const { manager_id } = (req as any).manager_data
     const clientQuery = `
-    SELECT client_name FROM clients WHERE manager_client_id = $1;
+    SELECT client_name, client_id FROM clients WHERE manager_client_id = $1;
     `
 
     try {

@@ -2,7 +2,7 @@ import { Modal } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useAppContext } from '../../../../../Context/AppContext'
 import ClientForm from '../../Clients/ClientsComponents/ClientForm/ClientForm';
-
+import ClientFinancialData from '../../Clients/ClientsComponents/ClientFinancialData/ClientFinancialData';
 
 function ClientModal() {
   const {
@@ -15,8 +15,10 @@ function ClientModal() {
       closeAddClientModal,
       closeClientModal,
       closeDebtModal,
-      closeDeliverModal
-    }
+      closeDeliverModal,
+      clearClientData
+    },
+    width
   } = useAppContext()
   const [modalOpened, setModalOpened] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -27,6 +29,8 @@ function ClientModal() {
     closeClientModal()
     closeDebtModal()
     closeDeliverModal()
+    clearClientData()
+    setModalTitle("")
     return;
   }
 
@@ -34,7 +38,7 @@ function ClientModal() {
     if(openedAddClientModal) setModalTitle("Agregar cliente")
     if(openedAddDeliverModal) setModalTitle("Agregar entrega")
     if(openedAddDebtModal) setModalTitle("Agregar deuda")
-    if(openedClientModal) setModalTitle("Información del cliente")
+    if(openedClientModal) null
   }
 
   useEffect(()=>{
@@ -58,16 +62,21 @@ function ClientModal() {
       opened={modalOpened}
       onClose={() => onCloseModal()}
       title={modalTitle}
-      size="xl"
+      closeOnEscape={false}
+      fullScreen={width < 768}
+      withCloseButton={false}
+      size="100%"
       padding="sm"
+      radius="md"
       overlayProps={{
-        backgroundOpacity: 0.6,
-        blur: 5,
+        backgroundOpacity: 0.5,
+        blur: 7,
       }}
     >
       {openedAddClientModal && <ClientForm closeModal={onCloseModal}/>}
       {openedAddDeliverModal && <></>}
       {openedAddDebtModal && <></>}
+      {openedClientModal && <ClientFinancialData closeModal={onCloseModal}/>}
     </Modal>
   )
 }
