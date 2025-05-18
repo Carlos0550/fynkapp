@@ -184,10 +184,8 @@ function useAuthentication() {
 
             if ([401, 403].includes(response.status)) {
                 notificateUserWithoutSession();
-                if (currentLoginData.user_id !== '') {
-                    localStorage.removeItem("token");
-                    setLoginData({ user_email: '', user_id: '', user_name: '' });
-                }
+                localStorage.removeItem("token");
+                setLoginData({ user_email: '', user_id: '', user_name: '' });
                 if (location.pathname !== "/authentication") {
                     navigate("/authentication");
                 }
@@ -237,9 +235,7 @@ function useAuthentication() {
             }
             return null;
         } finally {
-            setTimeout(() => {
-                setValidatingSession(false);
-            }, 2000);
+            setValidatingSession(false);
         }
     }, [location, navigate, notificateUserWithoutSession, setValidatingSession, setLoginData]);
 

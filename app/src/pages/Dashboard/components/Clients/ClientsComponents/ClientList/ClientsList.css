@@ -72,18 +72,12 @@
     font-size: 0.9em;
     font-weight: 600;
     position: absolute;
-    top: 30px;
-    right: 50px;
+    top: 25px;
+    right: 10px;
   }
   
-  .client-status .more {
-    font-weight: bold;
-    font-size: 1.3em;
-    margin: 0 auto;
-    cursor: pointer;
-  }
 
-  @media(max-width:380px){
+  @media(max-width:425px){
     .client-card{
         flex-direction: column;
         justify-content: flex-start;
@@ -92,15 +86,8 @@
     }
 
     .client-status .debt{
-        top: 105px;
+        top: 10px;
         right: 9px;
-    }
-
-    .client-status .more{
-        position: absolute;
-        top: 0px;
-        right: 9px;
-        
     }
   }
   

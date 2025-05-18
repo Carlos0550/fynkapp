@@ -5,5 +5,6 @@ export const base_api={
 }
 
 export const logic_apis = {
-  authentication: new URL(`${base_api.url}/auth`)
+  authentication: new URL(`${base_api.url}/auth`),
+  clients: new URL(`${base_api.url}/clients`),
 }

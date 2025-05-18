@@ -1,14 +1,14 @@
 import { RequestHandler, Router } from "express";
 import { ValidateSessionRouter } from "./auth.routes";
 import { ClientsRequest } from "../Types/ClientsTypes";
-import { saveClient } from "../controllers/Clients/clients.controller";
+import { GetAllClients, saveClient } from "../controllers/Clients/clients.controller";
 import validator from "validator"
 const clientRouter = Router()
 
 const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req, res, next): Promise<void> => {
     const { client_name, client_dni, client_email, client_address } = req.body;
-    if (!client_name || !client_dni || !client_email || !client_address) {
-        res.status(400).json({ msg: 'Todos los campos son obligatorios, revise los que está con "*"' });
+    if (!client_name) {
+        res.status(400).json({ msg: 'El nombre del cliente es Obligatorio' });
         return;
     }
 
@@ -33,7 +33,7 @@ const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req,
             return false
         }
 
-        if (cleanedDNI.length < 5 || cleanedDNI.length > 10) {
+        if (cleanedDNI.length < 8 || cleanedDNI.length > 9) {
             return false
         }
         return true
@@ -45,6 +45,16 @@ const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {}> = async (req,
     next();
 }
 
+const GetAllClientsRouter: RequestHandler = async (req, res, next): Promise<void> => {
+    console.log((req as any).manager_data)
+    if(!(req as any).manager_data){
+        res.status(401).json({msg:"Acceso no autorizado."})
+        return
+    }
+    next()
+}
+
 clientRouter.post("/save-client", ValidateSessionRouter, SaveClientRouter, saveClient)
+clientRouter.get("/get-all-clients", ValidateSessionRouter, GetAllClientsRouter, GetAllClients)
 
 export default clientRouter

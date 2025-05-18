@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import "./ClientsList.css";
 import { useAppContext } from '../../../../../../Context/AppContext';
-import { Button, Flex, Popover, PopoverTarget } from '@mantine/core';
-import { MdDeleteOutline } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+
 function ClientsList({searchInput}) {
   const {
     modalsHook:{
       openClientModal,
+    },
+    clientsHook:{
+      clients
     }
   } = useAppContext();
-  const [clients, setClients] = useState([])
   
   const [filteredClients, setFilteredClients] = useState([]);
 
@@ -22,7 +22,7 @@ function ClientsList({searchInput}) {
 
   const handleLocalSearch = (criteria: string) => {
     return clients.filter(client =>
-      client.client_fullname.toLowerCase().includes(criteria.toLowerCase())
+      client.client_name.toLowerCase().includes(criteria.toLowerCase())
     );
   };
 
@@ -49,22 +49,12 @@ function ClientsList({searchInput}) {
       {showClients && showClients.length > 0 ? (
         showClients.map((client) => (
           <div className="client-card" key={client.client_id} onClick={() => openClientModal()}>
-            <div className="avatar">{getInitials(client.client_fullname)}</div>
+            <div className="avatar">{getInitials(client.client_name)}</div>
             <div className="client-info">
-              <strong className="name">{client.client_fullname}</strong>
-              <span className="dni">DNI: {client.client_dni}</span>
+              <strong className="name">{client.client_name}</strong>
             </div>
             <div className="client-status">
               <span className="debt">No disponible</span>
-              <Popover position="left-start" arrowSize={10} arrowOffset={10} withArrow>
-                <PopoverTarget><span className="more">...</span></PopoverTarget>
-                <Popover.Dropdown >
-                  <Flex justify={"center"} align={"center"} gap={10}>
-                    <Button size='xs' color='red' variant='outline'><MdDeleteOutline size={18}/></Button>
-                    <Button size='xs' variant='outline'><MdEdit size={18}/></Button>
-                  </Flex>
-                </Popover.Dropdown>
-              </Popover>
             </div>
           </div>
         ))

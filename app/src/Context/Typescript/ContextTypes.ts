@@ -1,4 +1,5 @@
 import { CreateUserForm, LoginData, LoginUserForm } from "./AuthenticationTypes"
+import { ClientInterface, FormClient } from "./ClientsTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -22,8 +23,14 @@ export interface AuthenticationHookInterface {
     validatingSession: boolean
 }
 
+export interface ClientsHookInterface {
+    clients: ClientInterface[],
+    saveClient: (formData: FormClient) => Promise<boolean>,
+    getAllClients: () => Promise<boolean>
+}
 export interface AppContextValueInterface {
     width: number,
     modalsHook: ModalsHookInterface,
-    authHook: AuthenticationHookInterface
+    authHook: AuthenticationHookInterface,
+    clientsHook: ClientsHookInterface
 }
