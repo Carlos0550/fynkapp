@@ -15,7 +15,8 @@ function useModals() {
             client_dni: "",
             client_email: "",
             client_address: ""
-        }
+        },
+        total_debts: ""
     });
 
     const clearClientData = () => {
@@ -27,7 +28,8 @@ function useModals() {
                 client_dni: "",
                 client_email: "",
                 client_address: ""
-            }
+            },
+            total_debts: ""
         })
     }
     return useMemo(() => ({

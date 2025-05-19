@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
-import { DebtForm } from './Typescript/DebtsTypes'
+import React, { SetStateAction, useCallback, useMemo } from 'react'
+import { DeliverForm } from './Typescript/DeliversTypes'
 import { logic_apis } from '../apis'
 import { showNotification } from '@mantine/notifications'
 
@@ -7,26 +7,43 @@ interface Props {
     client_id: string,
     getAllClients: () => Promise<boolean>
 }
-function useDebts({
+function useDelivers({
     client_id,
     getAllClients
 }: Props) {
-    const saveDebt = useCallback(async (debtData: DebtForm): Promise<boolean> => {
-        const url = new URL(logic_apis.debts + "/save-debt")
+    const saveDeliver = useCallback(async (deliverData: DeliverForm): Promise<boolean> => {
+        const url = new URL(logic_apis.delivers + "/save-deliver")
         url.searchParams.append("client_id", client_id)
+
         try {
-            const response = await fetch(url, {
+            const result = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
                 },
-                body: JSON.stringify(debtData)
+                body: JSON.stringify(deliverData)
             })
-            const responseData = await response.json()
-            if ([404, 401].includes(response.status)) return false
-            if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
-            await getAllClients()
+
+            const responseData = await result.json()
+            if ([404, 401].includes(result.status)) return false
+            if (result.status === 417) {
+                showNotification({
+                    color: "red",
+                    styles: (theme) => ({
+                        title: { color: "black" },
+                        description: { color: "black" }
+                    }),
+                    title: responseData.msg,
+                    message: `Introduzca un monto no mayor a ${parseFloat(responseData.totalDebtsClient).toLocaleString("es-AR", { style: "currency", currency: "ARS" })}`,
+                    autoClose: 5000,
+                    position: "top-right"
+                })
+
+                return false;
+            }
+            if (!result.ok) throw new Error(responseData.msg || "Error desconocido")
+                await getAllClients()
             return true
         } catch (error) {
             console.log(error)
@@ -43,17 +60,15 @@ function useDebts({
                     autoClose: 3500,
                     position: "top-right"
                 })
-                return false
             }
-
             showNotification({
                 color: "red",
                 styles: (theme) => ({
                     title: { color: "black" },
                     description: { color: "black" }
                 }),
-                title: "Error desconocido",
-                message: error instanceof Error ? error.message : "Error desconocido",
+                title: "Error al guardar la entrega",
+                message: error.message,
                 autoClose: 3500,
                 position: "top-right"
             })
@@ -61,10 +76,10 @@ function useDebts({
         }
     }, [client_id, getAllClients])
     return useMemo(() => ({
-        saveDebt
+        saveDeliver
     }), [
-        saveDebt
+        saveDeliver
     ])
 }
 
-export default useDebts
+export default useDelivers

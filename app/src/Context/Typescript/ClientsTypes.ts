@@ -13,5 +13,6 @@ export interface ClientInterface{
         client_dni: string,
         client_email: string,
         client_address:string
-    }
+    },
+    total_debts: string
 }

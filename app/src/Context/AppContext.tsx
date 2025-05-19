@@ -6,6 +6,7 @@ import useModals from "./useModals";
 import useAuthentication from "./useAuthentication";
 import useClients from "./useClients";
 import useDebts from "./useDebts";
+import useDelivers from "./useDelivers";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -36,14 +37,21 @@ export const AppContextProvider = ({ children }: any) => {
 
     const debtsHook = useDebts({
         client_id: modalsHook.selectedClientData.client_id,
+        getAllClients: clientsHook.getAllClients
     })
 
+    const deliversHook = useDelivers({
+        client_id: modalsHook.selectedClientData.client_id,
+        getAllClients: clientsHook.getAllClients
+    })
     const contextValues = useMemo(() => ({
         width,
-        modalsHook,authHook, clientsHook, debtsHook
+        modalsHook,authHook, clientsHook, debtsHook,
+        deliversHook
     }), [
         modalsHook,
-        width, authHook, clientsHook, debtsHook
+        width, authHook, clientsHook, debtsHook,
+        deliversHook
     ])
 
     const alreadyGotClients = useRef(false)

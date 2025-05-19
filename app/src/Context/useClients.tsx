@@ -144,12 +144,61 @@ function useClients({client_id}: Props) {
         }
     },[])
 
+    const deleteClient = useCallback(async(): Promise<boolean> => {
+        const url = new URL(logic_apis.clients + "/delete-client")
+        url.searchParams.append("client_id", client_id)
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
+                }
+            })
+            const responseData = await response.json()
+            if(response.status === 404){
+                showNotification({
+                    color: "red",
+                    title: "Error al eliminar el cliente",
+                    styles: (theme) => ({
+                        title:{color: "black"},
+                        description: {color: "black"}
+                    }),
+                    message: responseData.msg || "Error desconocido",
+                    autoClose: 3500,
+                    position: "top-right"
+                })
+                return false
+            }
+            if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
+                
+            await getAllClients()
+            return true
+        } catch (error) {
+            console.log(error)
+            if (error instanceof TypeError) return false
+            showNotification({
+                color: "red",
+                title: "Error al eliminar el cliente",
+                styles: (theme) => ({
+                    title:{color: "black"},
+                    description: {color: "black"}
+                }),
+                message: error instanceof Error ? error.message : "Error desconocido",
+                autoClose: 3500,
+                position: "top-right"
+            })
+            return false
+        }
+    },[client_id, getAllClients])
     return useMemo(() => ({
         saveClient, clients, getAllClients, setClients,
-        getClientData, editingClient, setEditingClient
+        getClientData, editingClient, setEditingClient,
+        deleteClient
     }), [
         saveClient, clients, getAllClients, setClients,
-        getClientData, editingClient, setEditingClient
+        getClientData, editingClient, setEditingClient,
+        deleteClient
     ])
 }
 

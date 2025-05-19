@@ -53,4 +53,4 @@ CREATE TABLE debts(
 )
 
 DROP TABLE debts;
-SELECT * from debts;
+SELECT * from delivers;

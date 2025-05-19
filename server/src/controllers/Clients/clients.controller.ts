@@ -75,12 +75,11 @@ export const GetAllClients: RequestHandler = async (
     res
 ): Promise<void> => {
     const { manager_id } = (req as any).manager_data
-    const clientQuery = `
-    SELECT client_name, client_id FROM clients WHERE manager_client_id = $1 ORDER BY client_name ASC;
-    `
+    const clientQuery = queries["getAllClients.sql"]
 
     try {
-        const result = await pool.query(clientQuery, [manager_id])
+        const result = await pool.query(clientQuery[0], [manager_id])
+        console.log(result.rows)
         if (result.rowCount === 0) {
             res.status(404).json({ msg: "No se encontraron clientes." })
             return
@@ -99,15 +98,14 @@ export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = 
     req, res
 ): Promise<void> => {
     const { client_id } = req.query
-    const clientQuery = `
-    SELECT * FROM clients WHERE client_id = $1;
-    `
+    const clientQuery = queries["getClientData.sql"]
     try {
-        const result = await pool.query(clientQuery, [client_id])
+        const result = await pool.query(clientQuery[0], [client_id])
         if (result.rowCount === 0) {
             res.status(404).json({ msg: "No se encontraron clientes con el ID ingresado." })
             return
         } else {
+            console.log(result.rows[0])
             const aditionalData: ClientsFromDB["aditional_client_data"] = result.rows[0].client_aditional_data
 
             const decryptedDNI = aditionalData.client_dni ? decrypt(aditionalData.client_dni) : null
@@ -122,7 +120,8 @@ export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = 
                     client_dni: decryptedDNI,
                     client_email: decryptedEmail,
                     client_address: decryptedAddress
-                }
+                },
+                total_debts: result.rows[0].total_debts
             }
 
             res.status(200).json(client)

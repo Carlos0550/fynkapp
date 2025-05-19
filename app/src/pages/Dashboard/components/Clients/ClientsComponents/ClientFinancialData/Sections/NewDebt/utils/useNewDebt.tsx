@@ -123,6 +123,7 @@ function useNewDebt() {
   };
 
   const calculateTotal = () => {
+    if(formData.debt_products.length === 0) return
     let total = 0;
     formData.debt_products.forEach(product => {
       total += product.product_price * product.product_quantity;
@@ -137,7 +138,6 @@ function useNewDebt() {
   const [saved, setSaved] = useState(false)
   const handleSaveDebt = async (e: React.FormEvent) => {
     e.preventDefault()
-    calculateTotal()
     setSaving(true)
     const result = await saveDebt(formData)
     setSaving(false)
@@ -149,6 +149,10 @@ function useNewDebt() {
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     };
   }, []);
+
+  useEffect(()=> {
+    calculateTotal()
+  },[formData.debt_products])
 
   return {
     formData,

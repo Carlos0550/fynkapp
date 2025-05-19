@@ -10,6 +10,7 @@ import "dotenv/config"
 import clientRouter from "./routes/clients.routes";
 import AuthRouter from "./routes/auth.routes"
 import debtRouter from "./routes/debts.routes";
+import deliverRouter from "./routes/delivers.routes";
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/auth", AuthRouter)
 app.use("/clients", clientRouter)
 app.use("/debts", debtRouter)
+app.use("/delivers", deliverRouter)
 
 app.get("/static/account-validation-success", (req: Request, res: Response) => {
   const htmlPath = path.join(__dirname, "./utils/Pages/EmailVerificationSuccess.html"); 

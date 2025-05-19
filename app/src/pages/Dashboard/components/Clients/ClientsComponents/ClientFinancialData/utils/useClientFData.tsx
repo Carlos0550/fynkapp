@@ -22,7 +22,8 @@ function useClientFData() {
             client_dni: "",
             client_email: "",
             client_address: "",
-        }
+        },
+        total_debts: 0
     })
 
     const [gettingClientData, setGettingClientData] = useState(false)
@@ -45,9 +46,7 @@ function useClientFData() {
                 setAditionalDataLength(count)
             }
         }
-        setTimeout(() => {
-            setGettingClientData(false)
-        }, 1000);
+        setGettingClientData(false)
     }
 
     const alreadyGotClientData = useRef(false)
