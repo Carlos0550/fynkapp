@@ -4,10 +4,12 @@ import fs from "fs"
 import pool from "./connections/database_conn";
 import redis from "./connections/redis_conn";
 
-import AuthRouter from "./routes/auth.routes"
 import path from "path";
 import "dotenv/config"
+
 import clientRouter from "./routes/clients.routes";
+import AuthRouter from "./routes/auth.routes"
+import debtRouter from "./routes/debts.routes";
 
 const app = express();
 
@@ -48,6 +50,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/auth", AuthRouter)
 app.use("/clients", clientRouter)
+app.use("/debts", debtRouter)
 
 app.get("/static/account-validation-success", (req: Request, res: Response) => {
   const htmlPath = path.join(__dirname, "./utils/Pages/EmailVerificationSuccess.html"); 

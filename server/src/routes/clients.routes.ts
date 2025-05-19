@@ -55,7 +55,6 @@ const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {editing_client?:
 }
 
 const GetAllClientsRouter: RequestHandler = async (req, res, next): Promise<void> => {
-    console.log((req as any).manager_data)
     if(!(req as any).manager_data){
         res.status(401).json({msg:"Acceso no autorizado."})
         return

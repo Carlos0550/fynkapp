@@ -1,5 +1,6 @@
 import { CreateUserForm, LoginData, LoginUserForm } from "./AuthenticationTypes"
 import { ClientInterface, FormClient } from "./ClientsTypes"
+import { DebtForm } from "./DebtsTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -35,9 +36,14 @@ export interface ClientsHookInterface {
     editingClient: boolean, 
     setEditingClient: React.Dispatch<React.SetStateAction<boolean>>
 }
+
+export interface DebtsHookInterface {
+    saveDebt: (debtData: DebtForm) => Promise<boolean>
+}
 export interface AppContextValueInterface {
     width: number,
     modalsHook: ModalsHookInterface,
     authHook: AuthenticationHookInterface,
-    clientsHook: ClientsHookInterface
+    clientsHook: ClientsHookInterface,
+    debtsHook: DebtsHookInterface
 }

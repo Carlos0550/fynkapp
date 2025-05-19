@@ -1,0 +1,8 @@
+.new-debt-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.new-debt-container h2{
+    padding-top: 1.5rem;
+}

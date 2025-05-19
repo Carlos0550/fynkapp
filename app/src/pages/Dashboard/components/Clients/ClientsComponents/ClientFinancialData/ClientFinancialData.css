@@ -16,6 +16,15 @@
     z-index: 3;
 }
 
+.edit-data-back-icon{
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    z-index: 3;
+}
+
 .financial-client-name{
     font-size: 1.3rem;
     font-weight: 600;

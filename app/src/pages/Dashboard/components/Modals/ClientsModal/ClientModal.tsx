@@ -65,7 +65,7 @@ function ClientModal() {
       closeOnEscape={false}
       fullScreen={width < 768}
       withCloseButton={openedClientModal ? false : true}
-      size="100%"
+      size="90%"
       padding="sm"
       radius="md"
       overlayProps={{

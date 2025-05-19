@@ -7,9 +7,15 @@ function useModals() {
     const [openedAddDeliverModal, { open: openDeliverModal, close: closeDeliverModal }] = useDisclosure();
     const [openedAddDebtModal, { open: openDebtModal, close: closeDebtModal }] = useDisclosure();
     const [openedAddClientModal, { open: openAddClientModal, close: closeAddClientModal }] = useDisclosure();
-    const [selectedClientData, setSelectedClientData] = useState<Partial<ClientInterface>>({
+    const [selectedClientData, setSelectedClientData] = useState<ClientInterface>({
         client_id: "",
         client_name: "",
+        manager_client_id: "",
+        aditional_client_data: {
+            client_dni: "",
+            client_email: "",
+            client_address: ""
+        }
     });
 
     const clearClientData = () => {

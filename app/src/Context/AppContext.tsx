@@ -5,6 +5,7 @@ import {AppContextValueInterface} from "./Typescript/ContextTypes"
 import useModals from "./useModals";
 import useAuthentication from "./useAuthentication";
 import useClients from "./useClients";
+import useDebts from "./useDebts";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -28,16 +29,21 @@ export const AppContextProvider = ({ children }: any) => {
     const authHook = useAuthentication()
 
     const modalsHook = useModals()
+    
     const clientsHook = useClients({
-        selectedClientData: modalsHook.selectedClientData
+        client_id: modalsHook.selectedClientData.client_id
+    })
+
+    const debtsHook = useDebts({
+        client_id: modalsHook.selectedClientData.client_id,
     })
 
     const contextValues = useMemo(() => ({
         width,
-        modalsHook,authHook, clientsHook
+        modalsHook,authHook, clientsHook, debtsHook
     }), [
         modalsHook,
-        width, authHook, clientsHook
+        width, authHook, clientsHook, debtsHook
     ])
 
     const alreadyGotClients = useRef(false)

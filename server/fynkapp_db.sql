@@ -39,6 +39,18 @@ CREATE TABLE clients(
 	manager_client_id UUID NOT NULL,
 	CONSTRAINT fk_manager_client_id FOREIGN KEY(manager_client_id) REFERENCES managers(manager_id)
 );
-TRUNCATE TABLE clients;
-SELECT * FROM clients;
-DROP TABLE clients;
+
+CREATE TABLE debts(
+	debt_id TEXT PRIMARY KEY UNIQUE NOT NULL,
+	debt_total NUMERIC(10, 2) NOT NULL,
+    debt_date TIMESTAMP NOT NULL,
+	exp_date TIMESTAMP NOT NULL,
+	debt_products JSONB NOT NULL,
+	manager_client_id UUID NOT NULL,
+	client_debt_id UUID NOT NULL,
+	CONSTRAINT fk_manager_client_id FOREIGN KEY(manager_client_id) REFERENCES managers(manager_id) ON DELETE CASCADE,
+	CONSTRAINT fk_client_debt_id FOREIGN KEY(client_debt_id) REFERENCES clients(client_id) ON DELETE CASCADE
+)
+
+DROP TABLE debts;
+SELECT * from debts;

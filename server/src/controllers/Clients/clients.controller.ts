@@ -124,7 +124,7 @@ export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = 
                     client_address: decryptedAddress
                 }
             }
-            console.log("client", client)
+
             res.status(200).json(client)
             return
         }

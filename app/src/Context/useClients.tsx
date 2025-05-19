@@ -4,9 +4,9 @@ import { ClientInterface, FormClient } from './Typescript/ClientsTypes'
 import { showNotification } from '@mantine/notifications'
 
 interface Props{
-    selectedClientData: ClientInterface
+    client_id: string
 }
-function useClients({selectedClientData}: Props) {
+function useClients({client_id}: Props) {
     const [clients, setClients] = useState<ClientInterface[]>([])
     const [editingClient, setEditingClient] = useState<boolean>(false)
     const getAllClients = useCallback(async(): Promise<boolean> => {
@@ -58,8 +58,8 @@ function useClients({selectedClientData}: Props) {
  const saveClient = useCallback(async (formData: FormClient): Promise<boolean> => {
     const url = new URL(logic_apis.clients + "/save-client");
     if (editingClient) {
-        console.log(selectedClientData)
-        url.searchParams.append("client_id", selectedClientData.client_id)
+
+        url.searchParams.append("client_id", client_id)
         url.searchParams.append("editing_client", "true")
     }
 
@@ -94,7 +94,7 @@ function useClients({selectedClientData}: Props) {
         console.error("Error al guardar el cliente:", error);
         return false;
     }
-}, [editingClient, selectedClientData, getAllClients]);
+}, [editingClient, client_id, getAllClients]);
 
 
     const getClientData = useCallback(async(client_id: string): Promise<boolean | ClientInterface> => {
@@ -144,9 +144,6 @@ function useClients({selectedClientData}: Props) {
         }
     },[])
 
-    useEffect(()=>{
-        console.log(selectedClientData)
-    },[selectedClientData])
     return useMemo(() => ({
         saveClient, clients, getAllClients, setClients,
         getClientData, editingClient, setEditingClient

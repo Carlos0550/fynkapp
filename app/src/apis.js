@@ -7,4 +7,5 @@ export const base_api={
 export const logic_apis = {
   authentication: new URL(`${base_api.url}/auth`),
   clients: new URL(`${base_api.url}/clients`),
+  debts: new URL(`${base_api.url}/debts`),
 }

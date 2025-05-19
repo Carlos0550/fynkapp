@@ -1,6 +1,6 @@
 import { useAppContext } from '../../../../../../Context/AppContext'
 import { IoIosCloseCircle } from "react-icons/io";
-import { FaUserEdit } from "react-icons/fa";
+import { FaArrowCircleLeft, FaUserEdit } from "react-icons/fa";
 import { FaUserSlash } from "react-icons/fa6";
 import "./ClientFinancialData.css"
 import { Button, Flex, Skeleton } from '@mantine/core';
@@ -10,6 +10,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import useClientFData from './utils/useClientFData';
 import React, { useEffect, useState } from 'react';
 import EditData from './Sections/EditData/EditData';
+import NewDebt from './Sections/NewDebt/NewDebt';
 
 type FinancialClientSections = 'newDebt' | "newdeliver" | "editData" | "deleteSelf" | "home"
 
@@ -31,6 +32,17 @@ function ClientFinancialData({ closeModal }) {
     const [sections, setSections] = useState<FinancialClientSections>("home")
     return (
         <React.Fragment>
+            {sections !== "home" && (
+                <FaArrowCircleLeft
+                    size={25}
+                    color='#2c2c2c'
+                    className='edit-data-back-icon'
+                    onClick={() => {
+                        setSections("home")
+                        setEditingClient(false)
+                    }}
+                />
+            )}
             <IoIosCloseCircle
                 size={30}
                 className='financial-close-icon'
@@ -103,7 +115,7 @@ function ClientFinancialData({ closeModal }) {
                                         <p>Saldo total: $0</p>
                                     </div>
                                     <div className='financial-client-data-actions'>
-                                        <Button leftSection={<TbReportMoney size={25} />} color='black' variant='outline'>Agregar deuda</Button>
+                                        <Button leftSection={<TbReportMoney size={25} />} color='black' variant='outline' onClick={() => setSections("newDebt")}>Agregar deuda</Button>
                                         <Button leftSection={<GiTakeMyMoney size={25} />} color='black'>Agregar entrega</Button>
                                     </div>
                                 </div>
@@ -111,8 +123,10 @@ function ClientFinancialData({ closeModal }) {
                         </div>
                     )
                     : sections === "editData"
-                        ? (<EditData closeModal={closeModal} setSections={setSections} />)
-                        : <></>
+                    ? (<EditData closeModal={closeModal} />)
+                    : sections === "newDebt" 
+                    ? <NewDebt closeModal={closeModal}/>
+                    : <></>
             }
         </React.Fragment>
     )
