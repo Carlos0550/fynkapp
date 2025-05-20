@@ -3,7 +3,7 @@ import "dotenv/config";
 const nodeEnv = process.env.NODE_ENV;
 
 const domains: Record<string, string> = {
-  production: "https://creda-development.up.railway.app",
+  production: "https://backend-server-development.up.railway.app",
   development: "http://localhost:5000",
 };
 
