@@ -10,9 +10,10 @@ import { Notifications } from '@mantine/notifications'
 import '@mantine/notifications/styles.css';
 import "@mantine/dates/styles.css";
 import { DatesProvider } from '@mantine/dates'
+import { registerSW } from 'virtual:pwa-register'
 
 import "dayjs/locale/es"
-
+registerSW()
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
