@@ -1,4 +1,4 @@
-import { Modal } from '@mantine/core'
+import { Box, Modal } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useAppContext } from '../../../../../Context/AppContext'
 import ClientForm from '../../Clients/ClientsComponents/ClientForm/ClientForm';
@@ -77,10 +77,12 @@ function ClientModal() {
         blur: 7,
       }}
     >
-      {openedAddClientModal && <ClientForm closeModal={onCloseModal}/>}
+      <Box style={{ overflowX: 'auto', maxWidth: '100vw' }}>
+        {openedAddClientModal && <ClientForm closeModal={onCloseModal}/>}
       {openedAddDeliverModal && <></>}
       {openedAddDebtModal && <></>}
       {openedClientModal && <ClientFinancialData closeModal={onCloseModal}/>}
+      </Box>
     </Modal>
   )
 }
