@@ -1,6 +1,6 @@
 export const base_api={
     url: import.meta.env.VITE_API_URL === "PRODUCTION"
-    ? "https://fynkapp-production.up.railway.app"
+    ? "https://backend-server-development.up.railway.app"
     : "http://localhost:5000",
 }
 
