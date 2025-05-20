@@ -42,7 +42,9 @@ const SaveDeliverRouter: RequestHandler<{}, {}, DeliverRequest, { client_id: str
         const queryTotal = await pool.query(CQ, [client_id, manager_id])
         console.log(queryTotal.rows[0])
         const totalDebtsClient = queryTotal.rows[0].total_debts
-
+        console.log("totalDebtsClient", totalDebtsClient)
+        console.log("deliver_amount", deliver_amount)
+        console.log(parseFloat(totalDebtsClient) <= parseFloat(deliver_amount))
         if (parseFloat(totalDebtsClient) <= parseFloat(deliver_amount)) {
             res.status(417).json({ msg: "El monto ingresado es mayor a la deuda del cliente.", totalDebtsClient })
             return
