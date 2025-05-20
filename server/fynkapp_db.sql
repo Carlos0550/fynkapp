@@ -52,5 +52,16 @@ CREATE TABLE debts(
 	CONSTRAINT fk_client_debt_id FOREIGN KEY(client_debt_id) REFERENCES clients(client_id) ON DELETE CASCADE
 )
 
-DROP TABLE debts;
+CREATE TABLE delivers(
+    deliver_id TEXT NOT NULL PRIMARY KEY UNIQUE,
+    deliver_amount numeric(10,2) NOT NULL,
+    deliver_date timestamp,
+    manager_client_id uuid NOT NULL,
+    client_deliver_id uuid NOT NULL,
+    deliver_details text,
+    CONSTRAINT fk_client_deliver_id FOREIGN KEY (client_deliver_id) REFERENCES clients (client_id) ON DELETE CASCADE,
+    CONSTRAINT fk_manager_client_id FOREIGN KEY (manager_client_id) REFERENCES managers (manager_id) ON DELETE CASCADE
+);
+
+truncate TABLE CLIENTS cascade;
 SELECT * from delivers;

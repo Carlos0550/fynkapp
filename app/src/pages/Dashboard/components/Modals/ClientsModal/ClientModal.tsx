@@ -18,6 +18,9 @@ function ClientModal() {
       closeDeliverModal,
       clearClientData
     },
+    clientsHook:{
+      setEditingClient
+    },
     width
   } = useAppContext()
   const [modalOpened, setModalOpened] = useState(false);
@@ -31,6 +34,7 @@ function ClientModal() {
     closeDeliverModal()
     clearClientData()
     setModalTitle("")
+    setEditingClient(false)
     return;
   }
 

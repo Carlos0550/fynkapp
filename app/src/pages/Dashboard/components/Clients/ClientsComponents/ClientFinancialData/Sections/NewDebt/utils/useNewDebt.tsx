@@ -154,6 +154,13 @@ function useNewDebt() {
     calculateTotal()
   },[formData.debt_products])
 
+  useEffect(()=>{
+          setFormData({
+              ...formData,
+              debt_date: dayjs().format("YYYY-MM-DD HH:mm:ss")
+          })
+      },[])
+
   return {
     formData,
     errors,

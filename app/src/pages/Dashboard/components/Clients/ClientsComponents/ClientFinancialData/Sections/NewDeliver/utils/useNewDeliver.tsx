@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DeliverForm } from '../../../../../../../../../Context/Typescript/DeliversTypes'
 import dayjs from 'dayjs'
 import { showNotification } from '@mantine/notifications'
@@ -78,6 +78,13 @@ function useNewDeliver() {
         setSaving(false)
         if (result) setSaved(true)
     }
+
+    useEffect(()=>{
+        setFormData({
+            ...formData,
+            deliver_date: dayjs().format("YYYY-MM-DD HH:mm:ss")
+        })
+    },[])
     return {
         formData,
         handleChange,

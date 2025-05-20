@@ -23,7 +23,8 @@ export const saveClient: RequestHandler<{}, {}, ClientsRequest, { editing_client
     const manager_client_id = (req as any).manager_data.manager_id
     const clientQuery = queries["saveClient.sql"]
     try {
-        const encryptedDNI = client_dni ? encryptData(client_dni) : null
+        const cleanedDNI = client_dni ? String(client_dni).replace(/\./g, '').replace(/\s/g, '') : null
+        const encryptedDNI = cleanedDNI ? encryptData(cleanedDNI) : null
         const encryptedEmail = client_email ? encryptData(client_email) : null
         const encryptedAddress = client_address ? encryptData(client_address) : null
 
@@ -79,7 +80,7 @@ export const GetAllClients: RequestHandler = async (
 
     try {
         const result = await pool.query(clientQuery[0], [manager_id])
-        console.log(result.rows)
+
         if (result.rowCount === 0) {
             res.status(404).json({ msg: "No se encontraron clientes." })
             return
@@ -105,7 +106,6 @@ export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = 
             res.status(404).json({ msg: "No se encontraron clientes con el ID ingresado." })
             return
         } else {
-            console.log(result.rows[0])
             const aditionalData: ClientsFromDB["aditional_client_data"] = result.rows[0].client_aditional_data
 
             const decryptedDNI = aditionalData.client_dni ? decrypt(aditionalData.client_dni) : null

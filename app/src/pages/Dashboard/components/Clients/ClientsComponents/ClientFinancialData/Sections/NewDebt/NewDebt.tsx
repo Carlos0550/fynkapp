@@ -2,7 +2,7 @@ import { Button, Dialog, Flex, Group, Input, Notification, Text, Textarea } from
 import "./NewDebt.css"
 import { useDisclosure } from "@mantine/hooks";
 import { useAppContext } from "../../../../../../../../Context/AppContext";
-import { DatePicker } from "@mantine/dates"
+import { DatePicker, DateValue } from "@mantine/dates"
 import useNewDebt from "./utils/useNewDebt";
 import { useEffect } from "react";
 import dayjs from "dayjs";
@@ -88,6 +88,7 @@ function NewDebt({closeModal}) {
                             >
                                 <DatePicker
                                     onChange={handleSaveDate}
+                                    value={(formData.debt_date as unknown as DateValue) || null}
                                 />
                             </Input.Wrapper>
                             {width >= 500 && width < 700 && (

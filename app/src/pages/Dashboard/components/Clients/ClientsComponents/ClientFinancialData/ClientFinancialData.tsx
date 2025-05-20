@@ -1,13 +1,15 @@
 import { useAppContext } from '../../../../../../Context/AppContext'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
-import "./ClientFinancialData.css"
+
 import React, { useState } from 'react';
 import EditData from './Sections/EditData/EditData';
 import NewDebt from './Sections/NewDebt/NewDebt';
 import ClientInfo from './Sections/ClientInfo/ClientInfo';
 import NewDeliver from './Sections/NewDeliver/NewDeliver';
 import DeleteSelf from './Sections/DeleteSelf/DeleteSelf';
+
+import "./ClientFinancialData.css"
 
 type FinancialClientSections = 'newDebt' | "newdeliver" | "editData" | "deleteSelf" | "home"
 
@@ -37,6 +39,7 @@ function ClientFinancialData({ closeModal }) {
                 className='financial-close-icon'
                 onClick={() => closeModal()}
             />
+            
             {sections === "home" && <ClientInfo setSections={setSections}/> }
             {sections === "editData" && <EditData closeModal={closeModal} />}
             {sections === "newDebt" && <NewDebt closeModal={closeModal} />}   

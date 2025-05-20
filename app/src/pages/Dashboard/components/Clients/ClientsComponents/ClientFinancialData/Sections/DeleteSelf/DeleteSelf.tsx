@@ -21,7 +21,7 @@ function DeleteSelf({ closeModal }) {
         if (deleted) {
             setTimeout(() => {
                 closeModal()
-            }, 4000)
+            }, 2000)
         }
     },[deleted])
     return (

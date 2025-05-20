@@ -23,7 +23,7 @@ function useClientFData() {
             client_email: "",
             client_address: "",
         },
-        total_debts: 0
+        total_debts: ""
     })
 
     const [gettingClientData, setGettingClientData] = useState(false)

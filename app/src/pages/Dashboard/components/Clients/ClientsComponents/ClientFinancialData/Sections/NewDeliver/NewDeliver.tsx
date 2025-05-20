@@ -1,6 +1,6 @@
 import { Button, Flex, Input, Notification, Text, Textarea } from "@mantine/core";
 import "./NewDeliver.css";
-import { DatePicker } from "@mantine/dates";
+import { DatePicker, DateValue } from "@mantine/dates";
 import useNewDeliver from "./utils/useNewDeliver";
 import dayjs from "dayjs";
 import { useAppContext } from "../../../../../../../../Context/AppContext";
@@ -131,6 +131,7 @@ function NewDeliver({ closeModal }) {
                                 >
                                     <DatePicker
                                         onChange={handleSaveDate}
+                                        value={(formData.deliver_date as unknown as Date) || null}
                                     />
 
                                 </Input.Wrapper>

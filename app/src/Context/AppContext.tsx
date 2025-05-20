@@ -1,12 +1,13 @@
 import React, { useMemo, useContext, createContext, useRef, useEffect } from "react";
 
-import {AppContextValueInterface} from "./Typescript/ContextTypes"
+import { AppContextValueInterface } from "./Typescript/ContextTypes"
 
 import useModals from "./useModals";
 import useAuthentication from "./useAuthentication";
 import useClients from "./useClients";
 import useDebts from "./useDebts";
 import useDelivers from "./useDelivers";
+import useFinancialData from "./useFinancialData";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -30,7 +31,7 @@ export const AppContextProvider = ({ children }: any) => {
     const authHook = useAuthentication()
 
     const modalsHook = useModals()
-    
+
     const clientsHook = useClients({
         client_id: modalsHook.selectedClientData.client_id
     })
@@ -44,23 +45,28 @@ export const AppContextProvider = ({ children }: any) => {
         client_id: modalsHook.selectedClientData.client_id,
         getAllClients: clientsHook.getAllClients
     })
+
+    const financialClientHook = useFinancialData({
+        client_id: modalsHook.selectedClientData.client_id,
+
+    })
     const contextValues = useMemo(() => ({
         width,
-        modalsHook,authHook, clientsHook, debtsHook,
-        deliversHook
+        modalsHook, authHook, clientsHook, debtsHook,
+        deliversHook, financialClientHook
     }), [
         modalsHook,
         width, authHook, clientsHook, debtsHook,
-        deliversHook
+        deliversHook, financialClientHook
     ])
 
     const alreadyGotClients = useRef(false)
-    useEffect(()=>{
-        if(authHook.loginData && ![null, "", undefined].includes(authHook.loginData.user_id) && !alreadyGotClients.current){
+    useEffect(() => {
+        if (authHook.loginData && ![null, "", undefined].includes(authHook.loginData.user_id) && !alreadyGotClients.current) {
             alreadyGotClients.current = true
             clientsHook.getAllClients()
         }
-    },[authHook.loginData])
+    }, [authHook.loginData])
     return (
         <AppContext.Provider value={
             contextValues
@@ -69,7 +75,7 @@ export const AppContextProvider = ({ children }: any) => {
                 <div className='initLoader-container'>
                     <div className="initLoader"></div>
                 </div>
-            ): (children)}
+            ) : (children)}
         </AppContext.Provider>
     )
 }

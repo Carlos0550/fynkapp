@@ -40,7 +40,7 @@ function ClientForm({ closeModal }) {
             setTimeout(() => {
                 setShowNotif(false)
                 closeModal()
-            }, 3000);
+            }, 1000);
         }
     }
 

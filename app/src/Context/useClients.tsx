@@ -168,10 +168,11 @@ function useClients({client_id}: Props) {
                     autoClose: 3500,
                     position: "top-right"
                 })
+                
                 return false
             }
             if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
-                
+                setClients((prev) => prev.filter((client) => client.client_id !== client_id))
             await getAllClients()
             return true
         } catch (error) {
@@ -190,7 +191,7 @@ function useClients({client_id}: Props) {
             })
             return false
         }
-    },[client_id, getAllClients])
+    },[client_id, getAllClients, setClients])
     return useMemo(() => ({
         saveClient, clients, getAllClients, setClients,
         getClientData, editingClient, setEditingClient,

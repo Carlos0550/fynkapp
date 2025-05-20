@@ -2,6 +2,7 @@ import { CreateUserForm, LoginData, LoginUserForm } from "./AuthenticationTypes"
 import { ClientInterface, FormClient } from "./ClientsTypes"
 import { DebtForm } from "./DebtsTypes"
 import { DeliverForm } from "./DeliversTypes"
+import { FinancialClient } from "./FinancialTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -46,11 +47,18 @@ export interface DebtsHookInterface {
 export interface DeliversHookInterface {
     saveDeliver: (deliverData: DeliverForm) => Promise<boolean>
 }
+
+export interface FinancialClientHookInterface {
+    financialClientData: FinancialClient[]
+    setFinancialClientData: React.Dispatch<React.SetStateAction<FinancialClient | any>>
+    getFinancialClientData: () => Promise<boolean>
+}
 export interface AppContextValueInterface {
     width: number,
     modalsHook: ModalsHookInterface,
     authHook: AuthenticationHookInterface,
     clientsHook: ClientsHookInterface,
     debtsHook: DebtsHookInterface,
-    deliversHook: DeliversHookInterface
+    deliversHook: DeliversHookInterface,
+    financialClientHook: FinancialClientHookInterface
 }

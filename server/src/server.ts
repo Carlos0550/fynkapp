@@ -11,6 +11,7 @@ import clientRouter from "./routes/clients.routes";
 import AuthRouter from "./routes/auth.routes"
 import debtRouter from "./routes/debts.routes";
 import deliverRouter from "./routes/delivers.routes";
+import financialRouter from "./routes/financial.routes";
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use("/auth", AuthRouter)
 app.use("/clients", clientRouter)
 app.use("/debts", debtRouter)
 app.use("/delivers", deliverRouter)
+app.use("/financial", financialRouter)
 
 app.get("/static/account-validation-success", (req: Request, res: Response) => {
   const htmlPath = path.join(__dirname, "./utils/Pages/EmailVerificationSuccess.html"); 
