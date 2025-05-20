@@ -23,7 +23,10 @@ function useFinancialData({client_id}:Props) {
             console.log(response)
             const responseData = await response.json()
             console.log(responseData)
-            if([404, 401].includes(response.status)) return false
+            if([404, 401].includes(response.status)){
+                setFinancialClientData([])
+                return false
+            }
             if(!response.ok) throw new Error(responseData.msg || "Error desconocido")
             setFinancialClientData(responseData)
         return true

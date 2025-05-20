@@ -82,16 +82,18 @@ function ClientInfo({ setSections }) {
         <Text fw={600} size="lg">Información financiera</Text>
         <Flex align="center" justify="space-between" wrap="wrap" gap={10}>
           <Box>
-            <Text size="sm">Saldo total:</Text>
-            {
+            <Text size="sm">Saldo total: {
               parseFloat(selectedClientData.total_debts) > 0 ? (
                 <Badge color="red" size="lg" variant="filled">
                   {parseFloat(selectedClientData.total_debts.toString()).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}
                 </Badge>
               ) : (
-                <Text c="dimmed" size="sm">Sin deudas</Text>
+                <Badge color="green" size="lg" variant="filled">
+                  Sin deuda
+                </Badge>
               )
-            }
+            }</Text>
+            
           </Box>
           <Flex gap={10}>
             <Button
