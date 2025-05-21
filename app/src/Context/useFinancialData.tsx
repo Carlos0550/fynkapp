@@ -8,7 +8,7 @@ interface Props{
 }
 function useFinancialData({client_id}:Props) {
     const [financialClientData, setFinancialClientData] = useState<FinancialClient[]>([])
-    
+    const [historyClientData, setHistoryClientData] = useState<FinancialClient[]>([])
     const getFinancialClientData = useCallback(async(): Promise<boolean> => {
 
         const url = new URL(logic_apis.financial + "/get-financial-data")
@@ -22,13 +22,15 @@ function useFinancialData({client_id}:Props) {
             })
 
             const responseData = await response.json()
-            console.log(responseData)
+
             if([404, 401].includes(response.status)){
                 setFinancialClientData([])
+                setHistoryClientData([])
                 return false
             }
             if(!response.ok) throw new Error(responseData.msg || "Error desconocido")
             setFinancialClientData(responseData.movimientos)
+            setHistoryClientData(responseData.historial)
         return true
         } catch (error) {
             console.log(error)
@@ -70,11 +72,13 @@ function useFinancialData({client_id}:Props) {
     return useMemo(() => ({
         financialClientData,
         setFinancialClientData,
-        getFinancialClientData
+        getFinancialClientData,
+        historyClientData
     }), [
         financialClientData,
         setFinancialClientData,
-        getFinancialClientData
+        getFinancialClientData,
+        historyClientData
     ])
 }
 

@@ -51,7 +51,8 @@ export interface DeliversHookInterface {
 export interface FinancialClientHookInterface {
     financialClientData: FinancialClient[]
     setFinancialClientData: React.Dispatch<React.SetStateAction<FinancialClient | any>>
-    getFinancialClientData: () => Promise<boolean>
+    getFinancialClientData: () => Promise<boolean>,
+    historyClientData: FinancialClient[]
 }
 export interface AppContextValueInterface {
     width: number,

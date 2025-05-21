@@ -20,4 +20,4 @@ UPDATE debts
     SET exp_date = $1 
 WHERE client_debt_id = $2 
 AND manager_client_id = $3 
-AND exp_date <= $4;
+AND estado_financiero = 'activo';

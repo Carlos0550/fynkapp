@@ -1,6 +1,7 @@
 import { Tabs, rem } from '@mantine/core'
 import DebtTable from './DebtTable'
 import DeliversTable from './DeliversTable'
+import HistoryTable from './HistoryTable'
 
 function FinancialTabs() {
     return (
@@ -20,7 +21,7 @@ function FinancialTabs() {
             </Tabs.Panel>
 
             <Tabs.Panel value="history" pt="md">
-                <></>
+                <HistoryTable/>
             </Tabs.Panel>
         </Tabs>
     )

@@ -45,9 +45,10 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
         }
 
         if (shouldUpdate) {
+
           const result = await pool.query(
             SD[2],
-            [newExpDate, client_id, manager_id, dayjs(today).format("YYYY-MM-DD HH:mm:ss")]
+            [newExpDate, client_id, manager_id]
           );
           if(result.rowCount! === 0) throw new Error("Error al actualizar las fechas vencidas del cliente") 
           console.log(`🟢 Se actualizaron las fechas vencidas del cliente ${client_id}`);
