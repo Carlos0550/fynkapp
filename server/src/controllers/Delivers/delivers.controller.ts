@@ -38,9 +38,6 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
 
         for (const row of allExpDates.rows) {
           const exp = dayjs(row.exp_date).startOf("day");
-          console.log("exp", exp.format("YYYY-MM-DD HH:mm:ss"))
-          console.log("Today: ", today.format("YYYY-MM-DD HH:mm:ss"))
-          console.log(exp.isSame(today) || exp.isBefore(today))
           if (exp.isSame(today) || exp.isBefore(today)) {
             shouldUpdate = true;
             break;
@@ -58,15 +55,54 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
           console.log("📌 No hay deudas vencidas ni con fecha de hoy. No se actualiza nada.");
         }
       }
-        await pool.query("COMMIT");
+
+      // 🔁 Verificamos si corresponde cerrar deudas y entregas activas
+      const deudaResult = await pool.query(`
+        SELECT COALESCE(SUM(debt_total), 0) AS total_deuda
+        FROM debts
+        WHERE client_debt_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
+      `, [client_id, manager_id]);
+
+      const entregaResult = await pool.query(`
+        SELECT COALESCE(SUM(deliver_amount), 0) AS total_entregas
+        FROM delivers
+        WHERE client_deliver_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
+      `, [client_id, manager_id]);
+
+      const totalDeuda = Number(deudaResult.rows[0].total_deuda);
+      const totalEntregas = Number(entregaResult.rows[0].total_entregas);
+
+      if (totalEntregas >= totalDeuda && totalDeuda > 0) {
+        const now = dayjs().format("YYYY-MM-DD HH:mm:ss");
+
+        await pool.query(`
+          UPDATE debts
+          SET estado_financiero = 'cerrado', fecha_cierre = $3
+          WHERE client_debt_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
+        `, [client_id, manager_id, now]);
+
+        await pool.query(`
+          UPDATE delivers
+          SET estado_financiero = 'cerrado', fecha_cierre = $3
+          WHERE client_deliver_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
+        `, [client_id, manager_id, now]);
+
+        console.log(`✅ Cliente ${client_id} saldó su deuda. Registros cerrados.`);
+      }
+
+      await pool.query("COMMIT");
 
       res.status(200).json({ msg: "Entrega creada con éxito" });
     } else {
-      throw new Error("Error interno del servidor, espere unos segundos e intente nuevamente.")
+      throw new Error("Error interno del servidor, espere unos segundos e intente nuevamente.");
     }
+
   } catch (error: any) {
     await pool.query("ROLLBACK");
     console.error("❌ Error al guardar la entrega:", error);
-    res.status(500).json({ msg: error.message || "Error interno del servidor, espere unos segundos e intente nuevamente." });
+    res.status(500).json({
+      msg: error.message || "Error interno del servidor, espere unos segundos e intente nuevamente."
+    });
   }
 };
+
