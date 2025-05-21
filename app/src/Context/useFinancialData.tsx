@@ -20,7 +20,7 @@ function useFinancialData({client_id}:Props) {
                     "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
                 }
             })
-            console.log(response)
+
             const responseData = await response.json()
             console.log(responseData)
             if([404, 401].includes(response.status)){
@@ -28,10 +28,11 @@ function useFinancialData({client_id}:Props) {
                 return false
             }
             if(!response.ok) throw new Error(responseData.msg || "Error desconocido")
-            setFinancialClientData(responseData)
+            setFinancialClientData(responseData.movimientos)
         return true
         } catch (error) {
             console.log(error)
+            setFinancialClientData([])
             if(error instanceof TypeError){
                 showNotification({
                     color: "red",

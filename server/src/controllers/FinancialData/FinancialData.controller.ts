@@ -15,6 +15,7 @@ export const getFinancialData: RequestHandler<
 
   try {
     const result = await pool.query(FD[0], [manager_id, client_id]);
+
     if (result.rowCount === 0) {
       res.status(404).json({ msg: "No se encontraron datos financieros." });
       return;
@@ -22,41 +23,80 @@ export const getFinancialData: RequestHandler<
 
     const movimientos = result.rows;
 
-    // Separar deudas y pagos
-    const deudas = movimientos.filter((m) => m.tipo === "deuda");
-    const pagos = movimientos.filter((m) => m.tipo === "pago");
+    const movimientosActivos = movimientos.filter(m => m.estado_financiero === 'activo');
+    const movimientosCerrados = movimientos.filter(m => m.estado_financiero !== 'activo');
 
-    const deudasConEstado = deudas.map((deuda) => {
-      const pagosAplicables = pagos.filter(p =>
-        dayjs(p.fecha).isBefore(dayjs(deuda.fecha)) || dayjs(p.fecha).isSame(dayjs(deuda.fecha))
-      );
+    const deudas = movimientosActivos.filter((m) => m.tipo === "deuda");
+    const pagos = movimientosActivos.filter((m) => m.tipo === "pago");
 
-      const totalPagado = pagosAplicables.reduce((acc, p) => acc + Number(p.monto), 0);
-      const vencida = dayjs(deuda.vencimiento).isBefore(dayjs());
-      const resta = Number(deuda.monto) - totalPagado;
+    const totalDeuda = deudas.reduce((acc, d) => acc + Number(d.monto), 0);
+    const totalPagos = pagos.reduce((acc, p) => acc + Number(p.monto), 0);
+    const restaGlobal = totalDeuda - totalPagos;
 
-      let estado: "Pagada" | "Parcial" | "Vencida" | "Al día";
+    const huboEntregaEsteMes = pagos.some(pago =>
+      dayjs(pago.fecha).isSame(dayjs(), 'month') &&
+      dayjs(pago.fecha).isSame(dayjs(), 'year')
+    );
 
-      if (resta <= 0) estado = "Pagada";
-      else if (vencida && resta > 0) estado = "Vencida";
-      else if (resta < deuda.monto) estado = "Parcial";
-      else estado = "Al día";
+    let restante = totalPagos;
 
-      return { ...deuda, estado };
+    const deudasConEstado = deudas
+      .sort((a, b) => dayjs(a.fecha).valueOf() - dayjs(b.fecha).valueOf())
+      .map((deuda) => {
+        const monto = Number(deuda.monto);
+
+        const vencimiento = dayjs(deuda.vencimiento);
+        const hoy = dayjs();
+
+        const vencidaPorFecha = vencimiento.isBefore(hoy, 'day');
+        const porVencer = vencimiento.isAfter(hoy, 'day') &&
+          vencimiento.diff(hoy, 'day') <= 7;
+
+        let estado: "Pagada" | "Por vencer" | "Vencida" | "Al día";
+
+        if (restante >= monto) {
+          estado = "Pagada";
+          restante -= monto;
+        } else if (restante > 0) {
+          if (vencidaPorFecha && !huboEntregaEsteMes) {
+            estado = "Vencida";
+          } else if (porVencer) {
+            estado = "Por vencer";
+          } else {
+            estado = "Al día";
+          }
+          restante = 0;
+        } else {
+          if (vencidaPorFecha && !huboEntregaEsteMes) {
+            estado = "Vencida";
+          } else if (porVencer) {
+            estado = "Por vencer";
+          }
+          else {
+            estado = "Al día";
+          }
+        }
+
+        return { ...deuda, estado };
+      });
+
+    const movimientosFinales = [...deudasConEstado, ...pagos].sort(
+      (a, b) => dayjs(b.fecha).valueOf() - dayjs(a.fecha).valueOf()
+    );
+
+    res.status(200).json({
+      movimientos: movimientosFinales,
+      historial: movimientosCerrados.sort((a, b) => dayjs(b.fecha).valueOf() - dayjs(a.fecha).valueOf()),
+      totalDeuda,
+      totalPagos,
+      restaGlobal
     });
 
-    // Dejar los pagos como están
-    const movimientosFinales = [
-      ...deudasConEstado,
-      ...pagos
-    ].sort((a, b) => dayjs(b.fecha).valueOf() - dayjs(a.fecha).valueOf());
-    console.log(movimientosFinales)
-    res.status(200).json(movimientosFinales);
-    return;
 
   } catch (error) {
     console.error("❌ Error al obtener los datos financieros:", error);
-    res.status(500).json({ msg: "Error interno en el servidor, espere unos segundos e intente nuevamente." });
-    return;
+    res.status(500).json({
+      msg: "Error interno en el servidor, espere unos segundos e intente nuevamente."
+    });
   }
 };

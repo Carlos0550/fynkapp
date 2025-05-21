@@ -62,7 +62,10 @@ function DebtTable() {
                                 <Table.Td>{dayjs(debt.fecha).format("DD/MM/YYYY")}</Table.Td>
                                 <Table.Td>{dayjs(debt.vencimiento).format("DD/MM/YYYY")}</Table.Td>
                                 <Table.Td>
-                                    <Badge color="green" variant="light">{debt.estado}</Badge>
+                                    <Badge color={
+                                        debt.estado === "Vencida" ? "red" : debt.estado === "Por vencer" ? "yellow" : "green"
+
+                                    } variant="light">{debt.estado}</Badge>
                                 </Table.Td>
                                 <Table.Td>
                                     {debt.productos!.map((p, idx) => (

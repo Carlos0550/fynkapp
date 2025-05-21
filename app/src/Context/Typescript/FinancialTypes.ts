@@ -8,5 +8,5 @@ export type FinancialClient = {
   productos: DebtProducts[] | null
   detalles: string | null
   tipo: 'deuda' | 'pago',
-  estado: "Pagada" | "Vencida" | "Parcial" | "Al día"
+  estado: "Pagada" | "Vencida" | "Por vencer" | "Al día"
 }

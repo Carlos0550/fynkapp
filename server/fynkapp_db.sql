@@ -50,7 +50,7 @@ CREATE TABLE debts(
 	client_debt_id UUID NOT NULL,
 	CONSTRAINT fk_manager_client_id FOREIGN KEY(manager_client_id) REFERENCES managers(manager_id) ON DELETE CASCADE,
 	CONSTRAINT fk_client_debt_id FOREIGN KEY(client_debt_id) REFERENCES clients(client_id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE delivers(
     deliver_id TEXT NOT NULL PRIMARY KEY UNIQUE,
@@ -63,5 +63,8 @@ CREATE TABLE delivers(
     CONSTRAINT fk_manager_client_id FOREIGN KEY (manager_client_id) REFERENCES managers (manager_id) ON DELETE CASCADE
 );
 
-truncate TABLE CLIENTS cascade;
-SELECT * from delivers;
+ALTER TABLE debts ADD COLUMN estado_financiero TEXT DEFAULT 'activo';
+ALTER TABLE debts ADD COLUMN fecha_cierre TIMESTAMP;
+
+ALTER TABLE delivers ADD COLUMN estado_financiero TEXT DEFAULT 'activo';
+ALTER TABLE delivers ADD COLUMN fecha_cierre TIMESTAMP;

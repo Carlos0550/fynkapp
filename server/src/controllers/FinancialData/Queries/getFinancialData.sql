@@ -5,7 +5,8 @@ SELECT
   d.debt_total AS monto,
   d.debt_products::jsonb AS productos,
   NULL::text AS detalles,
-  'deuda' AS tipo
+  'deuda' AS tipo,
+  d.estado_financiero AS estado_financiero
 FROM debts d
 WHERE 
   d.manager_client_id = $1 AND 
@@ -20,7 +21,9 @@ SELECT
   p.deliver_amount AS monto,
   NULL::jsonb AS productos,
   p.deliver_details AS detalles,
-  'pago' AS tipo
+  'pago' AS tipo,
+    p.estado_financiero AS estado_financiero
+
 FROM delivers p
 WHERE 
   p.manager_client_id = $1 AND 
