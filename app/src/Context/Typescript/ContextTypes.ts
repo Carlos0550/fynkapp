@@ -44,7 +44,8 @@ export interface ClientsHookInterface {
 export interface DebtsHookInterface {
     saveDebt: (debtData: DebtForm) => Promise<boolean>
     editingDebt: EditingData | null, 
-    setEditingDebt: React.Dispatch<SetStateAction<EditingData | null>>
+    setEditingDebt: React.Dispatch<SetStateAction<EditingData | null>>,
+    deleteDebt: (debt_id: string) => Promise<boolean>
 }
 
 export interface DeliversHookInterface {
@@ -52,7 +53,7 @@ export interface DeliversHookInterface {
 }
 
 export interface FinancialClientHookInterface {
-    financialClientData: FinancialClient[]
+    financialClientData: FinancialClient[],
     setFinancialClientData: React.Dispatch<React.SetStateAction<FinancialClient | any>>
     getFinancialClientData: () => Promise<boolean>,
     historyClientData: FinancialClient[]

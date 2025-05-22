@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { use, useCallback, useEffect, useMemo, useState } from 'react'
 import { DebtForm, EditingData } from './Typescript/DebtsTypes'
 import { logic_apis } from '../apis'
 import { showNotification } from '@mantine/notifications'
@@ -15,12 +15,11 @@ function useDebts({
     const saveDebt = useCallback(async (debtData: DebtForm): Promise<boolean> => {
         const url = new URL(logic_apis.debts + "/save-debt")
         url.searchParams.append("client_id", client_id)
-        if(editingDebt?.debt_id) {
+        if (editingDebt?.debt_id) {
             url.searchParams.append("debt_id", editingDebt.debt_id)
             url.searchParams.append("editing", "true")
         }
 
-        console.log(url)
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -68,13 +67,54 @@ function useDebts({
         }
     }, [client_id, getAllClients, editingDebt])
 
-    useEffect(()=>{
-        console.log(editingDebt)
-    },[editingDebt])
+    const deleteDebt = useCallback(async (debt_id: string): Promise<boolean> => {
+       
+        const url = new URL(logic_apis.debts + "/delete-debt")
+        url.searchParams.append("debt_id", debt_id || "")
+        url.searchParams.append("client_id", client_id || "")
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
+                }
+            })
+            const responseData = await response.json()
+            if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
+            showNotification({
+                color: "green",
+                styles: (theme) => ({
+                    title: { color: "black" },
+                    description: { color: "black" }
+                }),
+                title: "Deuda eliminada",
+                message: responseData.msg,
+                autoClose: 3000,
+                position: "top-right"
+            })
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                color: "red",
+                styles: (theme) => ({
+                    title: { color: "black" },
+                    description: { color: "black" }
+                }),
+                title: "Error al eliminar la deuda",
+                message: error.message,
+                autoClose: 5000,
+                position: "top-right"
+            })
+            return false
+        }
+    }, [client_id, getAllClients])
     return useMemo(() => ({
-        saveDebt, editingDebt, setEditingDebt
+        saveDebt, editingDebt, setEditingDebt, deleteDebt
     }), [
-        saveDebt, editingDebt, setEditingDebt
+        saveDebt, editingDebt, setEditingDebt, deleteDebt
     ])
 }
 

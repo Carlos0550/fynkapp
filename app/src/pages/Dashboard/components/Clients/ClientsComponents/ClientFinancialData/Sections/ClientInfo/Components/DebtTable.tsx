@@ -5,6 +5,8 @@ import {
     ActionIcon,
     Badge,
     Box,
+    Dialog,
+    Button,
 } from '@mantine/core'
 import { HiPencilAlt } from "react-icons/hi";
 import { IoTrashOutline } from "react-icons/io5";
@@ -13,11 +15,14 @@ import dayjs from "dayjs"
 import { showNotification } from '@mantine/notifications';
 import { DebtForm, EditingData } from '../../../../../../../../../Context/Typescript/DebtsTypes';
 import { FinancialClient } from '../../../../../../../../../Context/Typescript/FinancialTypes';
+import { useState } from 'react';
+import { useDisclosure } from '@mantine/hooks';
 
 function DebtTable() {
     const {
-        financialClientHook: { financialClientData },
-        debtsHook: { setEditingDebt }
+        financialClientHook: { financialClientData, setFinancialClientData },
+        debtsHook: { setEditingDebt, deleteDebt },
+        width
     } = useAppContext()
 
     const calculateTotal = (debtData: FinancialClient) => {
@@ -27,6 +32,23 @@ function DebtTable() {
         })
 
         return total.toString()
+    }
+
+    const [deleting, setDeleting] = useState(false)
+    const [opened, { open, close }] = useDisclosure(false);
+    const [debtId, setDebtId] = useState<string | null>(null)
+    const handleDeleteDebt = async (): Promise<void> => {
+        setDeleting(true) 
+        const result = await deleteDebt(debtId || "")
+        setDeleting(false)
+        close()
+        setDebtId(null)
+
+        if(result){
+            setFinancialClientData((prev) => 
+                prev.filter((f) => f.id !== debtId)
+            )
+        }
     }
     const handleEditDebt = (debt_id: string): void => {
         const debts = financialClientData.filter(f => f.tipo === "deuda" && f.id === debt_id)
@@ -50,8 +72,31 @@ function DebtTable() {
         })
         return;
     }
+
+    const mobileDialogPosition = {
+        right: 0,
+        bottom: 150
+    }
     return (
         <Box style={{ overflowX: 'auto' }}>
+            {opened && (
+                <Dialog position={width < 600 ? mobileDialogPosition : undefined} opened={opened} onClose={close} title="Eliminar deuda" withCloseButton={!deleting}>
+                    <Text c={"red"} fw={700} ta="center" size="1.1rem">¿Desea eliminar esta deuda?</Text>
+                    <Text c={"red"} fw={600} mt="sm">Antes de eliminar, tenga en cuenta:</Text>
+                    <ul style={{ marginLeft: 20, color: "#c92a2a", fontWeight: 500 }}>
+                        <li>Se evaluará si el cliente tiene pagos mayores a la deuda, para evitar saldo negativo.</li>
+                        <li>Si esto ocurre, no se permitirá eliminar hasta que el cliente complete su pago.</li>
+                        <li>Si no ocurre, y esta es su única deuda, se moverá al historial con el estado <strong>"Eliminado"</strong>.</li>
+                    </ul>
+                    <Text c="red" fw={500} mt="xs">La deuda eliminada podrá verse en el historial con el filtro correspondiente.</Text>
+                    <Text c="red" fw={600} mt="xs">¡Esta acción no se puede deshacer!</Text>
+
+                    <Group mt="md">
+                        <Button onClick={close}>Cancelar</Button>
+                        <Button loading={deleting} color="red" onClick={() => handleDeleteDebt()}>Eliminar</Button>
+                    </Group>
+                </Dialog>
+            )}
             <Table
                 highlightOnHover
                 withTableBorder
@@ -103,7 +148,10 @@ function DebtTable() {
                                         <ActionIcon color="gray" variant="subtle" size="sm" onClick={() => handleEditDebt(debt.id)}>
                                             <HiPencilAlt size={20} />
                                         </ActionIcon>
-                                        <ActionIcon color="red" variant="subtle" size="sm">
+                                        <ActionIcon color="red" variant="subtle" size="sm" onClick={()=>{
+                                            setDebtId(debt.id)
+                                            open()
+                                        }}>
                                             <IoTrashOutline size={20} color='red' />
                                         </ActionIcon>
                                     </Group>
