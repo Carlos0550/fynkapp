@@ -38,8 +38,8 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                         }}><TbReportMoney size={20} /><span>Nueva deuda</span></li>
                         <div className='sidebar-divider'></div>
                         <p className='sidebar-title'>Reportes</p>
-                        <li className='sidebar-list'><FaUserClock size={20} /><span>Vencimientos</span></li>
-                        <li className='sidebar-list'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
+                        {/* <li className='sidebar-list'><FaUserClock size={20} /><span>Vencimientos</span></li> */}
+                        <li className='sidebar-list disabled'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
                     </ul>
                 )
                 : (
@@ -67,8 +67,8 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                                         openDebtModal()
                                         setMobileExtended(false)
                                     }}><TbReportMoney size={20} /><span>Nueva deuda</span></li>
-                                    <li className='sidebar-list'><FaUserClock size={20} /><span>Vencimientos</span></li>
-                                    <li className='sidebar-list'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
+                                    {/* <li className='sidebar-list'><FaUserClock size={20} /><span>Vencimientos</span></li> */}
+                                    <li className='sidebar-list disabled'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
                                 </>
                             )}
                         </ul>

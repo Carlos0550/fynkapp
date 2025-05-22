@@ -41,6 +41,11 @@
     width: 100%;
 }
 
+.sidebar-list.disabled{
+    pointer-events: none;
+    opacity: 0.5;
+}
+
 .sidebar-list:hover {
     background-color: #363636;
     color: #ffffff;
