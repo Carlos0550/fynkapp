@@ -18,12 +18,12 @@ function useNewDebt() {
     debt_date: ""
   });
 
-  const [productsText, setProductsText] = useState(""); // 🆕 texto visible en el Textarea
+  const [productsText, setProductsText] = useState(""); 
   const [errors, setErrors] = useState<string[]>([]);
   const debounceTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
   const handleProductsChange = (productString: string) => {
-    setProductsText(productString); // 🆕 actualizamos el valor visible
+    setProductsText(productString);
 
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
@@ -167,13 +167,13 @@ function useNewDebt() {
         debt_total: editingDebt.debt_total
       });
 
-      setProductsText(text); // ✅ cargar texto en edición
+      setProductsText(text);
     } else {
       setFormData(prev => ({
         ...prev,
         debt_date: dayjs().format("YYYY-MM-DD HH:mm:ss")
       }));
-      setProductsText(""); // 🧼 limpiar textarea si es nuevo
+      setProductsText("");
     }
   }, [editingDebt?.debt_id]);
 
