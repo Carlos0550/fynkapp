@@ -81,9 +81,9 @@ function ClientModal() {
     >
       <Box style={{ overflowX: 'auto', maxWidth: '100vw' }}>
         {openedAddClientModal && <ClientForm closeModal={onCloseModal}/>}
-      {openedAddDeliverModal && <></>}
-      {openedAddDebtModal && <></>}
-      {openedClientModal && <ClientFinancialData closeModal={onCloseModal}/>}
+        {openedAddDeliverModal && <></>}
+        {openedAddDebtModal && <></>}
+        {openedClientModal && <ClientFinancialData closeModal={onCloseModal}/>}
       </Box>
     </Modal>
   )

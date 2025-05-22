@@ -6,7 +6,6 @@ function useClientFData() {
     const {
         clientsHook: {
             getClientData,
-            setClients
         },
         modalsHook: {
             selectedClientData,

@@ -5,7 +5,7 @@ import { GiTakeMyMoney } from 'react-icons/gi'
 import useClientFData from '../../utils/useClientFData'
 import { useAppContext } from '../../../../../../../../Context/AppContext'
 import FinancialTabs from './Components/FinancialTabs'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function ClientInfo({ setSections }) {
   const {
@@ -20,11 +20,18 @@ function ClientInfo({ setSections }) {
     financialClientHook: { getFinancialClientData }
   } = useAppContext()
 
+  const [gettingFinancialData, setGettingFinancialData] = useState(false)
+  const handleGetFinancialData = async () => {
+      setGettingFinancialData(true)
+      await getFinancialClientData()
+      setGettingFinancialData(false)
+  }
+
   const alreadyFetched = useRef(false)
   useEffect(() => {
     if (!selectedClientData.client_id || alreadyFetched.current) return
     alreadyFetched.current = true
-    getFinancialClientData()
+    handleGetFinancialData()
   }, [selectedClientData.client_id])
 
   return (
@@ -70,7 +77,9 @@ function ClientInfo({ setSections }) {
           {
             gettingClientData ? (
               <Flex direction="column" gap={10}>
-                <Skeleton height={12} radius="sm" />
+                <Skeleton height={12} width={100} radius="sm" />
+                <Skeleton height={12} width={250} radius="sm" />
+                <Skeleton height={12} width={350} radius="sm" />
                 <Skeleton height={12} radius="sm" />
               </Flex>
             ) : (
@@ -128,7 +137,17 @@ function ClientInfo({ setSections }) {
           </Flex>
         </Flex>
       </Flex>
-      <FinancialTabs />
+      {gettingFinancialData
+        ? <Flex direction={"column"} gap={10}>
+          <Skeleton height={20} animate={true} radius="sm" />
+          <Skeleton height={20} animate={true} radius="sm" />
+          <Skeleton height={20} animate={true} radius="sm" />
+          <Skeleton height={20} animate={true} radius="sm" />
+          <Skeleton height={20} animate={true} radius="sm" />
+
+        </Flex>
+        : <FinancialTabs />
+      }
     </Flex>
   )
 }

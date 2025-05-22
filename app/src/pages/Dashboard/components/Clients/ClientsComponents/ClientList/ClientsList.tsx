@@ -71,7 +71,7 @@ function ClientsList({searchInput}) {
             </div>
             <div className="client-status">
               <span className="debt">{
-                client.total_debts > 0
+                parseFloat(client.total_debts) > 0
                 ? parseFloat(client.total_debts.toString()).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })
                 : "Sin deudas"
                 }</span>
