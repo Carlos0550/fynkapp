@@ -6,5 +6,7 @@ export type DebtProducts = {
 export interface DebtRequest{
     debt_products: DebtProducts[],
     debt_total: number,
-    debt_date: string
+    debt_date: string,
+    debt_id?: string,
+    editing?: string,
 }

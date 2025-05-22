@@ -6,9 +6,12 @@ import { DatePicker, DateValue } from "@mantine/dates"
 import useNewDebt from "./utils/useNewDebt";
 import { useEffect } from "react";
 import dayjs from "dayjs";
-function NewDebt({closeModal}) {
+function NewDebt({ closeModal }) {
     const {
-        modalsHook: {
+        debtsHook:{
+            editingDebt
+        },
+        modalsHook:{
             selectedClientData
         },
         width
@@ -20,23 +23,27 @@ function NewDebt({closeModal}) {
         errors,
         handleSaveDebt,
         saving,
-        saved, formData
+        saved, formData,
+        productsText
     } = useNewDebt()
 
-    useEffect(()=>{
-        if(saved){
+    useEffect(() => {
+        if (saved) {
             const timeout = setTimeout(() => {
-            closeModal()
-        },1000)
+                closeModal()
+            }, 1000)
 
-        return () => {
-            clearTimeout(timeout)
+            return () => {
+                clearTimeout(timeout)
+            }
         }
-        }
-    },[saved])
+    }, [saved])
     return (
         <div className="new-debt-container">
-            <h2>Añadir deuda para {selectedClientData.client_name}</h2>
+            {editingDebt?.debt_id 
+                ? <h2>Editando deuda de {selectedClientData.client_name}</h2>
+                : <h2>Añadir deuda para {selectedClientData.client_name}</h2>
+            }
             {saved &&
                 <Notification
                     title="Deuda guardado exitosamente"
@@ -70,9 +77,11 @@ function NewDebt({closeModal}) {
                                 autosize
                                 minRows={11}
                                 maxRows={11}
+                                value={productsText}
                                 error={errors && errors.length > 0}
-                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleProductsChange(e.target.value)}
-                            />
+                                onChange={(e) => handleProductsChange(e.target.value)}
+                                />
+
                         </Input.Wrapper>
 
                         <Flex
@@ -81,10 +90,10 @@ function NewDebt({closeModal}) {
                             align={"flex-start"}
                         >
                             <Input.Wrapper
-                              label={
-                                `Fecha de deuda${dayjs(formData.debt_date).format("DD/MM/YYYY") === "Invalid Date" ? "" : `: ${dayjs(formData.debt_date).format("DD/MM/YYYY")}`}`
-                              }
-                              description="Fecha en la que se emite esta deuda"
+                                label={
+                                    `Fecha de deuda${dayjs(formData.debt_date).format("DD/MM/YYYY") === "Invalid Date" ? "" : `: ${dayjs(formData.debt_date).format("DD/MM/YYYY")}`}`
+                                }
+                                description="Fecha en la que se emite esta deuda"
                             >
                                 <DatePicker
                                     onChange={handleSaveDate}

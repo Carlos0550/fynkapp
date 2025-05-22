@@ -2,7 +2,7 @@ import { useAppContext } from '../../../../../../Context/AppContext'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import EditData from './Sections/EditData/EditData';
 import NewDebt from './Sections/NewDebt/NewDebt';
 import ClientInfo from './Sections/ClientInfo/ClientInfo';
@@ -17,10 +17,21 @@ function ClientFinancialData({ closeModal }) {
     const {
         clientsHook: {
             setEditingClient
-        }
+        },
+        debtsHook: { editingDebt, setEditingDebt }
     } = useAppContext()
 
     const [sections, setSections] = useState<FinancialClientSections>("home")
+
+    const handleGoBack = () => {
+        setEditingDebt(null)
+        setEditingClient(false)
+        setSections("home")
+    }
+
+    useEffect(() => {
+        if (editingDebt && ![null, undefined, ""].includes(editingDebt.debt_id)) setSections("newDebt")
+    }, [editingDebt?.debt_id])
     return (
         <React.Fragment>
             {sections !== "home" && (
@@ -28,10 +39,7 @@ function ClientFinancialData({ closeModal }) {
                     size={25}
                     color='#2c2c2c'
                     className='edit-data-back-icon'
-                    onClick={() => {
-                        setSections("home")
-                        setEditingClient(false)
-                    }}
+                    onClick={() => handleGoBack()}
                 />
             )}
             <IoIosCloseCircle
@@ -39,12 +47,12 @@ function ClientFinancialData({ closeModal }) {
                 className='financial-close-icon'
                 onClick={() => closeModal()}
             />
-            
-            {sections === "home" && <ClientInfo setSections={setSections}/> }
+
+            {sections === "home" && <ClientInfo setSections={setSections} />}
             {sections === "editData" && <EditData closeModal={closeModal} />}
-            {sections === "newDebt" && <NewDebt closeModal={closeModal} />}   
-            {sections === "newdeliver" && <NewDeliver closeModal={closeModal} />} 
-            {sections === "deleteSelf" && <DeleteSelf closeModal={closeModal}/>}       
+            {sections === "newDebt" && <NewDebt closeModal={closeModal} />}
+            {sections === "newdeliver" && <NewDeliver closeModal={closeModal} />}
+            {sections === "deleteSelf" && <DeleteSelf closeModal={closeModal} />}
         </React.Fragment>
     )
 }

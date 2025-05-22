@@ -17,3 +17,12 @@ INSERT INTO
         $6,
         $7
     );
+
+UPDATE debts
+    SET 
+        debt_total = $1,
+        debt_date = $2,
+        exp_date = $3,
+        debt_products = $4
+    WHERE debt_id = $5;
+    

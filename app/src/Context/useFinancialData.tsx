@@ -64,11 +64,6 @@ function useFinancialData({client_id}:Props) {
             return false
         }
     },[client_id])
-
-    useEffect(()=>{
-        console.log(financialClientData)
-    },[financialClientData])
-
     return useMemo(() => ({
         financialClientData,
         setFinancialClientData,

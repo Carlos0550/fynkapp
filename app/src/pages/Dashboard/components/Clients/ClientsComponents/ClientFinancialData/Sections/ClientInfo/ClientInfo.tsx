@@ -5,6 +5,7 @@ import { GiTakeMyMoney } from 'react-icons/gi'
 import useClientFData from '../../utils/useClientFData'
 import { useAppContext } from '../../../../../../../../Context/AppContext'
 import FinancialTabs from './Components/FinancialTabs'
+import { useEffect, useRef } from 'react'
 
 function ClientInfo({ setSections }) {
   const {
@@ -16,7 +17,15 @@ function ClientInfo({ setSections }) {
   const {
     modalsHook: { selectedClientData },
     clientsHook: { setEditingClient },
+    financialClientHook: { getFinancialClientData }
   } = useAppContext()
+
+  const alreadyFetched = useRef(false)
+  useEffect(() => {
+    if (!selectedClientData.client_id || alreadyFetched.current) return
+    alreadyFetched.current = true
+    getFinancialClientData()
+  }, [selectedClientData.client_id])
 
   return (
     <Flex direction="column" gap={20}>
@@ -93,7 +102,7 @@ function ClientInfo({ setSections }) {
                 </Badge>
               )
             }</Text>
-            
+
           </Box>
           <Flex gap={10}>
             <Button
@@ -119,7 +128,7 @@ function ClientInfo({ setSections }) {
           </Flex>
         </Flex>
       </Flex>
-      <FinancialTabs/>
+      <FinancialTabs />
     </Flex>
   )
 }

@@ -9,26 +9,47 @@ import {
 import { HiPencilAlt } from "react-icons/hi";
 import { IoTrashOutline } from "react-icons/io5";
 import { useAppContext } from '../../../../../../../../../Context/AppContext';
-import { useEffect, useRef } from 'react';
 import dayjs from "dayjs"
+import { showNotification } from '@mantine/notifications';
+import { DebtForm, EditingData } from '../../../../../../../../../Context/Typescript/DebtsTypes';
+import { FinancialClient } from '../../../../../../../../../Context/Typescript/FinancialTypes';
 
 function DebtTable() {
     const {
-        financialClientHook: {
-            getFinancialClientData,
-            financialClientData
-        },
-        modalsHook: {
-            selectedClientData
-        }
+        financialClientHook: { financialClientData },
+        debtsHook: { setEditingDebt }
     } = useAppContext()
 
-    const alreadyFetched = useRef(false)
-    useEffect(() => {
-        if (!selectedClientData.client_id || alreadyFetched.current) return
-        alreadyFetched.current = true
-        getFinancialClientData()
-    }, [selectedClientData.client_id])
+    const calculateTotal = (debtData: FinancialClient) => {
+        let total = 0;
+        debtData.productos?.forEach((el) => {
+            total += parseFloat(el.product_price.toString()) * parseInt(el.product_quantity.toString())
+        })
+
+        return total.toString()
+    }
+    const handleEditDebt = (debt_id: string): void => {
+        const debts = financialClientData.filter(f => f.tipo === "deuda" && f.id === debt_id)
+        if (debts && debts.length > 0) {
+            const debtData = debts[0]
+
+            setEditingDebt({
+                debt_id,
+                debt_date: debtData.fecha,
+                debt_products: debtData.productos || [],
+                debt_total: calculateTotal(debtData),
+            })
+
+            return;
+        }
+        showNotification({
+            message: "Hubo un error al procesar la deuda, recargue esta sección e intente nuevamente.",
+            autoClose: 3500,
+            position: "top-right",
+            color: "yellow"
+        })
+        return;
+    }
     return (
         <Box style={{ overflowX: 'auto' }}>
             <Table
@@ -79,7 +100,7 @@ function DebtTable() {
                                 </Table.Td>
                                 <Table.Td>
                                     <Group gap={5}>
-                                        <ActionIcon color="gray" variant="subtle" size="sm">
+                                        <ActionIcon color="gray" variant="subtle" size="sm" onClick={() => handleEditDebt(debt.id)}>
                                             <HiPencilAlt size={20} />
                                         </ActionIcon>
                                         <ActionIcon color="red" variant="subtle" size="sm">

@@ -80,7 +80,7 @@ export const GetAllClients: RequestHandler = async (
 
     try {
         const result = await pool.query(clientQuery[0], [manager_id])
-
+        console.log(result.rows[0])
         if (result.rowCount === 0) {
             res.status(404).json({ msg: "No se encontraron clientes." })
             return

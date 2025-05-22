@@ -4,29 +4,33 @@ import { useAppContext } from '../../../../../../../../../Context/AppContext';
 import dayjs from "dayjs"
 import { DateValue } from '@mantine/dates';
 import { showNotification } from '@mantine/notifications';
+
 function useNewDebt() {
   const {
     debtsHook: {
-      saveDebt
+      saveDebt, editingDebt
     }
   } = useAppContext()
+
   const [formData, setFormData] = useState<DebtForm>({
     debt_products: [],
-    debt_total: 0,
+    debt_total: "",
     debt_date: ""
   });
 
+  const [productsText, setProductsText] = useState(""); // 🆕 texto visible en el Textarea
   const [errors, setErrors] = useState<string[]>([]);
   const debounceTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
   const handleProductsChange = (productString: string) => {
+    setProductsText(productString); // 🆕 actualizamos el valor visible
+
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
     const products: DebtProducts[] = [];
     const lineErrors: string[] = [];
 
     const trimmed = productString.trim();
-
     const all_products = trimmed
       .split("\n")
       .filter(line => line.trim() !== "");
@@ -70,11 +74,7 @@ function useNewDebt() {
     }));
 
     debounceTimeout.current = setTimeout(() => {
-      if (trimmed.length > 0) {
-        setErrors(lineErrors);
-      } else {
-        setErrors([]);
-      }
+      setErrors(trimmed.length > 0 ? lineErrors : []);
     }, 500);
   };
 
@@ -84,24 +84,24 @@ function useNewDebt() {
     const daysLimit = 45;
     const today = dayjs().startOf("day");
     const selectedDate = dayjs(date).startOf("day");
-    if(selectedDate.isBefore(today.subtract(daysLimit, "days"))) {
-      console.log("selectedDate.diff(today, 'days')", selectedDate.diff(today, "days"))
+
+    if (selectedDate.isBefore(today.subtract(daysLimit, "days"))) {
       showNotification({
         title: "Fecha no válida",
         message: `La fecha de deuda no puede ser mayor a ${daysLimit} días`,
         color: "red",
         autoClose: 5000,
         position: "top-right"
-      })
+      });
       return;
-    }else if(selectedDate.isAfter(today)) {
+    } else if (selectedDate.isAfter(today)) {
       showNotification({
         title: "Fecha no válida",
         message: "La fecha de deuda no puede ser en el futuro",
         color: "red",
         autoClose: 5000,
         position: "top-right"
-      })
+      });
       return;
     }
 
@@ -123,25 +123,26 @@ function useNewDebt() {
   };
 
   const calculateTotal = () => {
-    if(formData.debt_products.length === 0) return
+    if (formData.debt_products.length === 0) return;
     let total = 0;
     formData.debt_products.forEach(product => {
-      total += product.product_price * product.product_quantity;
+      total += parseFloat(product.product_price.toString()) * parseInt(product.product_quantity.toString());
     });
     setFormData(prev => ({
       ...prev,
-      debt_total: total
-    }))
+      debt_total: total.toString()
+    }));
   }
 
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+
   const handleSaveDebt = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSaving(true)
-    const result = await saveDebt(formData)
-    setSaving(false)
-    if (result) setSaved(true)
+    e.preventDefault();
+    setSaving(true);
+    const result = await saveDebt(formData);
+    setSaving(false);
+    if (result) setSaved(true);
   }
 
   useEffect(() => {
@@ -150,19 +151,35 @@ function useNewDebt() {
     };
   }, []);
 
-  useEffect(()=> {
-    calculateTotal()
-  },[formData.debt_products])
+  useEffect(() => {
+    calculateTotal();
+  }, [formData.debt_products]);
 
-  useEffect(()=>{
-          setFormData({
-              ...formData,
-              debt_date: dayjs().format("YYYY-MM-DD HH:mm:ss")
-          })
-      },[])
+  useEffect(() => {
+    if (editingDebt && editingDebt.debt_id) {
+      const text = editingDebt.debt_products
+        .map(p => `${p.product_quantity} ${p.product_name} ${p.product_price}`)
+        .join('\n');
+
+      setFormData({
+        debt_date: editingDebt.debt_date,
+        debt_products: editingDebt.debt_products,
+        debt_total: editingDebt.debt_total
+      });
+
+      setProductsText(text); // ✅ cargar texto en edición
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        debt_date: dayjs().format("YYYY-MM-DD HH:mm:ss")
+      }));
+      setProductsText(""); // 🧼 limpiar textarea si es nuevo
+    }
+  }, [editingDebt?.debt_id]);
 
   return {
     formData,
+    productsText, 
     errors,
     handleProductsChange,
     handleSaveDate,

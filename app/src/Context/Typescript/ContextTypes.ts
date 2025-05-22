@@ -1,6 +1,7 @@
+import { SetStateAction } from "react"
 import { CreateUserForm, LoginData, LoginUserForm } from "./AuthenticationTypes"
 import { ClientInterface, FormClient } from "./ClientsTypes"
-import { DebtForm } from "./DebtsTypes"
+import { DebtForm, EditingData } from "./DebtsTypes"
 import { DeliverForm } from "./DeliversTypes"
 import { FinancialClient } from "./FinancialTypes"
 
@@ -42,6 +43,8 @@ export interface ClientsHookInterface {
 
 export interface DebtsHookInterface {
     saveDebt: (debtData: DebtForm) => Promise<boolean>
+    editingDebt: EditingData | null, 
+    setEditingDebt: React.Dispatch<SetStateAction<EditingData | null>>
 }
 
 export interface DeliversHookInterface {

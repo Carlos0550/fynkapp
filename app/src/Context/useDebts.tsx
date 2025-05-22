@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
-import { DebtForm } from './Typescript/DebtsTypes'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { DebtForm, EditingData } from './Typescript/DebtsTypes'
 import { logic_apis } from '../apis'
 import { showNotification } from '@mantine/notifications'
 
@@ -11,9 +11,16 @@ function useDebts({
     client_id,
     getAllClients
 }: Props) {
+    const [editingDebt, setEditingDebt] = useState<EditingData | null>(null)
     const saveDebt = useCallback(async (debtData: DebtForm): Promise<boolean> => {
         const url = new URL(logic_apis.debts + "/save-debt")
         url.searchParams.append("client_id", client_id)
+        if(editingDebt?.debt_id) {
+            url.searchParams.append("debt_id", editingDebt.debt_id)
+            url.searchParams.append("editing", "true")
+        }
+
+        console.log(url)
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -59,11 +66,15 @@ function useDebts({
             })
             return false
         }
-    }, [client_id, getAllClients])
+    }, [client_id, getAllClients, editingDebt])
+
+    useEffect(()=>{
+        console.log(editingDebt)
+    },[editingDebt])
     return useMemo(() => ({
-        saveDebt
+        saveDebt, editingDebt, setEditingDebt
     }), [
-        saveDebt
+        saveDebt, editingDebt, setEditingDebt
     ])
 }
 

@@ -21,6 +21,7 @@ function ClientModal() {
     clientsHook:{
       setEditingClient
     },
+    debtsHook: { setEditingDebt },
     width
   } = useAppContext()
   const [modalOpened, setModalOpened] = useState(false);
@@ -35,6 +36,7 @@ function ClientModal() {
     clearClientData()
     setModalTitle("")
     setEditingClient(false)
+    setEditingDebt(null)
     return;
   }
 

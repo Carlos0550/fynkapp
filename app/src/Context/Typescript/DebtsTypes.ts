@@ -5,6 +5,10 @@ export type DebtProducts = {
 }
 export interface DebtForm{
     debt_products: DebtProducts[],
-    debt_total: number,
+    debt_total: string,
     debt_date: string
+}
+
+export interface EditingData extends DebtForm{
+    debt_id: string
 }
