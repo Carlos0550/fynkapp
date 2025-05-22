@@ -18,4 +18,4 @@ SELECT --Posicion 2, obtiene el total de deudas y entregas--
 
 UPDATE debts SET estado_financiero = 'eliminado' WHERE debt_id = $1; --Posicion 3, elimina la deuda (en teoria)--
 
-UPDATE delivers SET estado_financiero = 'eliminado' WHERE client_deliver_id = $1 AND manager_client_id = $2; --Posicion 3, elimina la deuda (en teoria)--
+UPDATE delivers SET estado_financiero = 'eliminado' WHERE client_deliver_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'; --Posicion 3, elimina la deuda (en teoria)--

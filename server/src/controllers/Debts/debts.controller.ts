@@ -136,8 +136,8 @@ export const deleteDebt: RequestHandler<
                     pool.query(db[3], [debt_id]),
                     pool.query(db[4], [client_id, manager_id])
                 ])
-                console.log(deleteDebtsAndDelivers)
-                if (deleteDebtsAndDelivers.every(response => response.rowCount! > 0)) {
+
+                if (deleteDebtsAndDelivers[0].rowCount! > 0) {
                     res.status(200).json({ msg: "Deuda eliminada con exito." })
                     return
                 } else {

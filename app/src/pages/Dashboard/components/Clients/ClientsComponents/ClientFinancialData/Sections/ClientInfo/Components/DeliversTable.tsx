@@ -1,5 +1,4 @@
 import { ActionIcon, Box, Table, Text } from '@mantine/core'
-import React from 'react'
 import { useAppContext } from '../../../../../../../../../Context/AppContext'
 import dayjs from 'dayjs'
 import { HiPencilAlt } from 'react-icons/hi'
@@ -7,7 +6,9 @@ import { HiPencilAlt } from 'react-icons/hi'
 function DeliversTable() {
     const {
         financialClientHook: {
-            financialClientData
+            financialClientData:{
+                movimientos
+            }
         }
     } = useAppContext()
     return (
@@ -31,9 +32,11 @@ function DeliversTable() {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {financialClientData && financialClientData.length > 0 ? (
-                        financialClientData.filter((f) => f.tipo === "pago").map((deliver) => (
-                            <Table.Tr key={deliver.id}>
+                    {movimientos && movimientos.length > 0 ? (
+                        movimientos
+                        .filter((f) => f.tipo === "pago")
+                        .map((deliver, idx) => (
+                            <Table.Tr key={idx}>
                                 <Table.Td>{dayjs(deliver.fecha).format('DD/MM/YYYY')}</Table.Td>
                                 <Table.Td>{parseFloat(deliver.monto.toString()).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</Table.Td>
                                 <Table.Td>{deliver.detalles}</Table.Td>

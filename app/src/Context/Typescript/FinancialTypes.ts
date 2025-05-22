@@ -1,6 +1,6 @@
 import { DebtProducts } from "./DebtsTypes";
 
-export type FinancialClient = {
+interface FinancialData{
   id: string
   fecha: string
   vencimiento: string | null
@@ -9,4 +9,9 @@ export type FinancialClient = {
   detalles: string | null
   tipo: 'deuda' | 'pago',
   estado: "Pagada" | "Vencida" | "Por vencer" | "Al día"
+  estado_financiero: "activo" | "cerrado" | "eliminado"
+}
+export type FinancialClient = {
+  movimientos: FinancialData[]
+  historial: FinancialData[]
 }

@@ -13,19 +13,23 @@ import { IoTrashOutline } from "react-icons/io5";
 import { useAppContext } from '../../../../../../../../../Context/AppContext';
 import dayjs from "dayjs"
 import { showNotification } from '@mantine/notifications';
-import { DebtForm, EditingData } from '../../../../../../../../../Context/Typescript/DebtsTypes';
 import { FinancialClient } from '../../../../../../../../../Context/Typescript/FinancialTypes';
 import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
+import { ClientInterface } from '../../../../../../../../../Context/Typescript/ClientsTypes';
 
 function DebtTable() {
     const {
-        financialClientHook: { financialClientData, setFinancialClientData },
+        financialClientHook: { financialClientData:{
+            movimientos
+        }, setFinancialClientData },
         debtsHook: { setEditingDebt, deleteDebt },
+        modalsHook: {setSelectedClientData},
+        clientsHook: {setClients, getClientData},
         width
     } = useAppContext()
 
-    const calculateTotal = (debtData: FinancialClient) => {
+    const calculateTotal = (debtData: FinancialClient["movimientos"][0]) => {
         let total = 0;
         debtData.productos?.forEach((el) => {
             total += parseFloat(el.product_price.toString()) * parseInt(el.product_quantity.toString())
@@ -45,13 +49,31 @@ function DebtTable() {
         setDebtId(null)
 
         if(result){
-            setFinancialClientData((prev) => 
-                prev.filter((f) => f.id !== debtId)
-            )
+            const newClientData = await getClientData() as ClientInterface
+            const newTotalDebts = newClientData.total_debts
+            setSelectedClientData((prev) => ({
+                ...prev,
+                total_debts: newTotalDebts
+            }))
+
+            setClients((prev) => prev.map((client) => {
+                if (client.client_id === newClientData.client_id) {
+                    return {
+                        ...client,
+                        total_debts: newTotalDebts
+                    }
+                }
+                return client
+            }))
+
+            setFinancialClientData((prev: FinancialClient) => ({
+                ...prev,
+                movimientos: prev.movimientos.filter(f => f.id !== debtId)
+            }))
         }
     }
     const handleEditDebt = (debt_id: string): void => {
-        const debts = financialClientData.filter(f => f.tipo === "deuda" && f.id === debt_id)
+        const debts = movimientos.filter(f => f.tipo === "deuda" && f.id === debt_id)
         if (debts && debts.length > 0) {
             const debtData = debts[0]
 
@@ -115,13 +137,13 @@ function DebtTable() {
                 </Table.Thead>
 
                 <Table.Tbody>
-                    {financialClientData && financialClientData.filter(m => m.tipo === "deuda").length === 0 ? (
+                    {movimientos && movimientos.filter(m => m.tipo === "deuda").length === 0 ? (
                         <Table.Tr>
                             <Table.Td colSpan={6}>
                                 <Text ta="center" c="dimmed">Mmm, al parecer no hay nada por mostrar</Text>
                             </Table.Td>
                         </Table.Tr>
-                    ) : financialClientData
+                    ) : movimientos && movimientos
                         .filter((type) => type.tipo === "deuda")
                         .map((debt) => (
                             <Table.Tr key={debt.id}>

@@ -20,7 +20,7 @@ export interface ModalsHookInterface {
     closeAddClientModal: () => void,
     selectedClientData: ClientInterface,
     clearClientData: () => void,
-    setSelectedClientData: React.Dispatch<React.SetStateAction<ClientInterface>>
+    setSelectedClientData: React.Dispatch<SetStateAction<ClientInterface>>
 }
 
 export interface AuthenticationHookInterface {
@@ -35,7 +35,7 @@ export interface ClientsHookInterface {
     setClients: React.Dispatch<React.SetStateAction<ClientInterface[]>>,
     saveClient: (formData: FormClient) => Promise<boolean>,
     getAllClients: () => Promise<boolean>,
-    getClientData: (client_id: string) => Promise<boolean | ClientInterface>,
+    getClientData: () => Promise<boolean | ClientInterface>,
     editingClient: boolean, 
     setEditingClient: React.Dispatch<React.SetStateAction<boolean>>,
     deleteClient: () => Promise<boolean>
@@ -53,7 +53,7 @@ export interface DeliversHookInterface {
 }
 
 export interface FinancialClientHookInterface {
-    financialClientData: FinancialClient[],
+    financialClientData: FinancialClient,
     setFinancialClientData: React.Dispatch<React.SetStateAction<FinancialClient | any>>
     getFinancialClientData: () => Promise<boolean>,
     historyClientData: FinancialClient[]

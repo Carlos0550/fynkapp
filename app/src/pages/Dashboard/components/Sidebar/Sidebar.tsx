@@ -5,7 +5,7 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { MdOutlinePersonAddAlt1 } from "react-icons/md";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { TbReportMoney } from "react-icons/tb";
-import { FaUserClock } from "react-icons/fa";
+import { IoStatsChart } from "react-icons/io5";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoMenu } from "react-icons/io5";
 function Sidebar({ mobileExtended, setMobileExtended }) {
@@ -32,13 +32,13 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                             openDeliverModal()
                             setMobileExtended(false)
                         }}><GiTakeMyMoney size={20} /><span>Agregar Entrega</span></li>
-                        <li className='sidebar-list' onClick={() =>{
+                        <li className='sidebar-list' onClick={() => {
                             openDebtModal()
                             setMobileExtended(false)
                         }}><TbReportMoney size={20} /><span>Nueva deuda</span></li>
                         <div className='sidebar-divider'></div>
-                        <p className='sidebar-title'>Reportes</p>
-                        {/* <li className='sidebar-list'><FaUserClock size={20} /><span>Vencimientos</span></li> */}
+                        <p className='sidebar-title'>Reportes (Próximamente)</p>
+                        <li className='sidebar-list disabled'><IoStatsChart size={20} /><span>Análisis de Clientes</span></li>
                         <li className='sidebar-list disabled'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
                     </ul>
                 )
@@ -67,7 +67,7 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                                         openDebtModal()
                                         setMobileExtended(false)
                                     }}><TbReportMoney size={20} /><span>Nueva deuda</span></li>
-                                    {/* <li className='sidebar-list'><FaUserClock size={20} /><span>Vencimientos</span></li> */}
+                                    <li className='sidebar-list disabled'><IoStatsChart size={20} /><span>Análisis de Clientes</span></li>
                                     <li className='sidebar-list disabled'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
                                 </>
                             )}

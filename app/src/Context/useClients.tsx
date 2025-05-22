@@ -97,7 +97,7 @@ function useClients({client_id}: Props) {
 }, [editingClient, client_id, getAllClients]);
 
 
-    const getClientData = useCallback(async(client_id: string): Promise<boolean | ClientInterface> => {
+    const getClientData = useCallback(async(): Promise<boolean | ClientInterface> => {
         const url = new URL(logic_apis.clients + "/get-client-data")
         url.searchParams.set("client_id", client_id)
         try {
@@ -142,7 +142,7 @@ function useClients({client_id}: Props) {
 
             return false
         }
-    },[])
+    },[client_id])
 
     const deleteClient = useCallback(async(): Promise<boolean> => {
         const url = new URL(logic_apis.clients + "/delete-client")

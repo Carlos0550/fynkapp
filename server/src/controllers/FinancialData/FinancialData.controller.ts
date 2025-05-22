@@ -21,10 +21,14 @@ export const getFinancialData: RequestHandler<
       return;
     }
 
-    const movimientos = result.rows;
+    const movimientosConTipo = result.rows.map((m) => {
+      const tipo = m.productos !== null ? "deuda" : "pago";
+      return { ...m, tipo };
+    });
 
-    const movimientosActivos = movimientos.filter(m => m.estado_financiero === 'activo');
-    const movimientosCerrados = movimientos.filter(m => m.estado_financiero !== 'activo');
+    const movimientosActivos = movimientosConTipo.filter(m => m.estado_financiero === 'activo');
+    const movimientosCerrados = movimientosConTipo.filter(m => m.estado_financiero === 'cerrado');
+    const movimientosEliminados = movimientosConTipo.filter(m => m.estado_financiero === 'eliminado');
 
     const deudas = movimientosActivos.filter((m) => m.tipo === "deuda");
     const pagos = movimientosActivos.filter((m) => m.tipo === "pago");
@@ -44,13 +48,11 @@ export const getFinancialData: RequestHandler<
       .sort((a, b) => dayjs(a.fecha).valueOf() - dayjs(b.fecha).valueOf())
       .map((deuda) => {
         const monto = Number(deuda.monto);
-
         const vencimiento = dayjs(deuda.vencimiento);
         const hoy = dayjs();
 
         const vencidaPorFecha = vencimiento.isBefore(hoy, 'day');
-        const porVencer = vencimiento.isAfter(hoy, 'day') &&
-          vencimiento.diff(hoy, 'day') <= 7;
+        const porVencer = vencimiento.isAfter(hoy, 'day') && vencimiento.diff(hoy, 'day') <= 7;
 
         let estado: "Pagada" | "Por vencer" | "Vencida" | "Al día";
 
@@ -71,8 +73,7 @@ export const getFinancialData: RequestHandler<
             estado = "Vencida";
           } else if (porVencer) {
             estado = "Por vencer";
-          }
-          else {
+          } else {
             estado = "Al día";
           }
         }
@@ -84,14 +85,16 @@ export const getFinancialData: RequestHandler<
       (a, b) => dayjs(b.fecha).valueOf() - dayjs(a.fecha).valueOf()
     );
 
+    const movimientosCerradosYEliminados = [
+      ...movimientosCerrados,
+      ...movimientosEliminados
+    ].sort((a, b) => dayjs(b.fecha).valueOf() - dayjs(a.fecha).valueOf());
+
     res.status(200).json({
       movimientos: movimientosFinales,
-      historial: movimientosCerrados.sort((a, b) => dayjs(b.fecha).valueOf() - dayjs(a.fecha).valueOf()),
-      totalDeuda,
-      totalPagos,
+      historial: movimientosCerradosYEliminados,
       restaGlobal
     });
-
 
   } catch (error) {
     console.error("❌ Error al obtener los datos financieros:", error);
