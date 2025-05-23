@@ -15,4 +15,5 @@ LEFT JOIN (
   WHERE estado_financiero = 'activo'
   GROUP BY client_deliver_id
 ) ds ON ds.client_deliver_id = c.client_id
-WHERE c.manager_client_id = $1 ;
+WHERE c.manager_client_id = $1
+ORDER BY c.client_name;
