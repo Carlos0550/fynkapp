@@ -136,6 +136,7 @@ export const loginUser: RequestHandler<{}, {}, LoginUserForm, {}> = async (
         }
 
         const managerData: ManagerData = result1.rows[0]
+        const isValidPassword = await comparePassword(user_password, managerData.manager_password)
 
         if (managerData.manager_verified === false) {
             const linkQueries = queries["createUser.sql"]
@@ -156,7 +157,7 @@ export const loginUser: RequestHandler<{}, {}, LoginUserForm, {}> = async (
             res.statusMessage = "El correo ingresado no ha sido verificado, se le envió un correo de verificación.."
             res.status(400).send()
             return
-        } else if (await comparePassword(managerData.manager_password, user_password)) {
+        } else if (isValidPassword === false){
             res.status(401).json({ msg: "La contraseña ingresada es incorrecta." })
             return
         }

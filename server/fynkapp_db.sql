@@ -73,5 +73,6 @@ ALTER TABLE delivers ADD COLUMN fecha_cierre TIMESTAMP;
 
 SELECT * from debts WHERE manager_client_id = 'f9819a7f-5e88-49c0-8410-350170159d07' AND client_debt_id = 'eeefa567-b3f3-4cbc-91ef-9b2760de7d60'; 
 
+TRUNCATE TABLE debts CASCADE;
 SELECT * FROM debts;
 SELECT * FROM delivers;
