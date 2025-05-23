@@ -13,7 +13,14 @@ import { DatesProvider } from '@mantine/dates'
 import { registerSW } from 'virtual:pwa-register'
 
 import "dayjs/locale/es"
-registerSW()
+const updateSW = registerSW({
+  onNeedRefresh(){
+    updateSW()
+  },
+  onOfflineReady(){
+    console.log("✅ App lista para usarse sin conexión.");
+  }
+})
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
