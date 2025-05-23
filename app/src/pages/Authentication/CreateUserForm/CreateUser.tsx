@@ -61,6 +61,7 @@ function CreateUser({ toggleForm }) {
         <Input.Wrapper
           className='user_password'
           label="Contraseña"
+          description="La contraseña debe tener al menos 6 caracteres, una letra mayúscula, una minúscula y un simbolo."
           required
           style={{ width: "100%" }}
         >
@@ -74,6 +75,7 @@ function CreateUser({ toggleForm }) {
         <Input.Wrapper
           className='confirm_user_password'
           label="Repita una vez más"
+          description="Repita la misma contraseña"
           required
           style={{ width: "100%" }}
         >

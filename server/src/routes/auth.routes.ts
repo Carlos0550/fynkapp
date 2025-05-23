@@ -30,7 +30,7 @@ const CreateUserRouter: RequestHandler<{}, {}, CreateUserForm, {}> = async (
     }
 
     const strongPasswordOptions = {
-        minLength: 8,
+        minLength: 6,
         minLowercase: 1,
         minUppercase: 1,
         minNumbers: 0,
