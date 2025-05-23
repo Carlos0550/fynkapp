@@ -6,7 +6,7 @@ import { DatePicker, DateValue } from "@mantine/dates"
 import useNewDebt from "./utils/useNewDebt";
 import { useEffect } from "react";
 import dayjs from "dayjs";
-function NewDebt({ closeModal }) {
+function NewDebt({ closeModal, setSections }) {
     const {
         debtsHook:{
             editingDebt
@@ -27,17 +27,12 @@ function NewDebt({ closeModal }) {
         productsText
     } = useNewDebt()
 
-    useEffect(() => {
-        if (saved) {
-            const timeout = setTimeout(() => {
-                closeModal()
-            }, 1000)
-
-            return () => {
-                clearTimeout(timeout)
-            }
+   useEffect(()=>{
+        if(saved){
+            const timeout = setTimeout(() => setSections("home"),1000)
+            return () => clearTimeout(timeout)
         }
-    }, [saved])
+    },[saved])
     return (
         <div className="new-debt-container">
             {editingDebt?.debt_id 

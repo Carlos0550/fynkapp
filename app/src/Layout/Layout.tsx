@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "./Layout.css"
-import Sidebar from '../pages/Dashboard/components/Sidebar/Sidebar'
+import Sidebar from './Sidebar/Sidebar'
 import { useAppContext } from '../Context/AppContext'
 import { Flex, Skeleton } from '@mantine/core'
 function Layout({ content }) {

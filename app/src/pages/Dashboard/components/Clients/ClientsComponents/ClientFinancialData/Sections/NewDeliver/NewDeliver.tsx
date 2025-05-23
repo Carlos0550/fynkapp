@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { useAppContext } from "../../../../../../../../Context/AppContext";
 import { useEffect } from "react";
 
-function NewDeliver({ closeModal }) {
+function NewDeliver({ closeModal, setSections }) {
     const {
         formData,
         handleChange,
@@ -26,13 +26,8 @@ function NewDeliver({ closeModal }) {
 
     useEffect(()=>{
         if(saved){
-            const timeout = setTimeout(() => {
-                closeModal()
-            },1000)
-    
-            return () => {
-                clearTimeout(timeout)
-            }
+            const timeout = setTimeout(() => setSections("home"),1000)
+            return () => clearTimeout(timeout)
         }
     },[saved])
 

@@ -10,15 +10,15 @@ function HistoryTable() {
             }
         }
     } = useAppContext()
-    console.log(historial)
+
     const getBadgeColor = (type:FinancialClient["historial"][0]["tipo"]) => {
-        console.log(type)
+
         if(type === "deuda") return {
             color: "orange",
             label: "Deuda"
         }
         if(type === "pago")return{
-            color: "green",
+            color: "lime",
             label: "Entrega"
         }
     }
@@ -63,7 +63,7 @@ function HistoryTable() {
                         <Table.Tr key={idx}>
                             <Table.Td>{dayjs(mov.fecha).format('DD/MM/YYYY')}</Table.Td>
                             <Table.Td>
-                                <Badge color={getBadgeColor(mov.tipo)!.color} variant="light">
+                                <Badge color={getBadgeColor(mov.tipo)!.color} variant="filled">
                                     {getBadgeColor(mov.tipo)!.label}
                                 </Badge>
                             </Table.Td>

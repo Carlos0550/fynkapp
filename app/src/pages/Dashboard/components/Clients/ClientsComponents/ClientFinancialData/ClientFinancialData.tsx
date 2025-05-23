@@ -50,8 +50,8 @@ function ClientFinancialData({ closeModal }) {
 
             {sections === "home" && <ClientInfo setSections={setSections} />}
             {sections === "editData" && <EditData closeModal={closeModal} />}
-            {sections === "newDebt" && <NewDebt closeModal={closeModal} />}
-            {sections === "newdeliver" && <NewDeliver closeModal={closeModal} />}
+            {sections === "newDebt" && <NewDebt closeModal={closeModal} setSections={setSections}/>}
+            {sections === "newdeliver" && <NewDeliver closeModal={closeModal} setSections={setSections} />}
             {sections === "deleteSelf" && <DeleteSelf closeModal={closeModal} />}
         </React.Fragment>
     )

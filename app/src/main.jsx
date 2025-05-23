@@ -11,7 +11,7 @@ import '@mantine/notifications/styles.css';
 import "@mantine/dates/styles.css";
 import { DatesProvider } from '@mantine/dates'
 import { registerSW } from 'virtual:pwa-register'
-
+import "driver.js/dist/driver.css";
 import "dayjs/locale/es"
 const updateSW = registerSW({
   onNeedRefresh(){
