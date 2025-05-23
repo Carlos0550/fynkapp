@@ -239,6 +239,20 @@ function useAuthentication() {
         }
     }, [location, navigate, notificateUserWithoutSession, setValidatingSession, setLoginData]);
 
+    const logoutUser = useCallback(async()=>{
+        const url = new URL(logic_apis.authentication + "/logout-user");
+        await fetch(url, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
+            }
+        })
+
+        localStorage.removeItem("token");
+        setLoginData({ user_email: '', user_id: '', user_name: '' });
+        window.location.reload();
+    },[])
+
     useEffect(() => {
         if (!alreadyFetched.current) {
             alreadyFetched.current = true;
@@ -274,12 +288,14 @@ function useAuthentication() {
         loginData,
         loginUser,
         registerUser,
-        validatingSession
+        validatingSession,
+        logoutUser
     }), [
         loginData,
         loginUser,
         registerUser,
-        validatingSession
+        validatingSession,
+        logoutUser
     ]);
 }
 

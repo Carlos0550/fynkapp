@@ -27,7 +27,8 @@ export interface AuthenticationHookInterface {
     loginData: LoginData,
     loginUser: (formValues: LoginUserForm) => Promise<void>,
     registerUser: (formValues: CreateUserForm) => Promise<boolean>
-    validatingSession: boolean
+    validatingSession: boolean,
+    logoutUser: () => Promise<void>
 }
 
 export interface ClientsHookInterface {

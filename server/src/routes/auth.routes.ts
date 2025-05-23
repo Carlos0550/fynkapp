@@ -107,7 +107,7 @@ export const ValidateSessionRouter: RequestHandler = async (
         res.status(401).json({ msg: 'Acceso no autorizado.' });
         return;
     }
-    
+
     const redis_key = `user_token:${authHeader}`
     const keyExists = await redis.exists(redis_key);
 
@@ -115,21 +115,33 @@ export const ValidateSessionRouter: RequestHandler = async (
         res.status(403).json({ msg: 'Sesión expirada o no válida.' });
         return;
     }
-    const managerData: Partial<ManagerData> = await redis.hgetall(redis_key); 
+    const managerData: Partial<ManagerData> = await redis.hgetall(redis_key);
 
     if (Object.keys(managerData).length === 0) {
-         res.status(403).json({ msg: 'Sesión expirada o no válida.' });
-         return;
+        res.status(403).json({ msg: 'Sesión expirada o no válida.' });
+        return;
     }
     (req as any).manager_data = managerData
     next()
 }
 
+const LogoutUserRouter: RequestHandler = async (req, res, next): Promise<void> => {
+    const authHeader = req.headers.authorization?.split(" ")[1];
+    if (!authHeader) {
+        res.status(401).json({ msg: 'Token no válido.' });
+        return;
+    }
+    const token = authHeader
+    await redis.del(`user_token:${token}`)
+    res.status(200).json({ msg: "Logout exitoso" })
+}
+
 authRouter.post("/create-user", CreateUserRouter, createUser)
 authRouter.get("/user-verification", UserVerificationRouter, userVerification)
 authRouter.post("/login-user", LoginUserRouter, loginUser)
-authRouter.get("/validate-session", ValidateSessionRouter, (req,res) => {
-    if((req as any).manager_data){
+authRouter.post("/logout-user", LogoutUserRouter)
+authRouter.get("/validate-session", ValidateSessionRouter, (req, res) => {
+    if ((req as any).manager_data) {
         res.status(200).json((req as any).manager_data)
     }
 })

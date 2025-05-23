@@ -8,11 +8,34 @@
 
 .sidebar {
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-evenly;
     gap: 1rem;
     list-style: none;
     padding: 0 10px;
+}
+
+.logout-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    border: none;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: red;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+}
+
+.logout-button:hover{
+    background-color: #CE0000;
+    transform: translateY(-3px);
 }
 
 .sidebar-logo {
@@ -101,6 +124,10 @@
         position: absolute;
         top: 5px;
         right: 0;
+    }
+
+    .sidebar-menu-icon.logout{
+        right: 30px;
     }
 
     .sidebar-menu-icon:hover {
