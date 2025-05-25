@@ -27,3 +27,8 @@ server/routes/Security/public-key.pem
 .env
 server/Fynka_db.sql
 analytics_service/venv
+analytics_service/app/__pycache__/__init__.cpython-312.pyc
+analytics_service/app/__pycache__/config.cpython-312.pyc
+analytics_service/app/__pycache__/models.cpython-312.pyc
+analytics_service/app/__pycache__/routes.cpython-312.pyc
+analytics_service/app/services/__pycache__/summary_service.cpython-312.pyc
