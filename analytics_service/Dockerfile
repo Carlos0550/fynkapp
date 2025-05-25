@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 5001
 
-CMD ["python", "run.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:create_app()"]
