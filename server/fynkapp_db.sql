@@ -69,10 +69,15 @@ ALTER TABLE debts ADD COLUMN fecha_cierre TIMESTAMP;
 ALTER TABLE delivers ADD COLUMN estado_financiero TEXT DEFAULT 'activo';
 ALTER TABLE delivers ADD COLUMN fecha_cierre TIMESTAMP;
 
-
-
-SELECT * from debts WHERE manager_client_id = 'f9819a7f-5e88-49c0-8410-350170159d07' AND client_debt_id = 'eeefa567-b3f3-4cbc-91ef-9b2760de7d60'; 
-
-TRUNCATE TABLE debts CASCADE;
-SELECT * FROM debts;
-SELECT * FROM delivers;
+CREATE TABLE monthly_summary(
+	resume_id TEXT NOT NULL PRIMARY KEY UNIQUE,
+	resume_month TEXT NOT NULL,
+	summary_manager_id UUID NOT NULL,
+	resume_debt_total NUMERIC(10,2) NOT NULL,
+	resume_payments_total NUMERIC(10,2) NOT NULL,
+	best_customers JSONB NOT NULL,
+	worst_customers JSONB NOT NULL,
+	payment_behavior JSONB NOT NULL,
+	recovery_rate NUMERIC(5,2) NOT NULL,
+	CONSTRAINT fk_summary_manager_id FOREIGN KEY(summary_manager_id) REFERENCES managers(manager_id)
+);

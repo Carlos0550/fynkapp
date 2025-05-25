@@ -26,3 +26,4 @@ server/routes/Security/private-key.pem
 server/routes/Security/public-key.pem
 .env
 server/Fynka_db.sql
+analytics_service/venv
