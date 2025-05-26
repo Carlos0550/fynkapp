@@ -18,7 +18,6 @@ const GetFinancialDataRouter: RequestHandler<
         res.status(400).json({msg:"El ID del cliente es obligatorio."})
         return
     }
-    console.log("pasamos")
     next()
 }
 

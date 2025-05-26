@@ -52,7 +52,7 @@ export const getFinancialData: RequestHandler<
         const hoy = dayjs();
 
         const vencidaPorFecha = vencimiento.isBefore(hoy, 'day');
-        const porVencer = vencimiento.isAfter(hoy, 'day') && vencimiento.diff(hoy, 'day') <= 7;
+        const porVencer = vencimiento.isAfter(hoy, 'day') && vencimiento.diff(hoy, 'day') <= 7 || vencimiento.isSame(hoy, 'day');
 
         let estado: "Pagada" | "Por vencer" | "Vencida" | "Al día";
 

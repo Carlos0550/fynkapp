@@ -5,7 +5,6 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from uuid import uuid4
 from dateutil.relativedelta import relativedelta
-from flask import jsonify
 
 def get_manager_debts(manager_id: str, month: str):
     start_date = datetime.strptime(month, "%Y-%m")

@@ -12,7 +12,6 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
   const { manager_id } = (req as any).manager_data;
   const { client_id } = req.query;
   const { deliver_amount, deliver_date, deliver_details } = req.body;
-
   const SD = queries["saveDeliver.sql"];
 
   try {
@@ -29,46 +28,20 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
     ]);
 
     if (result.rowCount! > 0) {
-      const allExpDates = await pool.query(SD[1], [client_id, manager_id]);
 
-      if (allExpDates.rowCount! > 0) {
-        const today = dayjs().startOf("day");
-        const newExpDate = today.add(1, "month").startOf("day").format("YYYY-MM-DD HH:mm:ss");
-        let shouldUpdate = false;
+      const newExpDate = dayjs(deliver_date).add(1, "month").format("YYYY-MM-DD HH:mm:ss")
 
-        for (const row of allExpDates.rows) {
-          const exp = dayjs(row.exp_date).startOf("day");
-          if (exp.isSame(today) || exp.isBefore(today)) {
-            shouldUpdate = true;
-            break;
-          }
-        }
+      const updateResult = await pool.query(SD[1], [newExpDate, client_id, manager_id]);
 
-        if (shouldUpdate) {
-
-          const result = await pool.query(
-            SD[2],
-            [newExpDate, client_id, manager_id]
-          );
-          if(result.rowCount! === 0) throw new Error("Error al actualizar las fechas vencidas del cliente") 
-          console.log(`🟢 Se actualizaron las fechas vencidas del cliente ${client_id}`);
-        } else {
-          console.log("📌 No hay deudas vencidas ni con fecha de hoy. No se actualiza nada.");
-        }
+      if (updateResult.rowCount! === 0) {
+        throw new Error("No se actualizaron las fechas de vencimiento del cliente");
       }
 
-      // 🔁 Verificamos si corresponde cerrar deudas y entregas activas
-      const deudaResult = await pool.query(`
-        SELECT COALESCE(SUM(debt_total), 0) AS total_deuda
-        FROM debts
-        WHERE client_debt_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
-      `, [client_id, manager_id]);
+      console.log(`🟢 Fechas de vencimiento actualizadas a ${newExpDate}`);
 
-      const entregaResult = await pool.query(`
-        SELECT COALESCE(SUM(deliver_amount), 0) AS total_entregas
-        FROM delivers
-        WHERE client_deliver_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
-      `, [client_id, manager_id]);
+      const deudaResult = await pool.query(SD[2], [client_id, manager_id]);
+
+      const entregaResult = await pool.query(SD[3], [client_id, manager_id]);
 
       const totalDeuda = Number(deudaResult.rows[0].total_deuda);
       const totalEntregas = Number(entregaResult.rows[0].total_entregas);
@@ -76,23 +49,14 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
       if (totalEntregas >= totalDeuda && totalDeuda > 0) {
         const now = dayjs().format("YYYY-MM-DD HH:mm:ss");
 
-        await pool.query(`
-          UPDATE debts
-          SET estado_financiero = 'cerrado', fecha_cierre = $3
-          WHERE client_debt_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
-        `, [client_id, manager_id, now]);
+        await pool.query(SD[4], [client_id, manager_id, now]);
 
-        await pool.query(`
-          UPDATE delivers
-          SET estado_financiero = 'cerrado', fecha_cierre = $3
-          WHERE client_deliver_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo'
-        `, [client_id, manager_id, now]);
+        await pool.query(SD[5], [client_id, manager_id, now]);
 
         console.log(`✅ Cliente ${client_id} saldó su deuda. Registros cerrados.`);
       }
 
       await pool.query("COMMIT");
-
       res.status(200).json({ msg: "Entrega creada con éxito" });
     } else {
       throw new Error("Error interno del servidor, espere unos segundos e intente nuevamente.");
@@ -106,4 +70,3 @@ export const saveDeliver: RequestHandler<{}, {}, DeliverRequest, { client_id: st
     });
   }
 };
-

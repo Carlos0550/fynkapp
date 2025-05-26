@@ -81,3 +81,6 @@ CREATE TABLE monthly_summary(
 	recovery_rate NUMERIC(5,2) NOT NULL,
 	CONSTRAINT fk_summary_manager_id FOREIGN KEY(summary_manager_id) REFERENCES managers(manager_id)
 );
+
+SELECT * FROM monthly_summary;
+TRUNCATE TABLE monthly_summary;
