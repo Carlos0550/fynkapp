@@ -11,16 +11,13 @@ function ClientsList({searchInput}) {
     },
     clientsHook:{
       clients
-    }
+    },
+    getInitials
   } = useAppContext();
   
   const [filteredClients, setFilteredClients] = useState([]);
 
-  function getInitials(fullName: string): string {
-    const words = fullName.trim().split(/\s+/);
-    const initials = words.slice(0, 2).map(word => word[0].toUpperCase());
-    return initials.join('');
-  }
+  
 
   const handleLocalSearch = (criteria: string) => {
     return clients.filter(client =>

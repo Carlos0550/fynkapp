@@ -8,6 +8,7 @@ import useClients from "./useClients";
 import useDebts from "./useDebts";
 import useDelivers from "./useDelivers";
 import useFinancialData from "./useFinancialData";
+import useResume from "./useResume";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -50,14 +51,24 @@ export const AppContextProvider = ({ children }: any) => {
         client_id: modalsHook.selectedClientData.client_id,
 
     })
+
+    const resumeHook = useResume()
+
+    function getInitials(fullName: string): string {
+        const words = fullName.trim().split(/\s+/);
+        const initials = words.slice(0, 2).map(word => word[0].toUpperCase());
+        return initials.join('');
+    }
     const contextValues = useMemo(() => ({
         width,
         modalsHook, authHook, clientsHook, debtsHook,
-        deliversHook, financialClientHook
+        deliversHook, financialClientHook,
+        resumeHook, getInitials
     }), [
         modalsHook,
         width, authHook, clientsHook, debtsHook,
-        deliversHook, financialClientHook
+        deliversHook, financialClientHook,
+        resumeHook
     ])
 
     const alreadyGotClients = useRef(false)

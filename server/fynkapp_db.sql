@@ -69,18 +69,24 @@ ALTER TABLE debts ADD COLUMN fecha_cierre TIMESTAMP;
 ALTER TABLE delivers ADD COLUMN estado_financiero TEXT DEFAULT 'activo';
 ALTER TABLE delivers ADD COLUMN fecha_cierre TIMESTAMP;
 
-CREATE TABLE monthly_summary(
-	resume_id TEXT NOT NULL PRIMARY KEY UNIQUE,
-	resume_month TEXT NOT NULL,
-	summary_manager_id UUID NOT NULL,
-	resume_debt_total NUMERIC(10,2) NOT NULL,
-	resume_payments_total NUMERIC(10,2) NOT NULL,
-	best_customers JSONB NOT NULL,
-	worst_customers JSONB NOT NULL,
-	payment_behavior JSONB NOT NULL,
-	recovery_rate NUMERIC(5,2) NOT NULL,
-	CONSTRAINT fk_summary_manager_id FOREIGN KEY(summary_manager_id) REFERENCES managers(manager_id)
+CREATE TABLE account_summary (
+  summary_id UUID PRIMARY KEY UNIQUE,
+  manager_id UUID REFERENCES managers(manager_id),
+  as_of TIMESTAMP NOT NULL,
+  total_debt NUMERIC(10,2) NOT NULL,
+  total_payments NUMERIC(10,2) NOT NULL,
+  best_customers JSONB NOT NULL,
+  worst_customers JSONB NOT NULL,
+  payment_behavior JSONB NOT NULL,
+  recovery_rate NUMERIC(5,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT now()
 );
 
-SELECT * FROM monthly_summary;
-TRUNCATE TABLE monthly_summary;
+TRUNCATE TABLE CLIENTS CASCADE;
+
+DROP table account_summary;
+select client_id from clients where client_name = 'Martina Martinez';
+SELECT COUNT(*) FROM clients;
+SELECT * FROM account_summary;
+SELECT * FROM debts WHERE client_debt_id = '4b4321d9-4963-49a0-a2c5-0ff3d2688d5d';
+SELECT * FROM delivers WHERE client_deliver_id = '4b4321d9-4963-49a0-a2c5-0ff3d2688d5d';

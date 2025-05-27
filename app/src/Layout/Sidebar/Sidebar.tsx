@@ -6,9 +6,14 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { IoStatsChart } from "react-icons/io5";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoMenu } from "react-icons/io5";
+import { IoHome } from "react-icons/io5";
 import { useState } from "react";
-import { Button, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
+import { useLocation, useNavigate } from "react-router-dom";
 function Sidebar({ mobileExtended, setMobileExtended }) {
+    const navigate = useNavigate()
+    const location = useLocation();
+
     const {
         width,
         modalsHook: {
@@ -26,39 +31,47 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
         await logoutUser()
         setIsClosing(false)
     }
+
+
     return (
         <div className='sidebar-container'>
             {width > 768
                 ? (
                     <ul className='sidebar'>
                         <button
-                            color="red"
+                            style={{ backgroundColor: isClosing ? "maroon" : "inherit" }}
                             className="logout-button"
                             onClick={handleLogout}
                         >
-                            {isClosing ? <Loader size={20} type="dots" color="#white"/> : <IoLogOutOutline size={20}  color="white"/>}
+                            {isClosing ? <Loader size={20} type="dots" color="white" /> : <IoLogOutOutline size={20} color="white" />}
                         </button>
                         <p className='sidebar-logo'
-                            style={{alignSelf: "flex-start"}}
+                            style={{ alignSelf: "flex-start" }}
                         >Fynkapp <FaMoneyBillTransfer /> </p>
-                        <p className='sidebar-logo' style={{alignSelf: "flex-start", fontSize: "1.1rem"}}>Hola, {loginData &&loginData.user_name.split(" ")[0] || "Usuario"} 👋 </p>
+                        <p className='sidebar-logo' style={{ alignSelf: "flex-start", fontSize: "1.1rem" }}>Hola, {loginData && loginData.user_name.split(" ")[0] || "Usuario"} 👋 </p>
 
                         <li className='sidebar-list' onClick={() => {
                             openAddClientModal()
                             setMobileExtended(false)
                         }}><MdOutlinePersonAddAlt1 size={20} /><span>Agregar cliente</span></li>
-                        {/* <li className='sidebar-list' onClick={() => {
-                            openDeliverModal()
-                            setMobileExtended(false)
-                        }}><GiTakeMyMoney size={20} /><span>Agregar Entrega</span></li>
-                        <li className='sidebar-list' onClick={() => {
-                            openDebtModal()
-                            setMobileExtended(false)
-                        }}><TbReportMoney size={20} /><span>Nueva deuda</span></li> */}
                         <div className='sidebar-divider'></div>
-                        <p className='sidebar-title'>Reportes (Próximamente)</p>
-                        <li className='sidebar-list disabled'><IoStatsChart size={20} /><span>Análisis de Clientes</span></li>
-                        <li className='sidebar-list disabled'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
+
+                        <li
+                            className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
+                            onClick={() => navigate("/")}
+                        >
+                            <IoHome size={20} /> Inicio
+                        </li>
+                        <li
+                            className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
+                            onClick={() => navigate("/monthly-resume")}
+                        >
+                            <HiOutlineDocumentReport size={20} />
+                            <span>Resumen mensual</span>
+                        </li>
+                        {/* <div className='sidebar-divider'></div>
+                        <p className='sidebar-title'>Analíticas (Próximamente)</p>
+                        <li className='sidebar-list disabled'><IoStatsChart size={20} /><span>Análisis de Clientes</span></li> */}
                     </ul>
                 )
                 : (
@@ -72,7 +85,7 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 
                         <li className="sidebar-menu-icon logout" onClick={() => handleLogout()}>
                             {isClosing ? (
-                                <Loader size={20} color="#2c2c2c" type="dots"/>
+                                <Loader size={20} color="#2c2c2c" type="dots" />
                             ) : (
                                 <IoLogOutOutline size={20} />
                             )}
@@ -87,16 +100,26 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                                         openAddClientModal()
                                         setMobileExtended(false)
                                     }}><MdOutlinePersonAddAlt1 size={20} /><span>Agregar cliente</span></li>
-                                    {/* <li className='sidebar-list' onClick={() => {
-                                        openDeliverModal()
-                                        setMobileExtended(false)
-                                    }}><GiTakeMyMoney size={20} /><span>Agregar Entrega</span></li>
-                                    <li className='sidebar-list' onClick={() => {
-                                        openDebtModal()
-                                        setMobileExtended(false)
-                                    }}><TbReportMoney size={20} /><span>Nueva deuda</span></li> */}
-                                    <li className='sidebar-list disabled'><IoStatsChart size={20} /><span>Análisis de Clientes</span></li>
-                                    <li className='sidebar-list disabled'><HiOutlineDocumentReport size={20} /><span>Resumen mensual</span></li>
+
+                                    <li
+                                        className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
+                                        onClick={() => {
+                                            navigate("/")
+                                            setMobileExtended(false)
+                                        }}
+                                    >
+                                        <IoHome size={20} /> Inicio
+                                    </li>
+                                    <li
+                                        className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
+                                        onClick={() => {
+                                            navigate("/monthly-resume")
+                                            setMobileExtended(false)
+                                        }}
+                                    >
+                                        <HiOutlineDocumentReport size={20} />
+                                        <span>Resumen mensual</span>
+                                    </li>
                                 </>
                             )}
                         </ul>

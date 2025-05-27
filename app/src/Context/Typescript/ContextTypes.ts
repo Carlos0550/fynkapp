@@ -4,6 +4,7 @@ import { ClientInterface, FormClient } from "./ClientsTypes"
 import { DebtForm, EditingData } from "./DebtsTypes"
 import { DeliverForm } from "./DeliversTypes"
 import { FinancialClient } from "./FinancialTypes"
+import { AccountSummary, MonthOption, SummaryCards } from "./ResumeTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -59,6 +60,13 @@ export interface FinancialClientHookInterface {
     getFinancialClientData: () => Promise<boolean>,
     historyClientData: FinancialClient[]
 }
+
+export interface ResumeHookInterface {
+    getMonthlyResume: () => Promise<boolean>,
+    resumes: AccountSummary,
+    summaryCards: SummaryCards[]
+    monthsAvailable: MonthOption[]
+}
 export interface AppContextValueInterface {
     width: number,
     modalsHook: ModalsHookInterface,
@@ -66,5 +74,7 @@ export interface AppContextValueInterface {
     clientsHook: ClientsHookInterface,
     debtsHook: DebtsHookInterface,
     deliversHook: DeliversHookInterface,
-    financialClientHook: FinancialClientHookInterface
+    financialClientHook: FinancialClientHookInterface,
+    resumeHook: ResumeHookInterface,
+    getInitials: (fullName: string) => string
 }

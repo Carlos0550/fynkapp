@@ -28,13 +28,13 @@
     border: none;
     border-radius: 50%;
     padding: 5px;
-    background-color: tomato;
+    background-color: #FF3700;
     cursor: pointer;
     transition: all 150ms ease-in-out;
 }
 
 .logout-button:hover{
-    background-color: #CE0000;
+    background-color: #B52700;
     transform: translateY(-3px);
 }
 
@@ -71,6 +71,12 @@
 
 .sidebar-list:hover {
     background-color: #363636;
+    color: #ffffff;
+}
+
+
+.sidebar-list.active {
+    background-color: #252525;
     color: #ffffff;
 }
 
