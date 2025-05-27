@@ -66,7 +66,11 @@ export const GetMonthlyResume: RequestHandler<{}, {}, {}, {}> = async (
         monthsAvailable: monthOptionsArray
     });
     } else {
-      throw new Error("El administrador aún no ha generado un resumen mensual.");
+      res.status(404).json({
+        msg: "El administrador aún no ha generado un resumen mensual."
+      });
+
+      return;
     }
   } catch (error) {
     console.log(error);

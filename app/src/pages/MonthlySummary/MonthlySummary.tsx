@@ -24,7 +24,7 @@ function MonthlySummary() {
         alreadyFetched.current = true
         getMonthlyResume()
     }, [])
-    console.log(monthsAvailable)
+
     return (
         <Flex
             direction={"column"}

@@ -11,10 +11,11 @@ function Payment_behavior() {
     clientsHook: { clients }
   } = useAppContext()
 
-  
   const getTotalPercentage = (val: number) => {
     const totalClients = Number(clients.length)
-    return (Number(val) / totalClients) * 100
+    const percentaje = (Number(val) / totalClients) * 100
+    if(!isNaN(percentaje)) return percentaje
+    return 0
   }
 
   return (
@@ -33,7 +34,7 @@ function Payment_behavior() {
           Comportamiento de los pagos de tus clientes a lo largo del tiempo
         </Text>
 
-        {payment_behavior ? (
+        {payment_behavior && Object.values(payment_behavior).some(arr => arr.length > 0) ? (
           <React.Fragment>
             <Card
               mt={10}
