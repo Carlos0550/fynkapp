@@ -53,7 +53,7 @@ function MonthlySummary() {
                     >Visualiza el rendimiento financiero de tu negocio</Text>
                 </Flex>
 
-                {monthsAvailable && (
+                {monthsAvailable && monthsAvailable.length > 0 && (
                     <Select
                         value={monthsAvailable[monthsAvailable.length - 1]?.value}
                         data={monthsAvailable}
