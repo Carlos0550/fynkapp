@@ -39,6 +39,28 @@ function useResume() {
             });
 
             const responseData = await response.json()
+
+            if ([404, 401].includes(response.status)){
+                setMonthsAvailable([])
+                setResumes({
+                    summary_id: "",
+                    manager_id: "",
+                    created_at: "",
+                    monthName: "",
+                    total_debt: 0,
+                    total_deliver: 0,
+                    best_customers: [],
+                    worst_customers: [],
+                    recovery_rate: 0,
+                    payment_behavior: {
+                        "0-15": [],
+                        "16-30": [],
+                        "31-60": [],
+                        "60+": []
+                    }
+                })
+                return false
+            }
             if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
             setResumes(responseData.data)
             setMonthsAvailable(responseData.monthsAvailable)
