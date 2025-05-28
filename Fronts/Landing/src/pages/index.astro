@@ -1,10 +1,11 @@
 ---
+import "../../public/css/index.css";
 const pageTitle = "Fynkapp – Gestión Inteligente para Emprendedores/Negocios";
 const pageDescription =
   "Fynkapp te ayuda a organizar tus finanzas, controlar deudas y entender el comportamiento de tus clientes para tomar mejores decisiones.";
 const pageUrl = "https://panel.fynkapp.com.ar";
-const pageImage = "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/public/images//hmJjOJYjSeW78CTpgvV4Bg.webp";
-
+const pageImage =
+  "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/public/images//hmJjOJYjSeW78CTpgvV4Bg.webp";
 ---
 
 <html lang="es">
@@ -34,7 +35,7 @@ const pageImage = "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/pu
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={pageImage} />
-    <link rel="stylesheet" href="/css/index.css">
+    <!-- <link rel="stylesheet" href="/css/index.css"> -->
   </head>
 
   <body>
@@ -72,7 +73,13 @@ const pageImage = "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/pu
       </p>
 
       <div class="hero-buttons">
-        <a class="btn btn-gradient" href={pageUrl} target="_blank">Comenzar Gratis →</a>
+        <a class="btn btn-gradient" href={pageUrl} target="_blank"
+          >Comenzar Gratis →</a
+        >
+      </div>
+      <div class="badge popover">
+        <span class="badge-icon">👇</span>
+        <span class="badge-text">Seguí deslizando</span>
       </div>
     </main>
     <!-- Onda SVG -->
@@ -89,10 +96,12 @@ const pageImage = "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/pu
     <article class="features-section" id="features">
       <h2 class="features-title">¿Qué puede hacer Fynkapp por tu negocio?</h2>
       <p class="features-intro">
-        Fynkapp es mucho más que un sistema de gestión. Es una plataforma diseñada
-        para brindarte control total sobre tu flujo de dinero y tus relaciones
-        con clientes. Con inteligencia aplicada y herramientas visuales, podés
-        tomar mejores decisiones, ahorrar tiempo y sobre todo, <span class="highlight">prevenir problemas con clientes morosos</span>.
+        Fynkapp es mucho más que un sistema de gestión. Es una plataforma
+        diseñada para brindarte control total sobre tu flujo de dinero y tus
+        relaciones con clientes. Con inteligencia aplicada y herramientas
+        visuales, podés tomar mejores decisiones, ahorrar tiempo y sobre todo, <span
+          class="highlight">prevenir problemas con clientes morosos</span
+        >.
       </p>
 
       <div class="features-grid">
@@ -145,6 +154,25 @@ const pageImage = "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/pu
           </p>
         </div>
       </div>
+    </article>
+
+    <div class="wave-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"
+        ><path
+          fill="#002A3E"
+          fill-opacity="1"
+          d="M0,224L48,192C96,160,192,96,288,74.7C384,53,480,75,576,85.3C672,96,768,96,864,117.3C960,139,1056,181,1152,213.3C1248,245,1344,267,1392,277.3L1440,288L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+        ></path></svg
+      >
+    </div>
+
+    <article class="cta-section">
+      <h2 class="cta-title">
+        ¡Comienza a ahorrar tiempo y dinero con Fynkapp!
+      </h2>
+      <a class="btn btn-gradient" href={pageUrl} target="_blank"
+        >¡Comenzar Gratis!</a
+      >
     </article>
   </body>
 </html>
