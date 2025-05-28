@@ -265,11 +265,13 @@ body {
   padding: 4rem 2rem;
   text-align: center;
   color: black;
+  min-height: 50vh;
 }
 
 .cta-title{
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  
   background: #3B82F6;
   background: linear-gradient(to right, #4791FF 27%, #8754FF 100%, #4791FF 100%);
   -webkit-background-clip: text;
@@ -278,3 +280,4 @@ body {
   animation: gradientMove 3s ease infinite;
   font-weight: 700;
 }
+
