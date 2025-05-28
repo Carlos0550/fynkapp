@@ -7,7 +7,7 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
-  site: 'https://info.fynkapp.com.ar',
+  site: 'https://home.fynkapp.com.ar',
   integrations: [sitemap()],
   server: {
     host: '0.0.0.0',
