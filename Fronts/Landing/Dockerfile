@@ -5,8 +5,9 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
+
 RUN npm run build
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "${PORT}"]
+CMD ["npx", "astro", "preview", "--host", "0.0.0.0", "--port", "${PORT}"]
