@@ -18,17 +18,17 @@
 
 .logout-button{
     display: flex;
+    
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 52px;
+    right: 10px;
     overflow: hidden;
     aspect-ratio: 1/1;
     border: none;
     border-radius: 50%;
     padding: 5px;
-    background-color: #FF3700;
     cursor: pointer;
     transition: all 150ms ease-in-out;
 }

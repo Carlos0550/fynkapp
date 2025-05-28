@@ -36,3 +36,9 @@ UPDATE debts
 UPDATE delivers
           SET estado_financiero = 'cerrado', fecha_cierre = $3
           WHERE client_deliver_id = $1 AND manager_client_id = $2 AND estado_financiero = 'activo';
+
+UPDATE delivers
+          SET deliver_amount = $1,
+            deliver_date = $2,
+            deliver_details = $3
+          WHERE deliver_id = $4;

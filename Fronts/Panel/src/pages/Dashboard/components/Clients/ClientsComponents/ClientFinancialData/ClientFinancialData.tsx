@@ -18,7 +18,8 @@ function ClientFinancialData({ closeModal }) {
         clientsHook: {
             setEditingClient
         },
-        debtsHook: { editingDebt, setEditingDebt }
+        debtsHook: { editingDebt, setEditingDebt },
+        deliversHook: { editingDeliver, setEditingDeliver }
     } = useAppContext()
 
     const [sections, setSections] = useState<FinancialClientSections>("home")
@@ -26,12 +27,14 @@ function ClientFinancialData({ closeModal }) {
     const handleGoBack = () => {
         setEditingDebt(null)
         setEditingClient(false)
+        setEditingDeliver(null)
         setSections("home")
     }
 
     useEffect(() => {
         if (editingDebt && ![null, undefined, ""].includes(editingDebt.debt_id)) setSections("newDebt")
-    }, [editingDebt?.debt_id])
+        if (editingDeliver && ![null, undefined, ""].includes(editingDeliver.deliver_id)) setSections("newdeliver")
+    }, [editingDebt?.debt_id, editingDeliver?.deliver_id])
     return (
         <React.Fragment>
             {sections !== "home" && (

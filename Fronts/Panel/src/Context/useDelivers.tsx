@@ -1,5 +1,5 @@
-import React, { SetStateAction, useCallback, useMemo } from 'react'
-import { DeliverForm } from './Typescript/DeliversTypes'
+import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
+import { DeliverForm, EditingDeliverData } from './Typescript/DeliversTypes'
 import { logic_apis } from '../apis'
 import { showNotification } from '@mantine/notifications'
 
@@ -11,10 +11,15 @@ function useDelivers({
     client_id,
     getAllClients
 }: Props) {
-    const saveDeliver = useCallback(async (deliverData: DeliverForm): Promise<boolean> => {
+    const [editingDeliver, setEditingDeliver] = useState<EditingDeliverData | null>(null)
+    const saveDeliver = useCallback(async (deliverData: DeliverForm, isEditing?: boolean, deliverId?: string): Promise<boolean> => {
         const url = new URL(logic_apis.delivers + "/save-deliver")
         url.searchParams.append("client_id", client_id)
 
+        if(isEditing){
+            url.searchParams.append("deliver_id", deliverId || "")
+            url.searchParams.append("isEditing", "true")
+        }
         try {
             const result = await fetch(url, {
                 method: "POST",
@@ -74,11 +79,11 @@ function useDelivers({
             })
             return false
         }
-    }, [client_id, getAllClients])
+    }, [client_id, getAllClients, editingDeliver, setEditingDeliver])
     return useMemo(() => ({
-        saveDeliver
+        saveDeliver, editingDeliver, setEditingDeliver
     }), [
-        saveDeliver
+        saveDeliver, editingDeliver, setEditingDeliver
     ])
 }
 

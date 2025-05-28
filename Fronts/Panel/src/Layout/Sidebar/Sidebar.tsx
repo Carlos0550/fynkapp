@@ -43,7 +43,7 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
                             className="logout-button"
                             onClick={handleLogout}
                         >
-                            {isClosing ? <Loader size={20} type="dots" color="white" /> : <IoLogOutOutline size={20} color="white" />}
+                            {isClosing ? <Loader size={20} type="dots" color="white" /> : <IoLogOutOutline size={20} color="black" />}
                         </button>
                         <p className='sidebar-logo'
                             style={{ alignSelf: "flex-start" }}

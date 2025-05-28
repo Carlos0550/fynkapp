@@ -16,7 +16,9 @@ function useNewDeliver() {
     const [saved, setSaved] = useState(false)
     const {
         deliversHook:{
-            saveDeliver
+            saveDeliver,
+            editingDeliver,
+            setEditingDeliver
         }
     } = useAppContext()
 
@@ -74,9 +76,14 @@ function useNewDeliver() {
     const handleFinish = async(e: React.FormEvent) => {
         e.preventDefault()
         setSaving(true)
-        const result = await saveDeliver(formData)
+        const result = editingDeliver?.isEditing
+        ? await saveDeliver(formData, true, editingDeliver.deliver_id)
+        : await saveDeliver(formData)
         setSaving(false)
-        if (result) setSaved(true)
+        if (result) {
+            setSaved(true)
+            setEditingDeliver(null)
+        }
     }
 
     useEffect(()=>{
@@ -85,6 +92,16 @@ function useNewDeliver() {
             deliver_date: dayjs().format("YYYY-MM-DD HH:mm:ss")
         })
     },[])
+
+    useEffect(()=>{
+        if(editingDeliver?.deliver_id && editingDeliver.isEditing){
+            setFormData({
+                deliver_amount: editingDeliver.deliver_amount,
+                deliver_date: editingDeliver.deliver_date,
+                deliver_details: editingDeliver.deliver_details
+            })
+        }
+    },[editingDeliver?.deliver_id])
     return {
         formData,
         handleChange,

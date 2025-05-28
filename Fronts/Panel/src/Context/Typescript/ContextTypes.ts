@@ -2,7 +2,7 @@ import { SetStateAction } from "react"
 import { CreateUserForm, LoginData, LoginUserForm } from "./AuthenticationTypes"
 import { ClientInterface, FormClient } from "./ClientsTypes"
 import { DebtForm, EditingData } from "./DebtsTypes"
-import { DeliverForm } from "./DeliversTypes"
+import { DeliverForm, EditingDeliverData } from "./DeliversTypes"
 import { FinancialClient } from "./FinancialTypes"
 import { AccountSummary, MonthOption, SummaryCards } from "./ResumeTypes"
 
@@ -51,7 +51,9 @@ export interface DebtsHookInterface {
 }
 
 export interface DeliversHookInterface {
-    saveDeliver: (deliverData: DeliverForm) => Promise<boolean>
+    saveDeliver: (deliverData: DeliverForm, isEditing?: boolean, deliverId?: string) => Promise<boolean>,
+    editingDeliver: EditingDeliverData | null, 
+    setEditingDeliver: React.Dispatch<SetStateAction<EditingDeliverData | null>>,
 }
 
 export interface FinancialClientHookInterface {

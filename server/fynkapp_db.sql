@@ -81,12 +81,3 @@ CREATE TABLE account_summary (
   recovery_rate NUMERIC(5,2) NOT NULL,
   created_at TIMESTAMP DEFAULT now()
 );
-
-TRUNCATE TABLE CLIENTS CASCADE;
-TRUNCATE TABLE account_summary;
-DROP table account_summary;
-select client_id from clients where client_name = 'Martina Martinez';
-SELECT COUNT(*) FROM clients;
-SELECT * FROM account_summary;
-SELECT * FROM debts WHERE client_debt_id = '4b4321d9-4963-49a0-a2c5-0ff3d2688d5d';
-SELECT * FROM delivers WHERE client_deliver_id = '4b4321d9-4963-49a0-a2c5-0ff3d2688d5d';
