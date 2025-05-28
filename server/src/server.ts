@@ -16,7 +16,11 @@ import resumeRouter from "./routes/monthly_resume.routes";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://panel.fynkapp.com.ar",
+  ]
+}));
 app.use(express.json());
 
 
