@@ -1,0 +1,149 @@
+---
+import "../../public/css/index.css";
+const pageTitle = "Fynkapp – Gestión Inteligente para Emprendedores/Negocios";
+const pageDescription =
+  "Fynkapp te ayuda a organizar tus finanzas, controlar deudas y entender el comportamiento de tus clientes para tomar mejores decisiones.";
+const pageUrl = "https://panel.fynkapp.com.ar";
+const pageImage = "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/public/images//hmJjOJYjSeW78CTpgvV4Bg.webp";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    <!-- SEO -->
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={pageUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={pageImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={pageUrl} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={pageImage} />
+  </head>
+
+  <body>
+    <!-- <header class="navbar">
+      <div class="container nav-wrapper">
+        <div class="brand">
+          <picture class="brand-icon">
+            <img src="icons/money-icon.svg" alt="" />
+          </picture>
+          <span class="logo-text">Fynkapp</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#features">Características</a>
+          <a href="#benefits">Beneficios</a>
+        </nav>
+        <a class="btn btn-primary" href="https://panel.fynkapp.com.ar"
+          >Comenzar Gratis</a
+        >
+      </div>
+    </header> -->
+
+    <main class="hero-section">
+      <div class="badge">
+        <span class="badge-icon">⚡</span>
+        <span class="badge-text">Gestión Inteligente de Deudas</span>
+      </div>
+
+      <h1 class="hero-title">
+        Controlá tus <span class="highlight">cobranzas</span> como un profesional
+      </h1>
+      <p class="hero-subtext">
+        Fynkapp es la herramienta definitiva para emprendedores y pequeños
+        negocios que quieren gestionar sus deudas de forma inteligente, predecir
+        comportamientos de pago y maximizar su flujo de caja.
+      </p>
+
+      <div class="hero-buttons">
+        <a class="btn btn-gradient" href={pageUrl} target="_blank">Comenzar Gratis →</a>
+      </div>
+    </main>
+    <!-- Onda SVG -->
+    <div class="wave-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"
+        ><path
+          fill="#002A3E"
+          fill-opacity="1"
+          d="M0,224L120,224C240,224,480,224,720,186.7C960,149,1200,75,1320,37.3L1440,0L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
+        ></path></svg
+      >
+    </div>
+
+    <article class="features-section" id="features">
+      <h2 class="features-title">¿Qué puede hacer Fynkapp por tu negocio?</h2>
+      <p class="features-intro">
+        Fynkapp es mucho más que un sistema de gestión. Es una plataforma diseñada
+        para brindarte control total sobre tu flujo de dinero y tus relaciones
+        con clientes. Con inteligencia aplicada y herramientas visuales, podés
+        tomar mejores decisiones, ahorrar tiempo y sobre todo, <span class="highlight">prevenir problemas con clientes morosos</span>.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <img
+            src="/icons/debtsIcon.svg"
+            alt="Icono de gestión de deudas"
+            class="feature-icon"
+          />
+          <h3 class="feature-title">Gestión de Deudas</h3>
+          <p class="feature-desc">
+            Organizá todas tus deudas en un solo lugar. Visualizá montos,
+            vencimientos y estados con claridad.
+          </p>
+        </div>
+        <div class="feature-card">
+          <img
+            src="/icons/brainIcon.svg"
+            alt="Icono de inteligencia predictiva"
+            class="feature-icon"
+          />
+          <h3 class="feature-title">Predicción de Pagos</h3>
+          <p class="feature-desc">
+            Anticipate al comportamiento de pago de tus clientes gracias a
+            algoritmos inteligentes.
+          </p>
+        </div>
+        <div class="feature-card">
+          <img
+            src="/icons/reportData.svg"
+            alt="Icono de reportes y métricas"
+            class="feature-icon"
+          />
+          <h3 class="feature-title">Métricas en Tiempo Real</h3>
+          <p class="feature-desc">
+            Consultá reportes automáticos con métricas clave como morosidad,
+            pagos recibidos y evolución mensual.
+          </p>
+        </div>
+        <div class="feature-card">
+          <img
+            src="/icons/clientsManagment.svg"
+            alt="Icono de gestión de clientes"
+            class="feature-icon"
+          />
+          <h3 class="feature-title">Gestión de Clientes</h3>
+          <p class="feature-desc">
+            Mantené un historial claro por cada cliente, incluyendo sus deudas,
+            entregas y comportamiento financiero.
+          </p>
+        </div>
+      </div>
+    </article>
+  </body>
+</html>

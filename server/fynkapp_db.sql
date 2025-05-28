@@ -83,7 +83,7 @@ CREATE TABLE account_summary (
 );
 
 TRUNCATE TABLE CLIENTS CASCADE;
-
+TRUNCATE TABLE account_summary;
 DROP table account_summary;
 select client_id from clients where client_name = 'Martina Martinez';
 SELECT COUNT(*) FROM clients;
