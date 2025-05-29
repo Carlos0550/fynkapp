@@ -68,7 +68,7 @@ app.get("/static/account-validation-success", (req: Request, res: Response) => {
   const nodeEnv = process.env.NODE_ENV;
 
   const domains: Record<string, string> = {
-    production: "https://fynkapp.com.ar/authentication",
+    production: "https://panel.fynkapp.com.ar/authentication",
     development: "http://localhost:5173/authentication",
   };
 

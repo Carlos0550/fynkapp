@@ -3,7 +3,7 @@ import "dotenv/config";
 const nodeEnv = process.env.NODE_ENV;
 
 const domains: Record<string, string> = {
-  production: "https://fynkapp-server.up.railway.app",
+  production: "https://api.fynkapp.com.ar",
   development: "http://localhost:5000",
 };
 
