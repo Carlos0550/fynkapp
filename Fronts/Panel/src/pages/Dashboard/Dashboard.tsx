@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useAppContext } from '../../Context/AppContext'
+import { useState } from 'react'
 import "./Dashboard.css"
-import InitLoader from './components/PageLaders/InitLoader'
 import { Input } from '@mantine/core'
 import { FaSearch } from "react-icons/fa";
 import Clients from './components/Clients/Clients'
-import { useNavigate } from 'react-router-dom'
 function Dashboard() {
-  const navigate = useNavigate()
-
-  const [gettingClients, setGettingClients] = useState(false)
-
   const [searchInput, setSearchInput] = useState("");
 
-  if (gettingClients) {
-    return (
-      <InitLoader />
-    )
-  }
   return (
     <div className='dashboard-container'>
       <div className="dashboard-search-container">

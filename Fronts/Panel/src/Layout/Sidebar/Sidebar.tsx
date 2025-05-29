@@ -1,133 +1,145 @@
 import "./Sidebar.css"
 import { useAppContext } from "../../Context/AppContext"
-import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaMoneyBillTransfer, FaLightbulb } from "react-icons/fa6";
 import { MdOutlinePersonAddAlt1 } from "react-icons/md";
-import { IoLogOutOutline } from "react-icons/io5";
-import { IoStatsChart } from "react-icons/io5";
+import { IoLogOutOutline, IoMenu, IoHome } from "react-icons/io5";
 import { HiOutlineDocumentReport } from "react-icons/hi";
-import { IoMenu } from "react-icons/io5";
-import { IoHome } from "react-icons/io5";
 import { useState } from "react";
-import { Loader } from "@mantine/core";
+import { Loader, Flex, Box, Text } from "@mantine/core";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
+
 function Sidebar({ mobileExtended, setMobileExtended }) {
-    const navigate = useNavigate()
-    const location = useLocation();
+	const navigate = useNavigate();
+	const location = useLocation();
+    const tips = [
+    "¿Sabías que Fynkapp predice los pagos de tus clientes con IA?",
+    "Agregá clientes nuevos y obtené métricas automáticas.",
+    "El resumen mensual se genera solo, ¡sin que hagas nada!",
+    "Podés ver quiénes son tus clientes más cumplidores.",
+    "Fynkapp aprende del comportamiento de tus clientes."
+    ];
+    const randomTip = tips[Math.floor(Math.random() * tips.length)];
 
-    const {
-        width,
-        modalsHook: {
-            openAddClientModal
-        },
-        authHook: {
-            loginData,
-            logoutUser
-        }
-    } = useAppContext()
+	const {
+		width,
+		modalsHook: { openAddClientModal },
+		authHook: { loginData, logoutUser }
+	} = useAppContext();
 
-    const [isClosing, setIsClosing] = useState(false)
-    const handleLogout = async () => {
-        setIsClosing(true)
-        await logoutUser()
-        setIsClosing(false)
-    }
+	const [isClosing, setIsClosing] = useState(false);
+	const handleLogout = async () => {
+		setIsClosing(true);
+		await logoutUser();
+		setIsClosing(false);
+	};
 
+	return (
+		<Box className='sidebar-container'>
+			{width > 768 ? (
+				<Flex direction="column" className='sidebar'>
 
-    return (
-        <div className='sidebar-container'>
-            {width > 768
-                ? (
-                    <ul className='sidebar'>
-                        <button
-                            style={{ backgroundColor: isClosing ? "maroon" : "inherit" }}
-                            className="logout-button"
-                            onClick={handleLogout}
-                        >
-                            {isClosing ? <Loader size={20} type="dots" color="white" /> : <IoLogOutOutline size={20} color="black" />}
-                        </button>
-                        <p className='sidebar-logo'
-                            style={{ alignSelf: "flex-start" }}
-                        >Fynkapp <FaMoneyBillTransfer /> </p>
-                        <p className='sidebar-logo' style={{ alignSelf: "flex-start", fontSize: "1.1rem" }}>Hola, {loginData && loginData.user_name.split(" ")[0] || "Usuario"} 👋 </p>
+					<Box className="logout-button" onClick={handleLogout} >
+						{isClosing
+							? <Loader size={20} type="dots" color="black" />
+							: <IoLogOutOutline size={20} color="black" />
+						}
+					</Box>
 
-                        <li className='sidebar-list' onClick={() => {
-                            openAddClientModal()
-                            setMobileExtended(false)
-                        }}><MdOutlinePersonAddAlt1 size={20} /><span>Agregar cliente</span></li>
-                        <div className='sidebar-divider'></div>
+					<Text className='sidebar-logo' size={"1.5rem"} fw={700}>Fynkapp <FaMoneyBillTransfer /></Text>
 
-                        <li
-                            className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
-                            onClick={() => navigate("/")}
-                        >
-                            <IoHome size={20} /> Inicio
-                        </li>
-                        <li
-                            className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
-                            onClick={() => navigate("/monthly-resume")}
-                        >
-                            <HiOutlineDocumentReport size={20} />
-                            <span>Resumen mensual</span>
-                        </li>
-                        {/* <div className='sidebar-divider'></div>
-                        <p className='sidebar-title'>Analíticas (Próximamente)</p>
-                        <li className='sidebar-list disabled'><IoStatsChart size={20} /><span>Análisis de Clientes</span></li> */}
-                    </ul>
-                )
-                : (
-                    <div className={`sidebar-mobile ${mobileExtended ? "extended" : ""}`}>
-                        <p className='sidebar-logo'>Hola, {loginData.user_name.split(" ")[0] || "Usuario"} 👋</p>
+					<Flex align="center" gap="sm" mb="md" className="sidebar-user-box">
+						<FaUserCircle size={30} />
+						<Text fw={500}>Hola, {loginData?.user_name?.split(" ")[0] || "Usuario"} 👋</Text>
+					</Flex>
 
-                        <li className="sidebar-menu-icon" onClick={() => setMobileExtended(!mobileExtended)}>
-                            <IoMenu size={20} />
-                            <span></span>
-                        </li>
+					<Box
+						className='sidebar-list'
+						onClick={() => {
+							openAddClientModal();
+							setMobileExtended(false);
+						}}
+					>
+						<MdOutlinePersonAddAlt1 size={20} /> <span>Agregar cliente</span>
+					</Box>
 
-                        <li className="sidebar-menu-icon logout" onClick={() => handleLogout()}>
-                            {isClosing ? (
-                                <Loader size={20} color="#2c2c2c" type="dots" />
-                            ) : (
-                                <IoLogOutOutline size={20} />
-                            )}
-                            <span></span>
-                        </li>
+					<Box className="sidebar-divider" />
 
-                        <ul className='sidebar-mobile-list'>
+					<Box
+						className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
+						onClick={() => navigate("/")}
+					>
+						<IoHome size={20} /> Inicio
+					</Box>
+					<Box
+						className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
+						onClick={() => navigate("/monthly-resume")}
+					>
+						<HiOutlineDocumentReport size={20} /> <span>Resumen mensual</span>
+					</Box>
 
-                            {width <= 768 && (
-                                <>
-                                    <li className='sidebar-list' onClick={() => {
-                                        openAddClientModal()
-                                        setMobileExtended(false)
-                                    }}><MdOutlinePersonAddAlt1 size={20} /><span>Agregar cliente</span></li>
+					<Box className="sidebar-divider" />
 
-                                    <li
-                                        className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
-                                        onClick={() => {
-                                            navigate("/")
-                                            setMobileExtended(false)
-                                        }}
-                                    >
-                                        <IoHome size={20} /> Inicio
-                                    </li>
-                                    <li
-                                        className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
-                                        onClick={() => {
-                                            navigate("/monthly-resume")
-                                            setMobileExtended(false)
-                                        }}
-                                    >
-                                        <HiOutlineDocumentReport size={20} />
-                                        <span>Resumen mensual</span>
-                                    </li>
-                                </>
-                            )}
-                        </ul>
-                    </div>
-                )
-            }
-        </div>
-    )
+					<Flex className="sidebar-tip-box" gap="xs">
+                    <FaLightbulb color="#facc15" />
+                    <Text fz="xs" c="dark">Tip: {randomTip}</Text>
+                    </Flex>
+
+				</Flex>
+			) : (
+				<Box className={`sidebar-mobile ${mobileExtended ? "extended" : ""}`}>
+					<Text className='sidebar-logo'>
+						Hola, {loginData.user_name.split(" ")[0] || "Usuario"} 👋
+					</Text>
+
+					<Flex align="center" justify="space-between" px="sm">
+						<Box className="sidebar-menu-icon" onClick={() => setMobileExtended(!mobileExtended)}>
+							<IoMenu size={20} />
+						</Box>
+						<Box className="sidebar-menu-icon logout" onClick={() => handleLogout()}>
+							{isClosing
+								? <Loader size={20} color="#2c2c2c" type="dots" />
+								: <IoLogOutOutline size={20} />
+							}
+						</Box>
+					</Flex>
+
+					<Flex direction="column" className='sidebar-mobile-list'>
+						{width <= 768 && (
+							<>
+								<Box className='sidebar-list' onClick={() => {
+									openAddClientModal();
+									setMobileExtended(false);
+								}}>
+									<MdOutlinePersonAddAlt1 size={20} /> <span>Agregar cliente</span>
+								</Box>
+
+								<Box
+									className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
+									onClick={() => {
+										navigate("/");
+										setMobileExtended(false);
+									}}
+								>
+									<IoHome size={20} /> Inicio
+								</Box>
+
+								<Box
+									className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
+									onClick={() => {
+										navigate("/monthly-resume");
+										setMobileExtended(false);
+									}}
+								>
+									<HiOutlineDocumentReport size={20} /> <span>Resumen mensual</span>
+								</Box>
+							</>
+						)}
+					</Flex>
+				</Box>
+			)}
+		</Box>
+	);
 }
 
-export default Sidebar
+export default Sidebar;
