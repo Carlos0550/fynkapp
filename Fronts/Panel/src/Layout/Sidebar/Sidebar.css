@@ -32,7 +32,6 @@
 }
 
 .logout-button:hover {
-    background-color: #B52700;
     transform: translateY(-3px);
 }
 
