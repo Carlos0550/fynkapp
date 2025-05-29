@@ -6,6 +6,7 @@ import { useAppContext } from "../../Context/AppContext"
 import ClientsWithHighestRisk from "./SummaryCards/ClientsWithHighestRisk"
 import Payment_behavior from "./SummaryCards/Payment_behavior"
 import ClientsWithLowestRisk from "./SummaryCards/ClientsWithLowestRisk"
+import { IoInformation } from "react-icons/io5"
 function MonthlySummary() {
     const {
         resumeHook: {
@@ -52,6 +53,15 @@ function MonthlySummary() {
                         c={"#2c2c2c"}
 
                     >Visualiza el rendimiento financiero de tu negocio</Text>
+                    <Flex align={"center"} justify={"flex-start"}>
+                        <IoInformation size={20} />
+                        <Text
+                            ff={'Roboto Slab'}
+                            size="sm"
+                            fw={500}
+                            c={"#2c2c2c"}
+                        >Los resumenes se generan todos los viernes de cada mes.</Text>
+                    </Flex>
                 </Flex>
 
                 {monthsAvailable && monthsAvailable.length > 0 && (

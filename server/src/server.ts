@@ -19,6 +19,7 @@ const app = express();
 app.use(cors({
   origin: [
     "https://panel.fynkapp.com.ar",
+    "http://localhost:5173"
   ]
 }));
 app.use(express.json());
