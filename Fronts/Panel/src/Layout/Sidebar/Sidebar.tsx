@@ -88,11 +88,11 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 				</Flex>
 			) : (
 				<Box className={`sidebar-mobile ${mobileExtended ? "extended" : ""}`}>
-					<Text className='sidebar-logo'>
+					<Text className='sidebar-logo' mt={5} fw={500}>
 						Hola, {loginData.user_name.split(" ")[0] || "Usuario"} 👋
 					</Text>
 
-					<Flex align="center" justify="space-between" px="sm">
+					<Flex align="center" justify="space-between" px="sm" mt={5}>
 						<Box className="sidebar-menu-icon" onClick={() => setMobileExtended(!mobileExtended)}>
 							<IoMenu size={20} />
 						</Box>
