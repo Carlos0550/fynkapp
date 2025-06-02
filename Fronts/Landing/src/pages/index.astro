@@ -5,7 +5,7 @@ const pageDescription =
   "Fynkapp te ayuda a organizar tus finanzas, controlar deudas y entender el comportamiento de tus clientes para tomar mejores decisiones.";
 const pageUrl = "https://panel.fynkapp.com.ar";
 const pageImage =
-  "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/public/images//hmJjOJYjSeW78CTpgvV4Bg.webp";
+  "https://duszvzmtpoxsyxyibtuq.supabase.co/storage/v1/object/public/images/hmJjOJYjSeW78CTpgvV4Bg.webp";
 ---
 
 <html lang="es">
@@ -24,7 +24,7 @@ const pageImage =
 
     <!-- SEO -->
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href={pageUrl} />
+    <link rel="canonical" href={Astro.url.href} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -39,27 +39,10 @@ const pageImage =
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={pageImage} />
-    <!-- <link rel="stylesheet" href="/css/index.css"> -->
   </head>
 
   <body>
-    <!-- <header class="navbar">
-      <div class="container nav-wrapper">
-        <div class="brand">
-          <picture class="brand-icon">
-            <img src="icons/money-icon.svg" alt="" />
-          </picture>
-          <span class="logo-text">Fynkapp</span>
-        </div>
-        <nav class="nav-links">
-          <a href="#features">Características</a>
-          <a href="#benefits">Beneficios</a>
-        </nav>
-        <a class="btn btn-primary" href="https://panel.fynkapp.com.ar"
-          >Comenzar Gratis</a
-        >
-      </div>
-    </header> -->
+
 
     <main class="hero-section">
       <div class="badge">
