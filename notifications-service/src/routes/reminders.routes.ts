@@ -112,7 +112,7 @@ const SendDueReminder: RequestHandler<
             business_name: businessData.business_name,
             business_phone: businessData.business_phone,
             business_address: businessData.business_address,
-            productos: clientDebts.flatMap(debt => debt.productos || []),
+            productos: clientDebts.flatMap(debt => debt.productos || []).map(p => ({product_name: p.product_name,product_quantity: String(p.product_quantity)})),
             fecha_vencimiento: dayjs(mas_vieja?.vencimiento).format("DD/MM/YYYY"),
         }
 
