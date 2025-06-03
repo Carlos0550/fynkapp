@@ -13,6 +13,8 @@ import debtRouter from "./routes/debts.routes";
 import deliverRouter from "./routes/delivers.routes";
 import financialRouter from "./routes/financial.routes";
 import resumeRouter from "./routes/monthly_resume.routes";
+import businessRouter from "./routes/business.routes";
+import notifRouter from "./routes/notifications.routes";
 
 const app = express();
 
@@ -62,6 +64,8 @@ app.use("/debts", debtRouter)
 app.use("/delivers", deliverRouter)
 app.use("/financial", financialRouter)
 app.use("/resume", resumeRouter)
+app.use("/business", businessRouter)
+app.use("/notifications", notifRouter)
 
 app.get("/static/account-validation-success", (req: Request, res: Response) => {
   const htmlPath = path.join(__dirname, "./utils/Pages/EmailVerificationSuccess.html"); 

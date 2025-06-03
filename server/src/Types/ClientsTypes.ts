@@ -2,6 +2,7 @@ export interface ClientsRequest{
     client_name: string
     client_dni?: string,
     client_email?: string,
+    client_phone?: string
     client_address?:string
     editing_client?: string,
     client_id?: string
@@ -14,6 +15,7 @@ export interface ClientsFromDB{
     aditional_client_data:{
         client_dni: string,
         client_email: string,
-        client_address:string
+        client_address:string,
+        client_phone:string
     }
 }

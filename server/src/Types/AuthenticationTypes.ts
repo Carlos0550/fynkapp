@@ -1,3 +1,5 @@
+import { BusinessData } from "./BusinessTypes"
+
 export interface ManagerData{
     manager_id: string,
     manager_name: string,
@@ -5,6 +7,7 @@ export interface ManagerData{
     manager_password: string,
     manager_verified: boolean,
     token?: string
+    business_data: string
 }
 
 export interface LoginUserForm{

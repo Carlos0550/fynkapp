@@ -1,6 +1,7 @@
 import { useDisclosure } from '@mantine/hooks';
 import { useMemo, useState } from 'react'
 import { ClientInterface } from './Typescript/ClientsTypes';
+import { EditBusinessData } from './Typescript/BusinessTypes';
 
 function useModals() {
     const [openedClientModal, { open: openClientModal, close: closeClientModal }] = useDisclosure();
@@ -18,6 +19,7 @@ function useModals() {
         },
         total_debts: ""
     });
+    
 
     const clearClientData = () => {
         setSelectedClientData({
@@ -30,6 +32,25 @@ function useModals() {
                 client_address: ""
             },
             total_debts: ""
+        })
+    }
+
+    const [openedBusinessModal, { open: openBusinessModal, close: closeBusinessModal }] = useDisclosure();
+    const [editingBusinessData, setEditingBusinessData] = useState<EditBusinessData>({
+        isEditing: false,
+        business_id: "",
+        business_name: "",
+        business_address: "",
+        business_phone: ""
+    })
+
+    const clearEditBusinessData = () => {
+        setEditingBusinessData({
+            isEditing: false,
+            business_id: "",
+            business_name: "",
+            business_address: "",
+            business_phone: ""
         })
     }
     return useMemo(() => ({
@@ -47,7 +68,11 @@ function useModals() {
         closeAddClientModal,
         selectedClientData,
         clearClientData,
-        setSelectedClientData
+        setSelectedClientData,
+        openedBusinessModal,
+        openBusinessModal,
+        closeBusinessModal,
+        editingBusinessData, setEditingBusinessData, clearEditBusinessData
     }), [
         openedClientModal,
         openClientModal,
@@ -63,7 +88,11 @@ function useModals() {
         closeAddClientModal,
         selectedClientData,
         clearClientData,
-        setSelectedClientData
+        setSelectedClientData,
+        openedBusinessModal,
+        openBusinessModal,
+        closeBusinessModal,
+        editingBusinessData, setEditingBusinessData, clearEditBusinessData
     ])
 }
 

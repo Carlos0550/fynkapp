@@ -5,32 +5,27 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from uuid import uuid4
 
-# Obtiene todas las deudas activas del administrador (historial completo)
 def get_manager_debts(manager_id: str):
     return db.session.query(Debts).filter(
         Debts.manager_client_id == manager_id
     ).all()
 
-# Obtiene todos los pagos realizados por el administrador (historial completo)
 def get_manager_delivers(manager_id: str):
     return db.session.query(Delivers).filter(
         Delivers.manager_client_id == manager_id
     ).all()
 
-# Obtiene todos los clientes de un administrador
 def get_manager_clients(manager_id: str):
     return db.session.query(Clients).filter(
         Clients.manager_client_id == manager_id
     ).all()
 
-# Calcula un score de historial en base a deudas cerradas y sus atrasos
 def calcular_score_historial(client_id, all_delivers):
     historial_deudas = db.session.query(Debts).filter(
         Debts.client_debt_id == client_id,
         Debts.estado_financiero == "cerrado"
     ).all()
 
-    # Sin historial cerrado => score mínimo (mal pagador)
     if not historial_deudas:
         return 0.0
 
@@ -100,7 +95,6 @@ def generate_account_summary(clients_dict: dict, manager_id: str, as_of: datetim
             "historial": historial_score
         })
 
-    # evitar divisiones por cero
     max_deuda = max((c["deuda"] for c in riesgo_clientes), default=1)
     max_atraso = max((c["atraso_prom"] for c in riesgo_clientes), default=1)
 
@@ -153,7 +147,7 @@ def start_account_summary():
     all_delivers = db.session.query(Delivers).all()
 
     for manager in managers:
-        # construir diccionario de clientes
+
         clientes_dict = {}
         debts = get_manager_debts(manager.manager_id)
         delivers = get_manager_delivers(manager.manager_id)

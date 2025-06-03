@@ -9,6 +9,8 @@ import useDebts from "./useDebts";
 import useDelivers from "./useDelivers";
 import useFinancialData from "./useFinancialData";
 import useResume from "./useResume";
+import useBusiness from "./useBusiness";
+import useNotifications from "./useNotifications";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -30,6 +32,7 @@ export const AppContextProvider = ({ children }: any) => {
     }, []);
 
     const authHook = useAuthentication()
+    const businessHook = useBusiness({})
 
     const modalsHook = useModals()
 
@@ -39,12 +42,15 @@ export const AppContextProvider = ({ children }: any) => {
 
     const debtsHook = useDebts({
         client_id: modalsHook.selectedClientData.client_id,
-        getAllClients: clientsHook.getAllClients
+        getAllClients: clientsHook.getAllClients,
+        business_id: businessHook.businesData?.business_id!
     })
 
     const deliversHook = useDelivers({
         client_id: modalsHook.selectedClientData.client_id,
-        getAllClients: clientsHook.getAllClients
+        getAllClients: clientsHook.getAllClients,
+        business_id: businessHook.businesData?.business_id!
+
     })
 
     const financialClientHook = useFinancialData({
@@ -53,6 +59,11 @@ export const AppContextProvider = ({ children }: any) => {
     })
 
     const resumeHook = useResume()
+    const notificationsHook = useNotifications({
+        clientData: modalsHook.selectedClientData,
+        clientDelivers: financialClientHook.financialClientData.movimientos,
+        clientDebts: financialClientHook.financialClientData.movimientos
+    })
 
     function getInitials(fullName: string): string {
         const words = fullName.trim().split(/\s+/);
@@ -63,19 +74,23 @@ export const AppContextProvider = ({ children }: any) => {
         width,
         modalsHook, authHook, clientsHook, debtsHook,
         deliversHook, financialClientHook,
-        resumeHook, getInitials
+        resumeHook, getInitials, businessHook,
+        notificationsHook
     }), [
         modalsHook,
         width, authHook, clientsHook, debtsHook,
         deliversHook, financialClientHook,
-        resumeHook
+        resumeHook, businessHook, notificationsHook
     ])
 
-    const alreadyGotClients = useRef(false)
+
+
+  const alreadyInitialized = useRef(false)
     useEffect(() => {
-        if (authHook.loginData && ![null, "", undefined].includes(authHook.loginData.user_id) && !alreadyGotClients.current) {
-            alreadyGotClients.current = true
+        if (authHook.loginData && ![null, "", undefined].includes(authHook.loginData.user_id) && !alreadyInitialized.current) {
+            alreadyInitialized.current = true
             clientsHook.getAllClients()
+            businessHook.getBusinesInfo()
         }
     }, [authHook.loginData])
     return (

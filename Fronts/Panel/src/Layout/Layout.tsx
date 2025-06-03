@@ -3,7 +3,8 @@ import "./Layout.css"
 import Sidebar from './Sidebar/Sidebar'
 import { useAppContext } from '../Context/AppContext'
 import { Flex, Skeleton } from '@mantine/core'
-function Layout({ content }) {
+import { Outlet } from 'react-router-dom'
+function Layout() {
   const [gettingClients] = useState(false)
   const {
     width,
@@ -41,7 +42,7 @@ function Layout({ content }) {
         }
       </div>
       <div className='layout-content'>
-        {content}
+        <Outlet/>
       </div>
     </div>
   )

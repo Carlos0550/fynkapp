@@ -4,14 +4,16 @@ INSERT INTO delivers(
 	deliver_date,
 	manager_client_id,
 	client_deliver_id,
-	deliver_details
+	deliver_details,
+  business_deliver_id
 ) VALUES(
     $1,
     $2,
     $3,
     $4,
     $5,
-    $6
+    $6,
+    $7
 );
 
 -- Posicional 2

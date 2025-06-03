@@ -6,7 +6,8 @@ INSERT INTO
         manager_client_id,
         client_debt_id,
         debt_products,
-        debt_id
+        debt_id,
+        business_debt_id
     )
     VALUES (
         $1,
@@ -15,7 +16,8 @@ INSERT INTO
         $4,
         $5,
         $6,
-        $7
+        $7,
+        $8
     );
 
 UPDATE debts

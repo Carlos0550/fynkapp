@@ -158,12 +158,12 @@ function DebtTable() {
                                 <Table.Td>
                                     {debt.productos!.map((p, idx) => (
                                         <Text key={idx} size="sm">
-                                            • {p.product_name} ({p.product_quantity}u) - ${p.product_price.toLocaleString("es-AR", { style: "currency", currency: "ARS" })}
+                                            • {p.product_name} ({p.product_quantity}u) - {Number(p.product_price).toLocaleString("es-AR", { style: "currency", currency: "ARS" })}
                                         </Text>
                                     ))}
                                 </Table.Td>
                                 <Table.Td>
-                                    <Text fw={600}>${debt.monto.toLocaleString("es-AR")}</Text>
+                                    <Text fw={600}>{Number(debt.monto).toLocaleString("es-AR", { style: "currency", currency: "ARS" })}</Text>
                                 </Table.Td>
                                 <Table.Td>
                                     <Group gap={5}>

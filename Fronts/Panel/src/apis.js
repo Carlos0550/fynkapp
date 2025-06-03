@@ -11,4 +11,6 @@ export const logic_apis = {
   delivers: new URL(`${base_api.url}/delivers`),
   financial: new URL(`${base_api.url}/financial`),
   resume: new URL(`${base_api.url}/resume`),
+  business: new URL(`${base_api.url}/business`),
+  notifications: new URL(`${base_api.url}/notifications`)
 }

@@ -21,6 +21,7 @@ function ClientForm({ closeModal }) {
         client_dni: "",
         client_email: "",
         client_address: "",
+        client_phone: ""
     })
 
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +52,8 @@ function ClientForm({ closeModal }) {
                 client_name: selectedClientData.client_name,
                 client_dni: aditional_client_data?.client_dni || "",
                 client_email: aditional_client_data?.client_email || "",
-                client_address: aditional_client_data?.client_address || ""
+                client_address: aditional_client_data?.client_address || "",
+                client_phone: aditional_client_data?.client_phone || ""
             })
         }
     },[editingClient, selectedClientData])
@@ -96,6 +98,17 @@ function ClientForm({ closeModal }) {
                             </Input.Wrapper>
 
                             <Input.Wrapper
+                                label="Número de teléfono"
+                            >
+                                <Input
+                                    name="client_phone"
+                                    type="text"
+                                    value={formData.client_phone}
+                                    onChange={handleOnChange}
+                                />
+                            </Input.Wrapper>
+
+                            <Input.Wrapper
                                 label="Dirección"
                             >
                                 <Input
@@ -105,9 +118,7 @@ function ClientForm({ closeModal }) {
                                     onChange={handleOnChange}
                                 />
                             </Input.Wrapper>
-
-
-
+                            
                             <Button
                             color='dark'
                                 loading={loading}

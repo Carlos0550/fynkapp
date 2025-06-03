@@ -15,16 +15,17 @@ export const saveDeliver: RequestHandler<
   {
     client_id: string,
     isEditing?: string,
-    deliver_id?: string
+    deliver_id?: string,
+    business_id: string
   }
 > = async (req, res): Promise<void> => {
   const { manager_id } = (req as any).manager_data;
-  const { client_id, isEditing, deliver_id } = req.query;
+  const { client_id, isEditing, deliver_id, business_id } = req.query;
   const { deliver_amount, deliver_date, deliver_details } = req.body;
   const SD = queries["saveDeliver.sql"];
 
   try {
-    console.log(isEditing)
+
     if (isEditing === "true") {
       console.log("esta editando una entrega");
       const result =await pool.query(SD[6],[
@@ -52,7 +53,8 @@ export const saveDeliver: RequestHandler<
         deliver_date,
         manager_id,
         client_id,
-        deliver_details || null
+        deliver_details || null,
+        business_id
       ]);
 
       if (result.rowCount! > 0) {

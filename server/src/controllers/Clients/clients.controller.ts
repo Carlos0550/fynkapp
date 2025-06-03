@@ -15,7 +15,8 @@ export const saveClient: RequestHandler<{}, {}, ClientsRequest, { editing_client
         client_name,
         client_dni,
         client_email,
-        client_address
+        client_address,
+        client_phone
     } = req.body
     const { editing_client } = req.query
     const parsedBoolean = editing_client === "true" ? true : false
@@ -27,11 +28,13 @@ export const saveClient: RequestHandler<{}, {}, ClientsRequest, { editing_client
         const encryptedDNI = cleanedDNI ? encryptData(cleanedDNI) : null
         const encryptedEmail = client_email ? encryptData(client_email) : null
         const encryptedAddress = client_address ? encryptData(client_address) : null
+        const encryptedPhone = client_phone ? encryptData(client_phone) : null
 
         const dataToSave = {
             client_dni: encryptedDNI,
             client_email: encryptedEmail,
-            client_address: encryptedAddress
+            client_address: encryptedAddress,
+            client_phone: encryptedPhone
         }
         if (parsedBoolean) {
             const result = await pool.query(clientQuery[2], [client_name, JSON.stringify(dataToSave), req.query.client_id])
@@ -111,7 +114,7 @@ export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = 
             const decryptedDNI = aditionalData.client_dni ? decrypt(aditionalData.client_dni) : null
             const decryptedEmail = aditionalData.client_email ? decrypt(aditionalData.client_email) : null
             const decryptedAddress = aditionalData.client_address ? decrypt(aditionalData.client_address) : null
-
+            const decryptedPhone = aditionalData.client_phone ? decrypt(aditionalData.client_phone) : null
             const client = {
                 client_id: result.rows[0].client_id,
                 client_name: result.rows[0].client_name,
@@ -119,7 +122,8 @@ export const getClientData: RequestHandler<{}, {}, {}, { client_id: string }> = 
                 aditional_client_data: {
                     client_dni: decryptedDNI,
                     client_email: decryptedEmail,
-                    client_address: decryptedAddress
+                    client_address: decryptedAddress,
+                    client_phone: decryptedPhone
                 },
                 total_debts: result.rows[0].total_debts
             }

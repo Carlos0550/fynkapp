@@ -5,6 +5,7 @@ import { DebtForm, EditingData } from "./DebtsTypes"
 import { DeliverForm, EditingDeliverData } from "./DeliversTypes"
 import { FinancialClient } from "./FinancialTypes"
 import { AccountSummary, MonthOption, SummaryCards } from "./ResumeTypes"
+import { Business, BusinessForm, EditBusinessData, NotifOptions } from "./BusinessTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -21,12 +22,19 @@ export interface ModalsHookInterface {
     closeAddClientModal: () => void,
     selectedClientData: ClientInterface,
     clearClientData: () => void,
-    setSelectedClientData: React.Dispatch<SetStateAction<ClientInterface>>
+    setSelectedClientData: React.Dispatch<SetStateAction<ClientInterface>>,
+    openedBusinessModal: boolean,
+    openBusinessModal: () => void,
+    closeBusinessModal: () => void,
+    editingBusinessData: EditBusinessData, 
+    setEditingBusinessData: React.Dispatch<SetStateAction<EditBusinessData>>, 
+    clearEditBusinessData: () => void
 }
 
 export interface AuthenticationHookInterface {
     loginData: LoginData,
     loginUser: (formValues: LoginUserForm) => Promise<void>,
+    setLoginData: React.Dispatch<React.SetStateAction<LoginData>>,
     registerUser: (formValues: CreateUserForm) => Promise<boolean>
     validatingSession: boolean,
     logoutUser: () => Promise<void>
@@ -69,6 +77,21 @@ export interface ResumeHookInterface {
     summaryCards: SummaryCards[]
     monthsAvailable: MonthOption[]
 }
+
+export interface BusinessHookInterface {
+    createBusiness: (formData: BusinessForm) => Promise<boolean | undefined>,
+    editBusiness: (formData: BusinessForm, onClose: () => void, editBusinessInfo: EditBusinessData) => Promise<boolean | undefined>,
+    notiOption: NotifOptions, 
+    setNotiOption: React.Dispatch<SetStateAction<NotifOptions>>,
+    changeNotificationOption: (option: NotifOptions, business_id: string) => Promise<boolean>
+    getBusinesInfo: () => Promise<boolean>, 
+    setBusinesData: React.Dispatch<SetStateAction<Business | null>>, 
+    businesData: Business | null
+}
+
+export interface NotificationsHookInterface{
+    sendNotification: () => Promise<boolean>
+}
 export interface AppContextValueInterface {
     width: number,
     modalsHook: ModalsHookInterface,
@@ -78,5 +101,7 @@ export interface AppContextValueInterface {
     deliversHook: DeliversHookInterface,
     financialClientHook: FinancialClientHookInterface,
     resumeHook: ResumeHookInterface,
-    getInitials: (fullName: string) => string
+    getInitials: (fullName: string) => string,
+    businessHook: BusinessHookInterface,
+    notificationsHook: NotificationsHookInterface
 }

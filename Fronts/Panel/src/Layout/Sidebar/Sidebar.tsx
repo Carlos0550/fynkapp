@@ -4,22 +4,31 @@ import { FaMoneyBillTransfer, FaLightbulb } from "react-icons/fa6";
 import { MdOutlinePersonAddAlt1 } from "react-icons/md";
 import { IoLogOutOutline, IoMenu, IoHome } from "react-icons/io5";
 import { HiOutlineDocumentReport } from "react-icons/hi";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader, Flex, Box, Text } from "@mantine/core";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
-
+import { FaBriefcase, FaUserCircle } from "react-icons/fa";
+import { FaUserClock } from "react-icons/fa6";
 function Sidebar({ mobileExtended, setMobileExtended }) {
 	const navigate = useNavigate();
 	const location = useLocation();
-    const tips = [
-    "¿Sabías que Fynkapp predice los pagos de tus clientes con IA?",
-    "Agregá clientes nuevos y obtené métricas automáticas.",
-    "El resumen mensual se genera solo, ¡sin que hagas nada!",
-    "Podés ver quiénes son tus clientes más cumplidores.",
-    "Fynkapp aprende del comportamiento de tus clientes."
-    ];
-    const randomTip = tips[Math.floor(Math.random() * tips.length)];
+	const [randomTip, setRandomTip] = useState("");
+	const alreadyGetRandomTip = useRef(false);
+	const tips = [
+		"¿Sabías que Fynkapp predice los pagos de tus clientes con IA?",
+		"Agregá clientes nuevos y obtené métricas automáticas.",
+		"El resumen mensual se genera solo, ¡sin que hagas nada!",
+		"Podés ver quiénes son tus clientes más cumplidores.",
+		"Fynkapp aprende del comportamiento de tus clientes."
+	];
+	const getRandomTip = () => {
+		if (!alreadyGetRandomTip.current) {
+			const randomIndex = Math.floor(Math.random() * tips.length);
+			setRandomTip(tips[randomIndex]);
+			alreadyGetRandomTip.current = true;
+		}
+
+	};
 
 	const {
 		width,
@@ -33,6 +42,10 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 		await logoutUser();
 		setIsClosing(false);
 	};
+
+	useEffect(() => {
+		getRandomTip()
+	}, [])
 
 	return (
 		<Box className='sidebar-container'>
@@ -71,6 +84,21 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 					>
 						<IoHome size={20} /> Inicio
 					</Box>
+
+					<Box
+						className={`sidebar-list ${location.pathname === "/business" ? "active" : ""}`}
+						onClick={() => navigate("/business")}
+					>
+						<FaBriefcase size={20} /> Mi negocio
+					</Box>
+
+					<Box
+						className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
+						onClick={() => navigate("/expirations")}
+					>
+						<FaUserClock size={20} /> Vencimientos
+					</Box>
+
 					<Box
 						className={`sidebar-list ${location.pathname === "/monthly-resume" ? "active" : ""}`}
 						onClick={() => navigate("/monthly-resume")}
@@ -81,9 +109,9 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 					<Box className="sidebar-divider" />
 
 					<Flex className="sidebar-tip-box" gap="xs">
-                    <FaLightbulb color="#facc15" />
-                    <Text fz="xs" c="dark">Tip: {randomTip}</Text>
-                    </Flex>
+						<FaLightbulb color="#facc15" />
+						<Text fz="xs" c="dark">Tip: {randomTip}</Text>
+					</Flex>
 
 				</Flex>
 			) : (
@@ -122,6 +150,20 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 									}}
 								>
 									<IoHome size={20} /> Inicio
+								</Box>
+
+								<Box
+									className={`sidebar-list ${location.pathname === "/business" ? "active" : ""}`}
+									onClick={() => navigate("/business")}
+								>
+									<FaBriefcase size={20} /> Mi negocio
+								</Box>
+
+								<Box
+									className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
+									onClick={() => navigate("/expirations")}
+								>
+									<FaUserClock size={20} /> Vencimientos
 								</Box>
 
 								<Box

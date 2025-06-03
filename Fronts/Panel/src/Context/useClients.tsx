@@ -92,6 +92,17 @@ function useClients({client_id}: Props) {
         return true;
     } catch (error) {
         console.error("Error al guardar el cliente:", error);
+        showNotification({
+            color: "red",
+            title: "Error al guardar el cliente",
+            styles: (theme) => ({
+                title:{color: "black"},
+                description: {color: "black"}
+            }),
+            message: error instanceof Error ? error.message : "Error desconocido",
+            autoClose: 5000,
+            position: "top-right"
+        })
         return false;
     }
 }, [editingClient, client_id, getAllClients]);
@@ -172,8 +183,19 @@ function useClients({client_id}: Props) {
                 return false
             }
             if (!response.ok) throw new Error(responseData.msg || "Error desconocido")
-                setClients((prev) => prev.filter((client) => client.client_id !== client_id))
+            setClients((prev) => prev.filter((client) => client.client_id !== client_id))
             await getAllClients()
+            showNotification({
+                color: "green",
+                title: "Cliente eliminado",
+                styles: (theme) => ({
+                    title:{color: "black"},
+                    description: {color: "black"}
+                }),
+                message: "El cliente junto con sus deudas, entregas e historial fue eliminado exitosamente.",
+                autoClose: 3500,
+                position: "top-right"
+            })
             return true
         } catch (error) {
             console.log(error)

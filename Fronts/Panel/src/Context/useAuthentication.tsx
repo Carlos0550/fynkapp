@@ -8,7 +8,7 @@ function useAuthentication() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const loginDataRef = useRef<LoginData>({ user_email: '', user_id: '', user_name: '' });
+    const loginDataRef = useRef<LoginData>({ user_email: '', user_id: '', user_name: '', business_data: null });
 
     const [loginData, _setLoginData] = useState<LoginData>(loginDataRef.current);
 
@@ -55,7 +55,8 @@ function useAuthentication() {
             setLoginData({
                 user_email: responseJson.manager_email,
                 user_id: responseJson.manager_id,
-                user_name: responseJson.manager_name
+                user_name: responseJson.manager_name,
+                business_data: responseJson.business_data ? JSON.parse(responseJson.business_data) : null
             });
 
             localStorage.setItem("token", responseJson.token);
@@ -80,7 +81,7 @@ function useAuthentication() {
                 autoClose: 4500,
                 position: "top-right"
             });
-            setLoginData({ user_email: '', user_id: '', user_name: '' });
+            setLoginData({ user_email: '', user_id: '', user_name: '', business_data: null });
             localStorage.removeItem("token");
             return;
         }
@@ -161,7 +162,7 @@ function useAuthentication() {
 
         if (!token) {
             if (currentLoginData.user_id !== '') {
-                setLoginData({ user_email: '', user_id: '', user_name: '' });
+                setLoginData({ user_email: '', user_id: '', user_name: '', business_data: null });
             }
             if (location.pathname !== "/authentication") {
                 navigate("/authentication");
@@ -185,7 +186,7 @@ function useAuthentication() {
             if ([401, 403].includes(response.status)) {
                 notificateUserWithoutSession();
                 localStorage.removeItem("token");
-                setLoginData({ user_email: '', user_id: '', user_name: '' });
+                setLoginData({ user_email: '', user_id: '', user_name: '', business_data: null });
                 if (location.pathname !== "/authentication") {
                     navigate("/authentication");
                 }
@@ -205,13 +206,14 @@ function useAuthentication() {
                     setLoginData({
                         user_email: responseJson.manager_email,
                         user_id: responseJson.manager_id,
-                        user_name: responseJson.manager_name
+                        user_name: responseJson.manager_name,
+                        business_data: responseJson.business_data ? JSON.parse(responseJson.business_data) : null
                     });
                 } else {
                     notificateUserWithoutSession();
                     if (currentLoginData.user_id !== '') {
                         localStorage.removeItem("token");
-                        setLoginData({ user_email: '', user_id: '', user_name: '' });
+                        setLoginData({ user_email: '', user_id: '', user_name: '', business_data: null });
                     }
                     if (location.pathname !== "/authentication") {
                         navigate("/authentication");
@@ -228,7 +230,7 @@ function useAuthentication() {
             notificateUserWithoutSession();
             if (currentLoginData.user_id !== '') {
                 localStorage.removeItem("token");
-                setLoginData({ user_email: '', user_id: '', user_name: '' });
+                setLoginData({ user_email: '', user_id: '', user_name: '', business_data: null });
             }
             if (location.pathname !== "/authentication") {
                 navigate("/authentication");
@@ -249,7 +251,7 @@ function useAuthentication() {
         })
 
         localStorage.removeItem("token");
-        setLoginData({ user_email: '', user_id: '', user_name: '' });
+        setLoginData({ user_email: '', user_id: '', user_name: '', business_data: null });
         window.location.reload();
     },[])
 
@@ -284,15 +286,20 @@ function useAuthentication() {
         }
     },[loginData, location])
 
+    useEffect(() => {
+        console.log(loginData)
+    },[loginData])
     return useMemo(() => ({
         loginData,
         loginUser,
+        setLoginData,
         registerUser,
         validatingSession,
         logoutUser
     }), [
         loginData,
         loginUser,
+        setLoginData,
         registerUser,
         validatingSession,
         logoutUser

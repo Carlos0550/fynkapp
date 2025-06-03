@@ -1,16 +1,3 @@
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS clients CASCADE;
-DROP TABLE IF EXISTS debts CASCADE;
-DROP TABLE IF EXISTS delivers CASCADE;
-DROP TABLE IF EXISTS client_history CASCADE;
-DROP TABLE IF EXISTS employees CASCADE;
-DROP FUNCTION IF EXISTS set_exp_date();
-DROP FUNCTION IF EXISTS update_exp_date_on_delivers();
-
-DROP TRIGGER IF EXISTS trigger_set_exp_date ON debts;
-DROP TRIGGER IF EXISTS trigger_update_exp_date_on_delivers ON delivers;
-
-
 CREATE TABLE managers(
 	manager_id UUID DEFAULT gen_random_uuid() PRIMARY KEY UNIQUE,
 	manager_name TEXT NOT NULL,
@@ -34,8 +21,6 @@ CREATE TABLE clients(
 	client_id UUID default gen_random_uuid() PRIMARY KEY,
 	client_name TEXT NOT NULL,
 	client_aditional_data JSONB,
-	CONSTRAINT check_aditional_data_keys
-    CHECK (client_aditional_data ?& ARRAY['client_dni', 'client_address', 'client_email']),
 	manager_client_id UUID NOT NULL,
 	CONSTRAINT fk_manager_client_id FOREIGN KEY(manager_client_id) REFERENCES managers(manager_id)
 );
@@ -81,3 +66,55 @@ CREATE TABLE account_summary (
   recovery_rate NUMERIC(5,2) NOT NULL,
   created_at TIMESTAMP DEFAULT now()
 );
+
+--NUEVO--
+
+CREATE TABLE business(
+	business_id UUID DEFAULT gen_random_uuid() PRIMARY KEY UNIQUE,
+	business_name TEXT NOT NULL,
+	business_phone TEXT NOT NULL,
+	business_address TEXT,
+	manager_business_id UUID NOT NULL,
+	notif_option TEXT NOT NULL DEFAULT 'both',
+	CONSTRAINT FK_manager_business_id FOREIGN KEY(manager_business_id) REFERENCES managers(manager_id) ON DELETE SET NULL
+);
+
+ALTER TABLE debts ADD COLUMN business_debt_id UUID;
+ALTER TABLE delivers ADD COLUMN business_deliver_id UUID;
+
+ALTER TABLE debts ADD CONSTRAINT fk_business_debt_id FOREIGN KEY(business_debt_id) REFERENCES business(business_id);
+ALTER TABLE delivers ADD CONSTRAINT fk_business_delivers_id FOREIGN KEY(business_deliver_id) REFERENCES business(business_id);
+
+ALTER TABLE clients DROP CONSTRAINT check_aditional_data_keys;
+
+CREATE TABLE due_payments(
+	due_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	due_client_id UUID NOT NULL,
+	due_business_id UUID NOT NULL,
+	due_amount NUMERIC(10,2) NOT NULL,
+	due_date TIMESTAMP NOT NULL,
+	created_at TIMESTAMP NOT NULL,
+	notified BOOLEAN DEFAULT false NOT NULL,
+	notified_at DATE,
+	due_status TEXT NOT NULL,
+	CONSTRAINT fk_due_client_id 
+	FOREIGN KEY(due_client_id) REFERENCES clients(client_id),
+
+	CONSTRAINT fk_due_business_id FOREIGN KEY(due_business_id)
+	REFERENCES business(business_id)
+);
+
+ALTER TABLE debts ADD COLUMN business_debt_id UUID NOT NULL;
+ALTER TABLE delivers ADD COLUMN business_deliver_id UUID NOT NULL;
+
+ALTER TABLE debts ADD CONSTRAINT fk_business_debt_id FOREIGN KEY(
+	business_debt_id
+) REFERENCES business(business_id) ON DELETE CASCADE;
+
+ALTER TABLE delivers ADD CONSTRAINT fk_business_deliver_id FOREIGN KEY(
+	business_deliver_id
+) REFERENCES business(business_id) ON DELETE CASCADE;
+
+
+TRUNCATE TABLE debts CASCADE;
+

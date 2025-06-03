@@ -5,16 +5,19 @@ import { showNotification } from '@mantine/notifications'
 
 interface Props {
     client_id: string,
-    getAllClients: () => Promise<boolean>
+    getAllClients: () => Promise<boolean>,
+    business_id: string
 }
 function useDelivers({
     client_id,
-    getAllClients
+    getAllClients,
+    business_id
 }: Props) {
     const [editingDeliver, setEditingDeliver] = useState<EditingDeliverData | null>(null)
     const saveDeliver = useCallback(async (deliverData: DeliverForm, isEditing?: boolean, deliverId?: string): Promise<boolean> => {
         const url = new URL(logic_apis.delivers + "/save-deliver")
         url.searchParams.append("client_id", client_id)
+        url.searchParams.append("business_id", business_id)
 
         if(isEditing){
             url.searchParams.append("deliver_id", deliverId || "")
@@ -79,7 +82,7 @@ function useDelivers({
             })
             return false
         }
-    }, [client_id, getAllClients, editingDeliver, setEditingDeliver])
+    }, [client_id, getAllClients, editingDeliver, setEditingDeliver, business_id])
     return useMemo(() => ({
         saveDeliver, editingDeliver, setEditingDeliver
     }), [

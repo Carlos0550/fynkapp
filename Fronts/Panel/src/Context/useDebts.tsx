@@ -5,16 +5,19 @@ import { showNotification } from '@mantine/notifications'
 
 interface Props {
     client_id: string,
-    getAllClients: () => Promise<boolean>
+    getAllClients: () => Promise<boolean>,
+    business_id: string
 }
 function useDebts({
     client_id,
-    getAllClients
+    getAllClients,
+    business_id
 }: Props) {
     const [editingDebt, setEditingDebt] = useState<EditingData | null>(null)
     const saveDebt = useCallback(async (debtData: DebtForm): Promise<boolean> => {
         const url = new URL(logic_apis.debts + "/save-debt")
         url.searchParams.append("client_id", client_id)
+        url.searchParams.append("business_id", business_id)
         if (editingDebt?.debt_id) {
             url.searchParams.append("debt_id", editingDebt.debt_id)
             url.searchParams.append("editing", "true")
@@ -65,7 +68,7 @@ function useDebts({
             })
             return false
         }
-    }, [client_id, getAllClients, editingDebt])
+    }, [client_id, getAllClients, editingDebt, business_id])
 
     const deleteDebt = useCallback(async (debt_id: string): Promise<boolean> => {
        

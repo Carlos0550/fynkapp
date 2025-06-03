@@ -14,12 +14,12 @@ async function getDebtById(debt_id: string) {
 }
 
 export const saveDebt: RequestHandler<
-    {}, {}, DebtRequest, { client_id: string, editing: string, debt_id: string }> = async (
+    {}, {}, DebtRequest, { client_id: string, editing: string, debt_id: string, business_id: string }> = async (
         req,
         res
     ): Promise<void> => {
         const { manager_id } = (req as any).manager_data
-        const { client_id, editing, debt_id } = req.query
+        const { client_id, editing, debt_id, business_id } = req.query
         const {
             debt_date,
             debt_products,
@@ -67,7 +67,8 @@ export const saveDebt: RequestHandler<
                     manager_id,
                     client_id,
                     JSON.stringify(debt_products),
-                    debt_id
+                    debt_id,
+                    business_id
                 ])
 
                 if (response.rowCount! > 0) {

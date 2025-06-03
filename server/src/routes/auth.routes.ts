@@ -103,6 +103,7 @@ export const ValidateSessionRouter: RequestHandler = async (
     req, res, next
 ): Promise<void> => {
     const authHeader = req.headers.authorization?.split(" ")[1];
+    
     if (!authHeader) {
         res.status(401).json({ msg: 'Acceso no autorizado.' });
         return;
@@ -143,6 +144,10 @@ authRouter.post("/logout-user", LogoutUserRouter)
 authRouter.get("/validate-session", ValidateSessionRouter, (req, res) => {
     if ((req as any).manager_data) {
         res.status(200).json((req as any).manager_data)
+        return 
+    }else{
+        res.status(401).json({ msg: 'Acceso no autorizado.' })
+        return;
     }
 })
 export default authRouter

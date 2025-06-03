@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Recordatorio de Deuda</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">
+  <table align="center" width="100%"
+    style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 30px;">
+    <tr>
+      <td>
+        <h2 style="color: #333;">📢 Hola {{client_name}}, ¡esperamos que estés muy bien! 😊</h2>
+        <p style="color: #555;">
+          Este es un recordatorio amigable: tenés una deuda pendiente de <strong>{{total_amount}}</strong> 💸, la cual
+          se encuentra vencida <strong>{{dias}}</strong> en <strong>{{business_name}}</strong> 🏢.
+        </p>
+        <p style="color: #555;">
+          📞 Por favor, comunicate con nosotros al <strong>{{business_phone}}</strong> para resolverlo cuanto
+          antes.<br />
+          {{#if business_address}}📍 O si lo preferís, podés acercarte a <strong>{{business_address}}</strong>.{{/if}}
+        </p>
+        <p style="color: #555; margin-top: 20px;"><strong>📦 Productos asociados:</strong></p>
+        <ul style="color: #555;">
+          {{#each productos}}
+          <li>• x{{this.product_quantity}} - {{this.product_name}}</li>
+          {{/each}}
+        </ul>
+        <p style="color: #555;"><strong>📆 Vencimiento:</strong> {{fecha_vencimiento}}</p>
+        <p style="color: #888; font-size: 14px;">
+          🙏 ¡Gracias por tu atención y disculpá las molestias!<br />
+          — 🔒 <strong>Fynkapp</strong> | No responder este mensaje automatizado.
+        </p>
+      </td>
+    </tr>
+  </table>
+
+</body>
+
+</html>

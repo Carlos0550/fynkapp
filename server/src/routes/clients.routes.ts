@@ -7,7 +7,7 @@ import pool from "../connections/database_conn";
 const clientRouter = Router()
 
 const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {editing_client?: string, client_id?: string}> = async (req, res, next): Promise<void> => {
-    const { client_name, client_dni, client_email } = req.body;
+    const { client_name, client_dni, client_email, client_phone } = req.body;
     const {editing_client} = req.query
     if (!client_name) {
         res.status(400).json({ msg: 'El nombre del cliente es Obligatorio' });
@@ -22,6 +22,11 @@ const SaveClientRouter: RequestHandler<{}, {}, ClientsRequest, {editing_client?:
     if (client_email &&!validator.isEmail(client_email)) {
         res.status(400).json({ msg: 'El correo ingresado no es válido.' });
         return;
+    }
+
+    if(!client_phone && !client_email){
+        res.status(400).json({ msg: 'El cliente debe poder ser contactado de alguna manera, ingrese un correo o número telefónico' });
+        return
     }
 
     const verifyDNI = (): boolean => {

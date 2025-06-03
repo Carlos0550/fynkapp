@@ -6,7 +6,10 @@ import useClientFData from '../../utils/useClientFData'
 import { useAppContext } from '../../../../../../../../Context/AppContext'
 import FinancialTabs from './Components/FinancialTabs'
 import { useEffect, useRef, useState } from 'react'
+import { MdCircleNotifications } from "react-icons/md";
 
+import { FaRegCheckCircle } from "react-icons/fa";
+import { MdNotificationImportant } from "react-icons/md";
 function ClientInfo({ setSections }) {
   const {
     gettingClientData,
@@ -17,14 +20,16 @@ function ClientInfo({ setSections }) {
   const {
     modalsHook: { selectedClientData },
     clientsHook: { setEditingClient },
-    financialClientHook: { getFinancialClientData }
+    financialClientHook: { getFinancialClientData, financialClientData: { movimientos } },
+    notificationsHook: { sendNotification }
+
   } = useAppContext()
 
   const [gettingFinancialData, setGettingFinancialData] = useState(false)
   const handleGetFinancialData = async () => {
-      setGettingFinancialData(true)
-      await getFinancialClientData()
-      setGettingFinancialData(false)
+    setGettingFinancialData(true)
+    await getFinancialClientData()
+    setGettingFinancialData(false)
   }
 
   const alreadyFetched = useRef(false)
@@ -33,6 +38,46 @@ function ClientInfo({ setSections }) {
     alreadyFetched.current = true
     handleGetFinancialData()
   }, [selectedClientData.client_id])
+
+  const hasAtLeastOneOverdueDebt = (): boolean => {
+    let count = 0
+
+    if (movimientos.length === 0) return false
+    movimientos.filter(m => m.tipo === "deuda").forEach((m) => {
+      if (m.estado_financiero === "activo" && (m.estado === "Vencida" || m.estado === "Por vencer")) count++
+    })
+    if (count > 0) return true
+
+    return false
+  }
+
+  const [sendingNotif, setSendingNotif] = useState(false)
+  const [sendSuccess, setSendSuccess] = useState(false)
+  const [sendError, setSendError] = useState(false)
+  const handleSendNotif = async() => {
+    setSendingNotif(true)
+    const result = await sendNotification()
+    setSendingNotif(false)
+    if (result) {
+      setSendSuccess(true)
+      setTimeout(() => setSendSuccess(false), 1500)
+    } else {
+      setSendError(true)
+      setTimeout(() => setSendError(false), 1500)
+    }
+  }
+
+  const getSendNotifBtnIcon = () => {
+    if(sendSuccess) return <FaRegCheckCircle size={18}/>
+    if(sendError) return <MdNotificationImportant size={18}/>
+    return <MdCircleNotifications size={18} />
+  }
+
+  const getSendNotifBtnText = () => {
+    if(sendSuccess) return "Recordatorio enviado"
+    if(sendError) return "Error al enviar"
+    return "Enviar recordatorio"
+  }
 
   return (
     <Flex direction="column" gap={20}>
@@ -84,9 +129,14 @@ function ClientInfo({ setSections }) {
               </Flex>
             ) : (
               <Flex justify="space-between" wrap="wrap" rowGap={5}>
-                {clientData.aditional_client_data.client_email && (
-                  <Text size="sm">Correo electrónico<br /><strong>{clientData.aditional_client_data.client_email}</strong></Text>
-                )}
+                <Flex direction="column" gap={10}>
+                  {clientData.aditional_client_data.client_email && (
+                    <Text size="sm">Correo electrónico<br /><strong>{clientData.aditional_client_data.client_email}</strong></Text>
+                  )}
+                  {clientData.aditional_client_data.client_email && (
+                    <Text size="sm">Teléfono<br /><strong>{clientData.aditional_client_data.client_phone}</strong></Text>
+                  )}
+                </Flex>
                 {clientData.aditional_client_data.client_address && (
                   <Text size="sm">Dirección<br /><strong>{clientData.aditional_client_data.client_address}</strong></Text>
                 )}
@@ -99,7 +149,7 @@ function ClientInfo({ setSections }) {
       <Flex direction="column" gap={10}>
         <Text fw={600} size="lg">Información financiera</Text>
         <Flex align="center" justify="space-between" wrap="wrap" gap={10}>
-          <Box>
+          <Flex wrap={"wrap"} gap={10} justify={'center'} align={"center"}>
             <Text size="sm">Saldo total: {
               parseFloat(selectedClientData.total_debts) > 0 ? (
                 <Badge color="red" size="lg" variant="filled">
@@ -112,7 +162,15 @@ function ClientInfo({ setSections }) {
               )
             }</Text>
 
-          </Box>
+            <Button
+              color='dark'
+              onClick={() => handleSendNotif()}
+              loading={sendingNotif}
+              disabled={gettingFinancialData || sendingNotif || !hasAtLeastOneOverdueDebt()}
+              leftSection={getSendNotifBtnIcon()}
+            >{getSendNotifBtnText()}</Button>
+
+          </Flex>
           <Flex gap={10}>
             <Button
               size="sm"

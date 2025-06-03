@@ -169,8 +169,9 @@ export const loginUser: RequestHandler<{}, {}, LoginUserForm, {}> = async (
             manager_name: managerData.manager_name,
             manager_email: managerData.manager_email,
         }
+
         await redis.hset(redis_user_key, managerDataProfile)
-        await redis.expire(redis_user_key, 60 * 60)
+        await redis.expire(redis_user_key, 24 * 60 * 60)
         managerDataProfile.token = redis_key
         res.status(200).json(managerDataProfile)
         return

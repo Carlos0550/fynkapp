@@ -2,6 +2,7 @@ export interface FormClient{
     client_name: string
     client_dni?: string,
     client_email?: string,
+    client_phone?: string
     client_address?:string
 }
 
@@ -12,6 +13,7 @@ export interface ClientInterface{
     aditional_client_data: {
         client_dni: string,
         client_email: string,
+        client_phone:string
         client_address:string
     },
     total_debts: string

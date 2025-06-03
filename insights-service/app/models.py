@@ -62,3 +62,16 @@ class Managers(db.Model):
     manager_email = db.Column(db.String, nullable=False)
     manager_password = db.Column(db.String, nullable=False)
     manager_verified = db.Column(db.Boolean, nullable=False, default=False)
+
+class Due_payments(db.Model):
+    __tablename__ = "due_payments"
+ 
+    due_id = db.Column(db.Integer, primary_key=True)
+    due_client_id = db.Column(UUID(as_uuid=True), nullable=False)
+    due_business_id = db.Column(UUID(as_uuid=True), nullable=False)
+    due_amount = db.Column(db.Numeric(10, 2), nullable=False)
+    due_date = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+    notified = db.Column(db.Boolean, nullable=False, default=False)
+    notified_at = db.Column(db.DateTime, nullable=True)
+    due_status = db.Column(db.String, nullable=False)
