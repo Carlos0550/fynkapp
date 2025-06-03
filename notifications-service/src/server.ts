@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import cors from "cors";
 
 import "dotenv/config"
@@ -29,7 +29,7 @@ app.use(cors({
 //testRedisConnection();
 startBot()
 
-app.get("/", (_,res) => {
+app.get("/", (_,res: Response) => {
     res.send("Bot server on")
     return;
 });

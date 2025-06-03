@@ -2,9 +2,8 @@ import { RequestHandler, Router } from "express";
 import { PaymentReminderRequest } from "../types/ReminderTypes";
 import { getSock } from "../bot";
 import dayjs from "dayjs";
-import { tryCatch } from "bullmq";
+
 import { sendDueReminderEmail } from "../utils/Emails/SendDueReminder/SendDueReminder";
-import { channel } from "diagnostics_channel";
 
 const WAReminder = Router();
 interface EmailProps {
