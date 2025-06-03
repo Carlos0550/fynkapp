@@ -15,8 +15,7 @@ export const transporter = nodemailer.createTransport({
 const handlebarOptions: NodemailerExpressHandlebarsOptions = {
   viewEngine: {
     extname: ".hbs",
-    partialsDir: path.resolve(__dirname),
-    defaultLayout: false,
+    partialsDir: path.resolve(__dirname)
   },
   viewPath: path.resolve(__dirname),
   extName: ".hbs",
