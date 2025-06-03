@@ -93,7 +93,7 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 					</Box>
 
 					<Box
-						className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
+						className={`sidebar-list disabled ${location.pathname === "/expirations" ? "active" : ""}`}
 						onClick={() => navigate("/expirations")}
 					>
 						<FaUserClock size={20} /> Vencimientos
@@ -160,7 +160,7 @@ function Sidebar({ mobileExtended, setMobileExtended }) {
 								</Box>
 
 								<Box
-									className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
+									className={`sidebar-list disabled ${location.pathname === "/expirations" ? "active" : ""}`}
 									onClick={() => navigate("/expirations")}
 								>
 									<FaUserClock size={20} /> Vencimientos
