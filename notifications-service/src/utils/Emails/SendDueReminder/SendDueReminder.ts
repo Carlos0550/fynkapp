@@ -15,11 +15,15 @@ export const transporter = nodemailer.createTransport({
 const handlebarOptions: NodemailerExpressHandlebarsOptions = {
   viewEngine: {
     extname: ".hbs",
-    partialsDir: path.resolve(__dirname)
+    partialsDir: path.resolve(__dirname),
+    layoutsDir: undefined,
+    defaultLayout: undefined,
   },
   viewPath: path.resolve(__dirname),
   extName: ".hbs",
 };
+
+
 
 transporter.use("compile", hbs(handlebarOptions));
 
