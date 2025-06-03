@@ -2,7 +2,6 @@
   "name": "bot-service",
   "version": "1.0.0",
   "main": "index.js",
-  
   "scripts": {
     "build": "tsc && node copyStatic.js",
     "start": "node dist/server.js",
