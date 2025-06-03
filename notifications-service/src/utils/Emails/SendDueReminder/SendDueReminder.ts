@@ -1,7 +1,7 @@
 import "dotenv/config";
 import nodemailer from "nodemailer";
 import path from "path";
-import { NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
+import hbs, { NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
 
 export const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -11,21 +11,18 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-(async () => {
-  const hbs = (await import("nodemailer-express-handlebars")).default;
 
-  const handlebarOptions: NodemailerExpressHandlebarsOptions = {
-    viewEngine: {
-      extname: ".hbs",
-      partialsDir: path.resolve(__dirname),
-      defaultLayout: false,
-    },
-    viewPath: path.resolve(__dirname),
-    extName: ".hbs",
-  };
+const handlebarOptions: NodemailerExpressHandlebarsOptions = {
+  viewEngine: {
+    extname: ".hbs",
+    partialsDir: path.resolve(__dirname),
+    defaultLayout: false,
+  },
+  viewPath: path.resolve(__dirname),
+  extName: ".hbs",
+};
 
-  transporter.use("compile", hbs(handlebarOptions));
-})();
+transporter.use("compile", hbs(handlebarOptions));
 
 export const sendDueReminderEmail = async ({
   to,
