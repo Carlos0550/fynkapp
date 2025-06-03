@@ -21,4 +21,4 @@ function copyFiles(srcDir, destDir, extensions = []) {
 }
 
 // Copiar .sql y .html de todo src
-copyFiles("src", "dist", [".sql", ".html"]);
+copyFiles("src", "dist", [".sql", ".html", ".hbs"]);

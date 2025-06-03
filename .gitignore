@@ -33,3 +33,4 @@ insights-service/app/__pycache__
 insights-service/venv/*
 
 notifications-service/auth
+notifications-service/qr.png

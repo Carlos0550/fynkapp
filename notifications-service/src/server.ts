@@ -4,6 +4,7 @@ import cors from "cors";
 import "dotenv/config"
 import { startBot } from "./bot";
 import WAReminder from "./routes/reminders.routes";
+import path from "path";
 
 const app = express();
 app.use(express.json());
@@ -35,6 +36,10 @@ app.get("/", (_,res: Response) => {
 });
 
 app.use("/wa-notifications", WAReminder)
+app.get("/qr", (_, res) => {
+  res.sendFile(path.join(__dirname, "..", "qr.png"));
+});
+
 
 
 app.listen(5005, () => {

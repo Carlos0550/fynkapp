@@ -3,7 +3,7 @@ import makeWASocket, {
   useMultiFileAuthState,
   WASocket
 } from "@whiskeysockets/baileys"
-import qrcode from "qrcode-terminal"
+import QRCode from "qrcode";
 import { Boom } from "@hapi/boom"
 
 let sockInstance: WASocket | null = null
@@ -21,15 +21,21 @@ export const startBot = async () => {
     printQRInTerminal: false
   })
 
-  sockInstance = sock 
+  sockInstance = sock
 
   sock.ev.on("creds.update", saveCreds)
 
   sock.ev.on("connection.update", async ({ connection, lastDisconnect, qr }) => {
     if (qr) {
       console.log("📲 Escaneá este QR para vincular:")
-      qrcode.generate(qr, { small: true })
+      QRCode.toFile("qr.png", qr, {
+        width: 400,
+      }, (err: any) => {
+        if (err) throw err;
+        console.log("✅ QR guardado como imagen (qr.png)");
+      });
     }
+
 
     if (connection === "open") {
       console.log("✅ Bot conectado a WhatsApp")
