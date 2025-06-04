@@ -45,7 +45,6 @@ function BusinessInfo() {
             type: option,
             doing: true
         })
-        console.log(businesData)
         const result = await changeNotificationOption(option, businesData!.business_id!)
         setChanging({
             type: null,

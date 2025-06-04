@@ -286,9 +286,7 @@ function useAuthentication() {
         }
     },[loginData, location])
 
-    useEffect(() => {
-        console.log(loginData)
-    },[loginData])
+
     return useMemo(() => ({
         loginData,
         loginUser,

@@ -1,11 +1,11 @@
 import { Router, RequestHandler } from "express";
 import { ValidateSessionRouter } from "./auth.routes";
 import { PaymentReminderRequest } from "../Types/NotificationsTypes";
-import { SendPaymentReminder } from "../controllers/notifications/notifications.controller";
+import { dueReminders } from "../controllers/notifications/notifications.controller";
 
 const notifRouter = Router()
 
-const SendPaymentReminderRouter: RequestHandler<
+const DueRemindersRouter: RequestHandler<
 {},{},PaymentReminderRequest,{}
 > = async(req, res, next): Promise<void> => {
     const {
@@ -21,6 +21,6 @@ const SendPaymentReminderRouter: RequestHandler<
     next()
 }
 
-notifRouter.post("/send-notification", ValidateSessionRouter, SendPaymentReminderRouter, SendPaymentReminder)
+notifRouter.post("/send-notification", ValidateSessionRouter, DueRemindersRouter, dueReminders)
 
 export default notifRouter

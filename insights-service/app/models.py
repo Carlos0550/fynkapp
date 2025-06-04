@@ -38,6 +38,7 @@ class Delivers(db.Model):
     deliver_details = db.Column(db.String, nullable=True)
     estado_financiero = db.Column(db.String, nullable=False)
     fecha_cierre = db.Column(db.DateTime, nullable=True)
+    business_deliver_id = db.Column(db.String, nullable=True)
 
 
 class Debts(db.Model):
@@ -52,6 +53,7 @@ class Debts(db.Model):
     client_debt_id = db.Column(UUID(as_uuid=True), db.ForeignKey("clients.client_id"), nullable=False)
     estado_financiero = db.Column(db.String, nullable=False)
     fecha_cierre = db.Column(db.DateTime, nullable=True)
+    business_debt_id = db.Column(db.String, nullable=True)
 
 
 class Managers(db.Model):

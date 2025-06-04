@@ -1,1 +1,0 @@
-SELECT * FROM business WHERE manager_business_id = $1;

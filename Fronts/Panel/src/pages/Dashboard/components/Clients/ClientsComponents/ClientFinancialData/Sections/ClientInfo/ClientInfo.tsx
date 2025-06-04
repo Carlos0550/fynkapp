@@ -1,4 +1,4 @@
-import { Button, Flex, Skeleton, Text, Paper, Box, Badge } from '@mantine/core'
+import { Button, Flex, Skeleton, Text, Paper, Box, Badge, Notification } from '@mantine/core'
 import { FaUserEdit, FaUserSlash } from 'react-icons/fa'
 import { TbReportMoney } from 'react-icons/tb'
 import { GiTakeMyMoney } from 'react-icons/gi'
@@ -54,13 +54,12 @@ function ClientInfo({ setSections }) {
   const [sendingNotif, setSendingNotif] = useState(false)
   const [sendSuccess, setSendSuccess] = useState(false)
   const [sendError, setSendError] = useState(false)
-  const handleSendNotif = async() => {
+  const handleSendNotif = async () => {
     setSendingNotif(true)
     const result = await sendNotification()
     setSendingNotif(false)
     if (result) {
       setSendSuccess(true)
-      setTimeout(() => setSendSuccess(false), 1500)
     } else {
       setSendError(true)
       setTimeout(() => setSendError(false), 1500)
@@ -68,14 +67,14 @@ function ClientInfo({ setSections }) {
   }
 
   const getSendNotifBtnIcon = () => {
-    if(sendSuccess) return <FaRegCheckCircle size={18}/>
-    if(sendError) return <MdNotificationImportant size={18}/>
+    if (sendSuccess) return <FaRegCheckCircle size={18} />
+    if (sendError) return <MdNotificationImportant size={18} />
     return <MdCircleNotifications size={18} />
   }
 
   const getSendNotifBtnText = () => {
-    if(sendSuccess) return "Recordatorio enviado"
-    if(sendError) return "Error al enviar"
+    if (sendSuccess) return "Recordatorio enviado"
+    if (sendError) return "Error al enviar"
     return "Enviar recordatorio"
   }
 
@@ -162,13 +161,22 @@ function ClientInfo({ setSections }) {
               )
             }</Text>
 
-            <Button
-              color='dark'
-              onClick={() => handleSendNotif()}
-              loading={sendingNotif}
-              disabled={gettingFinancialData || sendingNotif || !hasAtLeastOneOverdueDebt()}
-              leftSection={getSendNotifBtnIcon()}
-            >{getSendNotifBtnText()}</Button>
+            {sendSuccess ? (
+              <Notification withCloseButton={false} icon={<MdCircleNotifications size={18} />} title="Recordatorio enviado" color="green">
+                El cliente fue notificado de su deuda
+              </Notification>
+            )
+              : sendError ? (
+                <Notification withCloseButton={false} icon={<MdNotificationImportant size={18} />} title="Error al enviar el recordatorio" color="maroon"/>
+              ) : (
+                <Button
+                  color='dark'
+                  onClick={() => handleSendNotif()}
+                  loading={sendingNotif}
+                  disabled={gettingFinancialData || sendingNotif || !hasAtLeastOneOverdueDebt()}
+                  leftSection={getSendNotifBtnIcon()}
+                >{getSendNotifBtnText()}</Button>
+              )}
 
           </Flex>
           <Flex gap={10}>

@@ -63,6 +63,7 @@ const SendDueReminder: RequestHandler<
         const sockBot = getSock()
         const channel = businessData.notif_option
 
+
         if (!sockBot) {
             res.status(503).json({ error: "Bot de WhatsApp no disponible aún." })
             return
@@ -115,13 +116,14 @@ const SendDueReminder: RequestHandler<
             fecha_vencimiento: dayjs(mas_vieja?.vencimiento).format("DD/MM/YYYY"),
         }
 
-        if (channel === "whatsapp") {
+        if (channel === "whatsapp" || channel === "both") {
             await sockBot!.sendMessage(`549${clientData.aditional_client_data.client_phone}@c.us`, {
                 text: message
             });
 
             res.status(200).json({
                 msg: "Recordatorio enviado",
+                notif_channel: "whatsapp"
             });
             return
         }
@@ -133,7 +135,7 @@ const SendDueReminder: RequestHandler<
             });
 
             if (result) {
-                res.status(200).json({ msg: "Recordatorio enviado" });
+                res.status(200).json({ msg: "Recordatorio enviado", notif_channel: "email" });
             } else {
                 res.status(500).json({ msg: "Error al enviar el recordatorio" });
                 return;
@@ -150,7 +152,7 @@ const SendDueReminder: RequestHandler<
             });
 
             if (result) {
-                res.status(200).json({ msg: "Recordatorio enviado" });
+                res.status(200).json({ msg: "Recordatorio enviado", notif_channel: "email" });
             } else {
                 res.status(500).json({ msg: "Error al enviar el recordatorio" });
                 return;

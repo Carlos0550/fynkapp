@@ -115,6 +115,18 @@ ALTER TABLE delivers ADD CONSTRAINT fk_business_deliver_id FOREIGN KEY(
 	business_deliver_id
 ) REFERENCES business(business_id) ON DELETE CASCADE;
 
+CREATE TABLE notif_history(
+	notif_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	notif_business_id UUID,
+	notif_client_id UUID,
+	notif_channel TEXT,
+	notif_status TEXT,
+	notif_at TIMESTAMP,
+	notif_type TEXT,
+	CONSTRAINT fk_notif_client_id FOREIGN KEY(notif_client_id) REFERENCES clients(client_id),
+	CONSTRAINT fk_notif_business_id FOREIGN KEY(notif_business_id) REFERENCES business(business_id)
+);
+CREATE INDEX idx_notif_client_date ON notif_history(notif_client_id, notif_at DESC);
 
 TRUNCATE TABLE debts CASCADE;
-
+SELECT * FROM debts;

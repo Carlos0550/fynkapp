@@ -27,7 +27,8 @@ function useNotifications({clientData, clientDelivers, clientDebts}: Props) {
                 })
             })
 
-            if(!response.ok) throw new Error("Error al enviar la notificación")
+            const responseData = await response.json()
+            if(!response.ok) throw new Error(responseData.msg || "Error al enviar la notificación")
             showNotification({
                 color: "green",
                 title: "Recordatorio enviado",
@@ -41,9 +42,9 @@ function useNotifications({clientData, clientDelivers, clientDebts}: Props) {
             console.error(error)
             showNotification({
                 color: "red",
-                title: "Error al enviar el recordatorio",
-                message: "Ha ocurrido un error al enviar el recordatorio.",
-                autoClose: 3000,
+                title: error.message,
+                message: "",
+                autoClose: 5000,
                 position: "top-right"
             })
             return false
