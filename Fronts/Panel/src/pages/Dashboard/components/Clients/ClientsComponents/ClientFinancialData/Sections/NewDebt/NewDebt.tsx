@@ -9,10 +9,12 @@ import dayjs from "dayjs";
 function NewDebt({ closeModal, setSections }) {
     const {
         debtsHook:{
-            editingDebt
+            editingDebt,
+            setEditingDebt
         },
         modalsHook:{
-            selectedClientData
+            selectedClientData,
+            setSelectedClientData
         },
         width
     } = useAppContext()
@@ -24,11 +26,13 @@ function NewDebt({ closeModal, setSections }) {
         handleSaveDebt,
         saving,
         saved, formData,
-        productsText
+        productsText,
+        
     } = useNewDebt()
 
    useEffect(()=>{
         if(saved){
+            setEditingDebt(null)
             const timeout = setTimeout(() => setSections("home"),1000)
             return () => clearTimeout(timeout)
         }

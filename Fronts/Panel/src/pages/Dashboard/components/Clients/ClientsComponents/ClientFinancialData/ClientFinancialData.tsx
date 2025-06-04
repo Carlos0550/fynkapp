@@ -51,7 +51,7 @@ function ClientFinancialData({ closeModal }) {
                 onClick={() => closeModal()}
             />
 
-            {sections === "home" && <ClientInfo setSections={setSections} />}
+            {sections === "home" && <ClientInfo setSections={setSections} closeModal={closeModal}/>}
             {sections === "editData" && <EditData closeModal={closeModal} />}
             {sections === "newDebt" && <NewDebt closeModal={closeModal} setSections={setSections}/>}
             {sections === "newdeliver" && <NewDeliver closeModal={closeModal} setSections={setSections} />}

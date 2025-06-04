@@ -1,4 +1,4 @@
-import { Button, Flex, Skeleton, Text, Paper, Box, Badge, Notification } from '@mantine/core'
+import { Button, Flex, Skeleton, Text, Paper, Box, Badge, Notification, Group } from '@mantine/core'
 import { FaUserEdit, FaUserSlash } from 'react-icons/fa'
 import { TbReportMoney } from 'react-icons/tb'
 import { GiTakeMyMoney } from 'react-icons/gi'
@@ -10,7 +10,9 @@ import { MdCircleNotifications } from "react-icons/md";
 
 import { FaRegCheckCircle } from "react-icons/fa";
 import { MdNotificationImportant } from "react-icons/md";
-function ClientInfo({ setSections }) {
+import { IoInformation, IoInformationCircle } from 'react-icons/io5'
+import { useNavigate } from 'react-router-dom'
+function ClientInfo({ setSections, closeModal }) {
   const {
     gettingClientData,
     clientData,
@@ -72,6 +74,7 @@ function ClientInfo({ setSections }) {
     return <MdCircleNotifications size={18} />
   }
 
+  const navigate = useNavigate()
   const getSendNotifBtnText = () => {
     if (sendSuccess) return "Recordatorio enviado"
     if (sendError) return "Error al enviar"
@@ -148,7 +151,25 @@ function ClientInfo({ setSections }) {
       <Flex direction="column" gap={10}>
         <Text fw={600} size="lg">Información financiera</Text>
         <Flex align="center" justify="space-between" wrap="wrap" gap={10}>
+          {hasAtLeastOneOverdueDebt() && (
+             <Flex
+              gap={3}
+              align="center"
+              justify={"center"}
+             >
+              <IoInformationCircle size={18} color='#CE0000'/>
+               <Text
+                size="sm"
+                fw={500}
+                c={"#CE0000"}
+              >El cliente tiene una o más deudas vencidas o por vencer, para más detalles visita la sección de <Text style={{cursor: "pointer"}} span c="#630000" onClick={() => {
+                navigate("/expirations")
+                closeModal()
+              }} inherit>vencimientos</Text></Text>
+             </Flex>
+            )}
           <Flex wrap={"wrap"} gap={10} justify={'center'} align={"center"}>
+            
             <Text size="sm">Saldo total: {
               parseFloat(selectedClientData.total_debts) > 0 ? (
                 <Badge color="red" size="lg" variant="filled">

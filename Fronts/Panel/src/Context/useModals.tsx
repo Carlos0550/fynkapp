@@ -15,7 +15,8 @@ function useModals() {
         aditional_client_data: {
             client_dni: "",
             client_email: "",
-            client_address: ""
+            client_address: "",
+            client_phone: ""
         },
         total_debts: ""
     });
@@ -29,7 +30,8 @@ function useModals() {
             aditional_client_data: {
                 client_dni: "",
                 client_email: "",
-                client_address: ""
+                client_address: "",
+                client_phone: ""
             },
             total_debts: ""
         })

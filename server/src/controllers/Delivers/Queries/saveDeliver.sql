@@ -44,3 +44,5 @@ UPDATE delivers
             deliver_date = $2,
             deliver_details = $3
           WHERE deliver_id = $4;
+
+DELETE FROM expired_debts WHERE expired_client_id = $1 AND expired_business_id = $2;

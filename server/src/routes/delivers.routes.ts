@@ -15,10 +15,11 @@ const SaveDeliverRouter: RequestHandler<
     client_id: string;
     isEditing?: string;
     deliver_id?: string;
+    business_id: string;
   }
 > = async (req, res, next): Promise<void> => {
   const { manager_id } = (req as any).manager_data;
-  const { client_id, isEditing, deliver_id } = req.query;
+  const { client_id, isEditing, deliver_id, business_id } = req.query;
   const { deliver_amount, deliver_date } = req.body;
 
   try {
@@ -47,63 +48,30 @@ const SaveDeliverRouter: RequestHandler<
       return;
     }
 
-    const CQ = isEdit
-      ? `
-        SELECT 
-          c.client_id,
-          c.client_name,
-          c.client_aditional_data,
-          COALESCE(SUM(d.debt_total),0) AS total_debts,
-          COALESCE(SUM(ds.deliver_amount),0) AS total_delivers
-        FROM clients c
-        LEFT JOIN debts d ON d.client_debt_id = c.client_id
-        LEFT JOIN delivers ds ON ds.client_deliver_id = c.client_id
-        WHERE c.client_id = $1 AND c.manager_client_id = $2 AND d.estado_financiero = 'activo' 
-        GROUP BY c.client_id, c.client_name, c.client_aditional_data;
-      `
-      : `
-        SELECT 
-          c.client_id,
-          c.client_name,
-          c.client_aditional_data,
-          COALESCE(SUM(d.debt_total),0) AS total_debts
-        FROM clients c
-        LEFT JOIN debts d ON d.client_debt_id = c.client_id
-        WHERE c.client_id = $1 AND c.manager_client_id = $2 AND d.estado_financiero = 'activo'
-        GROUP BY c.client_id, c.client_name, c.client_aditional_data;
-      `;
-
-    const queryTotal = await pool.query(CQ, [client_id, manager_id]);
-
-    if (!queryTotal.rowCount || queryTotal.rowCount === 0) {
+    const CQ = `SELECT * FROM delivers WHERE client_deliver_id = $1 AND manager_client_id = $2 AND business_deliver_id = $3 AND estado_financiero = 'activo'`;
+    const CQ1 =  `SELECT * FROM debts WHERE client_debt_id = $1 AND manager_client_id = $2 AND business_debt_id = $3 AND estado_financiero = 'activo'`;
+    const queryTotal = await Promise.all([
+      pool.query(CQ, [client_id, manager_id, business_id]),
+      pool.query(CQ1, [client_id, manager_id, business_id]),
+    ])
+    
+    if (queryTotal[1].rowCount === 0) {
       res.status(400).json({ msg: "El cliente no tiene deudas activas." });
       return;
     }
+    
 
-    const totalDebtsClient = queryTotal.rows[0].total_debts;
-    const totalDeliversClient = queryTotal.rows[0].total_delivers;
-    const deuda = Number(totalDebtsClient);
-    const pago = Number(deliver_amount);
-
-    if (!isEdit && (pago > deuda || deuda === 0)) {
+    const deudas = queryTotal[1].rows.reduce((acc, curr) => acc + Number(curr.debt_total), 0);
+    const entregas = queryTotal[0].rows.reduce((acc, curr) => acc + Number(curr.deliver_amount), 0);
+    const totalAccount = Number(deudas) - Number(entregas);
+    
+    if (Number(deliver_amount) > totalAccount || totalAccount === 0) {
       res.status(417).json({
         msg: "El monto ingresado es mayor a la deuda del cliente.",
-        totalDebtsClient,
+        totalDebtsClient: totalAccount,
       });
       return;
     }
-
-    if (isEdit) {
-      const calc = Number(totalDeliversClient) + Number(deliver_amount);
-      if (calc > deuda) {
-        res.status(417).json({
-          msg: "El monto ingresado es mayor a la deuda del cliente.",
-          totalDebtsClient: deuda - Number(totalDeliversClient),
-        });
-        return;
-      }
-    }
-
     next(); 
   } catch (error) {
     console.error("Error en la verificación de guardado de entregas:", error);

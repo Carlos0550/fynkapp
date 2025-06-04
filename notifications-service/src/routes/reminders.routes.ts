@@ -87,13 +87,18 @@ const SendDueReminder: RequestHandler<
         const totalAmount = (totalDebts - totalDelivers).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
         const vencidas = clientDebts.filter(debt => debt.estado === "Vencida" || debt.estado === "Por vencer");
         const mas_vieja = vencidas.length > 0 ? vencidas.sort((a, b) => dayjs(a.vencimiento).diff(dayjs(b.vencimiento)))[0] : null;
-        const daysDifference = mas_vieja ? dayjs().diff(dayjs(mas_vieja.vencimiento), 'day') : 0;
+        const daysDifference = mas_vieja ? dayjs().startOf('day').diff(dayjs(mas_vieja.vencimiento).startOf('day'), 'day') : 0;
 
         const dias = daysDifference === 0
-            ? "hoy"
-            : `hace ${daysDifference} día${daysDifference > 1 ? "s" : ""}`
+            ? "venció hoy"
+            : daysDifference > 0
+            ? `se encuentra vencida hace ${daysDifference} día${daysDifference > 1 ? "s" : ""}`
+            : daysDifference === -1
+            ? "vence mañana"
+            : `vence dentro de ${Math.abs(daysDifference)} día${Math.abs(daysDifference) > 1 ? "s" : ""}`;
 
-        let message = `📢 Hola ${clientData.client_name}, ¡esperamos que estés muy bien! 😊 Este es un recordatorio amigable: tenés una deuda pendiente de ${totalAmount} 💸, la cual se encuentra vencida ${dias} en *${businessData.business_name}* 🏢. 📞 Por favor, comunicate con nosotros al ${businessData.business_phone} para resolverlo cuanto antes. ${businessData.business_address ? `📍 O si lo preferís, podés acercarte a *${businessData.business_address}*.` : ""}`.trim();
+
+        let message = `📢 Hola ${clientData.client_name}, ¡esperamos que estés muy bien! 😊 Este es un recordatorio amigable: tenés una deuda pendiente de ${totalAmount} 💸, la cual ${dias} en *${businessData.business_name}* 🏢. 📞 Por favor, comunicate con nosotros al ${businessData.business_phone} para resolverlo cuanto antes. ${businessData.business_address ? `📍 O si lo preferís, podés acercarte a *${businessData.business_address}*.` : ""}`.trim();
 
         const productsMessage = `📦 *Productos asociados:*\n` +
             clientDebts
@@ -112,7 +117,7 @@ const SendDueReminder: RequestHandler<
             business_name: businessData.business_name,
             business_phone: businessData.business_phone,
             business_address: businessData.business_address,
-            productos: clientDebts.flatMap(debt => debt.productos || []).map(p => ({product_name: p.product_name,product_quantity: String(p.product_quantity)})),
+            productos: clientDebts.flatMap(debt => debt.productos || []).map(p => ({ product_name: p.product_name, product_quantity: String(p.product_quantity) })),
             fecha_vencimiento: dayjs(mas_vieja?.vencimiento).format("DD/MM/YYYY"),
         }
 
@@ -157,7 +162,7 @@ const SendDueReminder: RequestHandler<
                 res.status(500).json({ msg: "Error al enviar el recordatorio" });
                 return;
             }
-        }else{
+        } else {
             res.status(500).json({ msg: "Error al enviar el recordatorio" });
             return
         }

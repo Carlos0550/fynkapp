@@ -66,9 +66,6 @@ CREATE TABLE account_summary (
   recovery_rate NUMERIC(5,2) NOT NULL,
   created_at TIMESTAMP DEFAULT now()
 );
-
---NUEVO--
-
 CREATE TABLE business(
 	business_id UUID DEFAULT gen_random_uuid() PRIMARY KEY UNIQUE,
 	business_name TEXT NOT NULL,
@@ -79,30 +76,7 @@ CREATE TABLE business(
 	CONSTRAINT FK_manager_business_id FOREIGN KEY(manager_business_id) REFERENCES managers(manager_id) ON DELETE SET NULL
 );
 
-ALTER TABLE debts ADD COLUMN business_debt_id UUID;
-ALTER TABLE delivers ADD COLUMN business_deliver_id UUID;
-
-ALTER TABLE debts ADD CONSTRAINT fk_business_debt_id FOREIGN KEY(business_debt_id) REFERENCES business(business_id);
-ALTER TABLE delivers ADD CONSTRAINT fk_business_delivers_id FOREIGN KEY(business_deliver_id) REFERENCES business(business_id);
-
 ALTER TABLE clients DROP CONSTRAINT check_aditional_data_keys;
-
-CREATE TABLE due_payments(
-	due_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	due_client_id UUID NOT NULL,
-	due_business_id UUID NOT NULL,
-	due_amount NUMERIC(10,2) NOT NULL,
-	due_date TIMESTAMP NOT NULL,
-	created_at TIMESTAMP NOT NULL,
-	notified BOOLEAN DEFAULT false NOT NULL,
-	notified_at DATE,
-	due_status TEXT NOT NULL,
-	CONSTRAINT fk_due_client_id 
-	FOREIGN KEY(due_client_id) REFERENCES clients(client_id),
-
-	CONSTRAINT fk_due_business_id FOREIGN KEY(due_business_id)
-	REFERENCES business(business_id)
-);
 
 ALTER TABLE debts ADD COLUMN business_debt_id UUID NOT NULL;
 ALTER TABLE delivers ADD COLUMN business_deliver_id UUID NOT NULL;
@@ -115,7 +89,7 @@ ALTER TABLE delivers ADD CONSTRAINT fk_business_deliver_id FOREIGN KEY(
 	business_deliver_id
 ) REFERENCES business(business_id) ON DELETE CASCADE;
 
-CREATE TABLE notif_history(
+CREATE TABLE reminders_history(
 	notif_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	notif_business_id UUID,
 	notif_client_id UUID,
@@ -126,7 +100,6 @@ CREATE TABLE notif_history(
 	CONSTRAINT fk_notif_client_id FOREIGN KEY(notif_client_id) REFERENCES clients(client_id),
 	CONSTRAINT fk_notif_business_id FOREIGN KEY(notif_business_id) REFERENCES business(business_id)
 );
-CREATE INDEX idx_notif_client_date ON notif_history(notif_client_id, notif_at DESC);
+CREATE INDEX idx_notif_client_date ON reminders_history(notif_client_id, notif_at DESC);
 
-TRUNCATE TABLE debts CASCADE;
-SELECT * FROM debts;
+

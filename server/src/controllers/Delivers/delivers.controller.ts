@@ -68,6 +68,7 @@ export const saveDeliver: RequestHandler<
         }
 
         console.log(`🟢 Fechas de vencimiento actualizadas a ${newExpDate}`);
+        await pool.query(SD[7],[client_id, business_id])
 
         const deudaResult = await pool.query(SD[2], [client_id, manager_id]);
 

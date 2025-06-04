@@ -55,7 +55,6 @@ class Debts(db.Model):
     fecha_cierre = db.Column(db.DateTime, nullable=True)
     business_debt_id = db.Column(db.String, nullable=True)
 
-
 class Managers(db.Model):
     __tablename__ = "managers"
 
@@ -65,15 +64,20 @@ class Managers(db.Model):
     manager_password = db.Column(db.String, nullable=False)
     manager_verified = db.Column(db.Boolean, nullable=False, default=False)
 
-class Due_payments(db.Model):
-    __tablename__ = "due_payments"
- 
-    due_id = db.Column(db.Integer, primary_key=True)
-    due_client_id = db.Column(UUID(as_uuid=True), nullable=False)
-    due_business_id = db.Column(UUID(as_uuid=True), nullable=False)
-    due_amount = db.Column(db.Numeric(10, 2), nullable=False)
-    due_date = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
-    notified = db.Column(db.Boolean, nullable=False, default=False)
-    notified_at = db.Column(db.DateTime, nullable=True)
-    due_status = db.Column(db.String, nullable=False)
+class Business(db.Model):
+    __tablename__ = "business"
+
+    business_id = db.Column(db.String, primary_key=True)
+    business_name = db.Column(db.String, nullable=False)
+    business_address = db.Column(db.String, nullable=False)
+    business_phone = db.Column(db.String, nullable=False)
+    business_email = db.Column(db.String, nullable=False)
+    manager_business_id = db.Column(UUID(as_uuid=True), db.ForeignKey("managers.manager_id"), nullable=False)
+    notif_option = db.Column(db.String, nullable=False, default="both")
+class ExpiredPayments(db.Model):
+    __tablename__ = "expired_debts"
+    expired_id = db.Column(db.Integer, primary_key=True)
+    expired_client_id = db.Column(UUID(as_uuid=True), db.ForeignKey("clients.client_id"), nullable=False)
+    expired_business_id = db.Column(UUID(as_uuid=True), db.ForeignKey("business.business_id"), nullable=False)
+    expired_amount = db.Column(db.Numeric(10, 2), nullable=False)
+    expired_date = db.Column(db.DateTime, nullable=False)
