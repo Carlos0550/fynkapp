@@ -28,7 +28,10 @@ export const dueReminders: RequestHandler<
             businessData.business_id,
         ])
 
-        const alreadySent = dayjs(sendHistory.rows[0].notif_at).isSame(dayjs(), "day")
+        let alreadySent:boolean = false
+        if(sendHistory.rowCount! > 0){
+            alreadySent = dayjs(sendHistory.rows[0].notif_at).isSame(dayjs(), "day")
+        }
 
         if(alreadySent){
             res.status(400).json({msg:`El cliente ya recibio un recordatorio de pago, intenta de nuevo mañana.`})
