@@ -1,17 +1,12 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { logic_apis } from '../apis'
-import { ClientInterface } from './Typescript/ClientsTypes'
-import { FinancialClient } from './Typescript/FinancialTypes'
+
 import { showNotification } from '@mantine/notifications'
 
-interface Props{
-    clientData: ClientInterface,
-    clientDelivers: FinancialClient["movimientos"],
-    clientDebts: FinancialClient["movimientos"]
-}
-function useNotifications({clientData, clientDelivers, clientDebts}: Props) {
-    const sendNotification = useCallback(async(): Promise<boolean> => {
+function useNotifications() {
+    const sendNotification = useCallback(async(client_id: string): Promise<boolean> => {
         const url = new URL(logic_apis.notifications + "/send-notification")
+        url.searchParams.append("client_id", client_id)
         const token = localStorage.getItem("token")
         try {
             const response = await fetch(url, {
@@ -19,12 +14,7 @@ function useNotifications({clientData, clientDelivers, clientDebts}: Props) {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token || ""}`
-                },
-                body: JSON.stringify({
-                    clientData,
-                    clientDebts: clientDebts.filter(c => c.estado_financiero === "activo" && c.tipo === "deuda"),
-                    clientDelivers: clientDelivers.filter(c => c.estado_financiero === "activo" && c.tipo === "pago")
-                })
+                }
             })
 
             const responseData = await response.json()
@@ -49,7 +39,7 @@ function useNotifications({clientData, clientDelivers, clientDebts}: Props) {
             })
             return false
         }
-    },[clientData, clientDelivers, clientDebts])
+    },[])
 
     return useMemo(() => ({
         sendNotification

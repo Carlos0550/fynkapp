@@ -6,6 +6,7 @@ import { DeliverForm, EditingDeliverData } from "./DeliversTypes"
 import { FinancialClient } from "./FinancialTypes"
 import { AccountSummary, MonthOption, SummaryCards } from "./ResumeTypes"
 import { Business, BusinessForm, EditBusinessData, NotifOptions } from "./BusinessTypes"
+import { errorTypesRequest, Expirations } from "./ExpirationsTypes"
 
 export interface ModalsHookInterface {
     openedClientModal: boolean,
@@ -90,7 +91,12 @@ export interface BusinessHookInterface {
 }
 
 export interface NotificationsHookInterface{
-    sendNotification: () => Promise<boolean>
+    sendNotification: (client_id: string) => Promise<boolean>
+}
+
+export interface ExpirationsHookInterface {
+    getExpirations: () =>  Promise<{ errorType: errorTypesRequest, error: boolean }>, 
+    expirations: Expirations[]
 }
 export interface AppContextValueInterface {
     width: number,
@@ -103,5 +109,6 @@ export interface AppContextValueInterface {
     resumeHook: ResumeHookInterface,
     getInitials: (fullName: string) => string,
     businessHook: BusinessHookInterface,
-    notificationsHook: NotificationsHookInterface
+    notificationsHook: NotificationsHookInterface,
+    expirationsHook: ExpirationsHookInterface
 }

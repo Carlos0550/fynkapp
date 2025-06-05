@@ -5,6 +5,7 @@ import makeWASocket, {
 } from "@whiskeysockets/baileys"
 import QRCode from "qrcode";
 import { Boom } from "@hapi/boom"
+import fs from "fs"
 
 let sockInstance: WASocket | null = null
 
@@ -39,13 +40,14 @@ export const startBot = async () => {
 
     if (connection === "open") {
       console.log("✅ Bot conectado a WhatsApp")
-      setTimeout(async () => {
-        const number = "5493765223959@s.whatsapp.net"
-        await sock.sendMessage(number, {
-          text: "🚀 Hola Carlos, el bot está funcionando correctamente."
-        })
-        console.log("✅ Mensaje de prueba enviado")
-      }, 1000)
+      fs.unlinkSync("qr.png");
+      // setTimeout(async () => {
+      //   const number = "5493765223959@s.whatsapp.net"
+      //   await sock.sendMessage(number, {
+      //     text: "🚀 Hola Carlos, el bot está funcionando correctamente."
+      //   })
+      //   console.log("✅ Mensaje de prueba enviado")
+      // }, 1000)
     }
 
     if (connection === "close") {

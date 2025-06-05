@@ -14,7 +14,7 @@ interface ClientFinancialRequest{
     estado: "Pagada" | "Vencida" | "Por vencer" | "Al día"
 }
 
-export interface PaymentReminderRequest{
+export interface PaymentReminder{
     clientData: ClientsFromDB,
     clientDelivers: ClientFinancialRequest[],
     clientDebts: ClientFinancialRequest[]

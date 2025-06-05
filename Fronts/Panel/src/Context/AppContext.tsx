@@ -11,6 +11,7 @@ import useFinancialData from "./useFinancialData";
 import useResume from "./useResume";
 import useBusiness from "./useBusiness";
 import useNotifications from "./useNotifications";
+import useExpirations from "./useExpirations";
 
 const AppContext = createContext<AppContextValueInterface | undefined>(undefined);
 
@@ -59,10 +60,10 @@ export const AppContextProvider = ({ children }: any) => {
     })
 
     const resumeHook = useResume()
-    const notificationsHook = useNotifications({
-        clientData: modalsHook.selectedClientData,
-        clientDelivers: financialClientHook.financialClientData.movimientos,
-        clientDebts: financialClientHook.financialClientData.movimientos
+    const notificationsHook = useNotifications()
+
+    const expirationsHook = useExpirations({
+        business_id: businessHook.businesData?.business_id!
     })
 
     function getInitials(fullName: string): string {
@@ -75,12 +76,13 @@ export const AppContextProvider = ({ children }: any) => {
         modalsHook, authHook, clientsHook, debtsHook,
         deliversHook, financialClientHook,
         resumeHook, getInitials, businessHook,
-        notificationsHook
+        notificationsHook, expirationsHook
     }), [
         modalsHook,
         width, authHook, clientsHook, debtsHook,
         deliversHook, financialClientHook,
-        resumeHook, businessHook, notificationsHook
+        resumeHook, businessHook, notificationsHook,
+        expirationsHook
     ])
 
 

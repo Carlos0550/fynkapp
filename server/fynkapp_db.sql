@@ -102,4 +102,12 @@ CREATE TABLE reminders_history(
 );
 CREATE INDEX idx_notif_client_date ON reminders_history(notif_client_id, notif_at DESC);
 
-
+CREATE TABLE expired_debts(
+	expired_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	expired_client_id UUID NOT NULL,
+	expired_business_id UUID NOT NULL,
+	expired_amount NUMERIC(10,2) NOT NULL,
+	expired_date TIMESTAMP NOT NULL,
+	CONSTRAINT fk_due_client_id FOREIGN KEY(expired_client_id) REFERENCES clients(client_id),
+	CONSTRAINT fk_expired_business_id FOREIGN KEY(expired_business_id) REFERENCES business(business_id)
+);
