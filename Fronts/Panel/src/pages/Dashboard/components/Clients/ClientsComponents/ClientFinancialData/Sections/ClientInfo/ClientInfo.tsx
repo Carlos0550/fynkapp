@@ -58,7 +58,7 @@ function ClientInfo({ setSections, closeModal }) {
   const [sendError, setSendError] = useState(false)
   const handleSendNotif = async () => {
     setSendingNotif(true)
-    const result = await sendNotification()
+    const result = await sendNotification(selectedClientData.client_id)
     setSendingNotif(false)
     if (result) {
       setSendSuccess(true)
