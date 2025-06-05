@@ -2,6 +2,7 @@ import "dotenv/config";
 import nodemailer from "nodemailer";
 import path from "path";
 import hbs, { NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
+import { DebtProducts } from "../../../types/ReminderTypes";
 
 export const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -41,7 +42,7 @@ export const sendDueReminderEmail = async ({
     business_name: string;
     business_phone: string;
     business_address?: string;
-    productos: { product_name: string; product_quantity: string }[];
+    productos: DebtProducts[];
     fecha_vencimiento: string;
   };
 }): Promise<boolean> => {
