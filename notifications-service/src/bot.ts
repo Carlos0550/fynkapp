@@ -45,13 +45,13 @@ export const startBot = async () => {
       } catch (error) {
         console.log("❌ QR no encontrado")
       }
-      setTimeout(async () => {
-        const number = "5493765223959@s.whatsapp.net"
-        await sock.sendMessage(number, {
-          text: "🚀 Hola Carlos, el bot está funcionando correctamente."
-        })
-        console.log("✅ Mensaje de prueba enviado")
-      }, 1000)
+      // setTimeout(async () => {
+      //   const number = "5493765223959@s.whatsapp.net"
+      //   await sock.sendMessage(number, {
+      //     text: "🚀 Hola Carlos, el bot está funcionando correctamente."
+      //   })
+      //   console.log("✅ Mensaje de prueba enviado")
+      // }, 1000)
     }
 
     if (connection === "close") {

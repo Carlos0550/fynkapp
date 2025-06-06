@@ -66,6 +66,7 @@ CREATE TABLE account_summary (
   recovery_rate NUMERIC(5,2) NOT NULL,
   created_at TIMESTAMP DEFAULT now()
 );
+
 CREATE TABLE business(
 	business_id UUID DEFAULT gen_random_uuid() PRIMARY KEY UNIQUE,
 	business_name TEXT NOT NULL,

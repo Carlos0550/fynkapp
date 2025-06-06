@@ -60,7 +60,7 @@ function MonthlySummary() {
                             size="sm"
                             fw={500}
                             c={"#2c2c2c"}
-                        >Los resumenes se generan todos los viernes de cada mes.</Text>
+                        >Los resumenes se generan el 30 de cada mes.</Text>
                     </Flex>
                 </Flex>
 
